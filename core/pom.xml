@@ -23,6 +23,11 @@
       <version>${openurp.api.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.openurp.edu.course</groupId>
+      <artifactId>openurp-edu-course-api</artifactId>
+      <version>${openurp.api.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.beangle.data</groupId>
       <artifactId>beangle-data-orm_2.13</artifactId>
     </dependency>

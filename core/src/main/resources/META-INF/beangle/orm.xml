@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+  <mapping class="org.openurp.edu.curricula.model.DefaultMapping" />
+  <mapping class="org.openurp.edu.curricula.app.model.DefaultMapping" />
+  <naming>
+    <profile package = "org.openurp.edu.curricula.model" pluralize="true" schema="edu_curricula"/>
+    <profile package = "org.openurp.edu.curricula.app.model" pluralize="true" schema="app_curricula"/>
+  </naming>
+</orm>
