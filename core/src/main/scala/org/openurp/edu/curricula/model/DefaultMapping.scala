@@ -36,5 +36,7 @@ class DefaultMapping extends MappingModule {
 
 		bind[Syllabus]
 
+		bind[TeacherBlog]
+
 	}
 }

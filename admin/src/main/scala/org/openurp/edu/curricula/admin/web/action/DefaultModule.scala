@@ -26,6 +26,6 @@ class DefaultModule extends BindModule {
 
 		bind(classOf[ReviseTaskAction],classOf[ReviseSettingAction])
 		bind(classOf[CourseOrUserSearchAction])
-		bind(classOf[TeacherAction])
+		bind(classOf[TeacherAction],classOf[TeacherBlogAction])
 	}
 }
