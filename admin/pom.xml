@@ -8,11 +8,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openurp.edu.curricula</groupId>
   <artifactId>openurp-edu-curricula-admin</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <name>OpenURP Edu Curricula Admin</name>
 
   <properties>
-    <bundle.symbolicName>org.openurp.edu.curricula.admin</bundle.symbolicName>
+    <bundle.symbolicName>org.openurp.edu.curricula.index</bundle.symbolicName>
     <bundle.namespace>org.openurp.edu.curricula</bundle.namespace>
   </properties>
 

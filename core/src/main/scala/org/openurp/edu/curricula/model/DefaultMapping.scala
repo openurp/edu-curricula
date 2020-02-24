@@ -28,15 +28,19 @@ class DefaultMapping extends MappingModule {
 		defaultCache("openurp.edu.curricula", "read-write")
 
 		bind[CourseBlog] declare { e =>
-			e.description is length(65535)
-			e.enDescription is length(65535)
+			e.description is length(40000)
+			e.enDescription is length(40000)
 		}
 
 		bind[LecturePlan]
 
 		bind[Syllabus]
 
-		bind[TeacherBlog]
+		bind[TeacherBlog] declare{e=>
+			e.intro is length(40000)
+			e.harvest is length(40000)
+
+		}
 
 	}
 }
