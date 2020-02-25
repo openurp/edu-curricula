@@ -4,7 +4,7 @@
 [@b.toolbar title="上传教学大纲"]bar.addBack();[/@]
   [#assign sa][#if syllabus.persisted]!update?id=${syllabus.id}[#else]!save[/#if][/#assign]
     [@b.form action=sa theme="list"  enctype="multipart/form-data"]
-      [@b.select name="syllabus.semester.id" label="学年学期" items=semesters  value=currentSemester option="id,code" required="true"/]
+      [@edu_base.semester name="syllabus.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.field label="选择课程" required='true']
         <select id="courses" name="syllabus.course" style="width:200px;" >
           <option value="${(syllabus.course.code)!}" selected>${(syllabus.course.name)!}${(syllabus.course.code)!}</option>

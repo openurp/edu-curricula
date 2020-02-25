@@ -35,10 +35,6 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 	}
 
 	override def indexSetting(): Unit = {
-		val builder = OqlBuilder.from(classOf[Semester], "semester")
-			.where("semester.calendar in(:calendars)", getProject.calendars)
-		builder.orderBy("semester.code desc")
-		put("semesters", entityDao.search(builder))
 		put("currentSemester", getCurrentSemester)
 		put("languages", languages)
 		put("departments", getDeparts)

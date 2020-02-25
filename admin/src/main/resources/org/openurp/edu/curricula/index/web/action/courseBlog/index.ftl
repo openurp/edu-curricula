@@ -5,7 +5,7 @@
   <tr>
     <td class="index_view" style="width: 180px;">
     [@b.form name="courseBlogSearchForm"  action="!search" target="courseBloglist" title="ui.searchForm" theme="search" ]
-      [@b.select name="courseBlog.semester.id" label="学年学期" items=semesters  value=currentSemester option="id,code"/]
+      [@edu_base.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester /]
       [@b.textfield name="courseBlog.course.code" label="课程代码"/]
       [@b.textfield name="courseBlog.course.name" label="课程名称"/]
       [@b.select name="courseBlog.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]

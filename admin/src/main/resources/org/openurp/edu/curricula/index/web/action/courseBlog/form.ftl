@@ -8,7 +8,7 @@
         [@b.field label="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
         [@b.field label="课程"]${courseBlog.course.name}(${courseBlog.course.code})[/@]
       [#else]
-        [@b.select name="courseBlog.semester.id" label="学年学期" items=semesters  value=currentSemester option="id,code" required="true"/]
+        [@edu_base.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester required="true"/]
         [@b.field label="选择课程" required='true']
           <select id="courses" name="courseBlog.course" style="width:200px;" >
             <option value="${(courseBlog.course.code)!}" selected>${(courseBlog.course.name)!}${(courseBlog.course.code)!}</option>

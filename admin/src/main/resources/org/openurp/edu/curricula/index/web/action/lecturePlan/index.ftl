@@ -5,7 +5,7 @@
   <tr>
     <td class="index_view">
     [@b.form name="lecturePlanSearchForm"  action="!search" target="lecturePlanlist" title="ui.searchForm" theme="search"]
-      [@b.select name="lecturePlan.semester.id" label="学年学期" items=semesters  value=currentSemester option="id,code"/]
+      [@edu_base.semester name="lecturePlan.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.textfield name="lecturePlan.course.code" label="课程代码"/]
       [@b.textfield name="lecturePlan.course.name" label="课程名称"/]
       [@b.select name="lecturePlan.locale" label="语言" items=languages  empty="..."/]

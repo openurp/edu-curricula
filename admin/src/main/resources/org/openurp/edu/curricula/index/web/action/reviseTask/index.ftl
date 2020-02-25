@@ -11,7 +11,7 @@
   <tr>
     <td class="index_view">
     [@b.form name="reviseTaskSearchForm"  action="!search" target="reviseTasklist" title="ui.searchForm" theme="search"]
-      [@b.select name="reviseTask.semester.id" label="学年学期" items=semesters  value=currentSemester option="id,code"/]
+      [@edu_base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.textfield name="reviseTask.course.code" label="课程代码"/]
       [@b.textfield name="reviseTask.course.name" label="课程名称"/]
       <input type="hidden" name="orderBy" value="reviseTask.course.code"/>

@@ -4,7 +4,7 @@
 [@b.toolbar title="上传授课计划"]bar.addBack();[/@]
   [#assign sa][#if lecturePlan.persisted]!update?id=${lecturePlan.id}[#else]!save[/#if][/#assign]
     [@b.form action=sa theme="list"  enctype="multipart/form-data"]
-      [@b.select name="lecturePlan.semester.id" label="学年学期" items=semesters  value=currentSemester option="id,code" required="true"/]
+      [@edu_base.semester name="lecturePlan.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.field label="选择课程" required='true']
         <select id="courses" name="lecturePlan.course" style="width:200px;" >
           <option value="${(lecturePlan.course.code)!}" selected>${(lecturePlan.course.name)!}${(lecturePlan.course.code)!}</option>
