@@ -39,7 +39,6 @@ import org.openurp.edu.curricula.model.{Attachment, LecturePlan, Syllabus}
 class SyllabusAction extends AbstractAction[Syllabus] {
 
 
-
 	override def getQueryBuilder: OqlBuilder[Syllabus] = {
 		val builder: OqlBuilder[Syllabus] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("syllabus.semester=:semester", getSemester)
@@ -56,7 +55,8 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 	def attachment(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+			val path = Constants.AttachmentBase + syllabus.semester.id.toString + "/" + syllabus.course.id.toString
+			val file = new File(path + "/" + syllabus.attachment.key)
 			if (file.exists) {
 				Stream(file, syllabus.attachment.name)
 			} else {
@@ -69,7 +69,7 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 
 	override def saveAndRedirect(syllabus: Syllabus): View = {
 		val user = getUser
-		val course = entityDao.getAll(classOf[Course]).find(_.code == get("syllabus.course").get).get
+		val course = entityDao.findBy(classOf[Course],"code",List(get("syllabus.course").get)).head
 		if (!syllabus.persisted) {
 			if (duplicate(classOf[Syllabus].getName, null, Map("semester" -> syllabus.semester, "author" -> user, "course" -> course, "locale" -> syllabus.locale))) {
 				return redirect("search", "该课程大纲存在,请修改大纲")
@@ -103,7 +103,8 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 		val syllabuses = entityDao.find(classOf[Syllabus], longIds("syllabus"))
 		syllabuses.foreach {
 			syllabus =>
-				val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+				val path = Constants.AttachmentBase + syllabus.semester.id.toString + "/" + syllabus.course.id.toString
+				val file = new File(path + "/" + syllabus.attachment.key)
 				if (file.exists()) file.delete()
 		}
 		super.remove()
@@ -113,7 +114,8 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 	def view(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+			val path = Constants.AttachmentBase + syllabus.semester.id.toString + "/" + syllabus.course.id.toString
+			val file = new File(path + "/" + syllabus.attachment.key)
 			if (file.exists) put("syllabus", syllabus)
 		}
 		forward()

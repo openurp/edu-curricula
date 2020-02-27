@@ -16,7 +16,7 @@
         [/@]
       [/#if]
       [@b.textarea label="计划简介" name="courseBlog.description" value=(courseBlog.description)! cols="100" rows="10" required="true" maxlength="5000"/]
-      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! cols="100" rows="10" maxlength="100"/]
+      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! cols="100" rows="10" maxlength="5000"/]
       [@b.textfield label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! style="width:250px"/]
       [@b.textfield label="课程网站" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
       [@b.field label="教学大纲附件" required="true"]

@@ -83,7 +83,7 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 	}
 
 	def getUser: User = {
-		entityDao.search(OqlBuilder.from(classOf[User], "user").where("user.code=:code", Securities.user)).head
+		entityDao.findBy(classOf[User], "code", List(Securities.user)).head
 	}
 
 

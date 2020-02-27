@@ -42,13 +42,6 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 
 
 	override def editSetting(entity: ReviseTask): Unit = {
-		val users = entityDao.getAll(classOf[User])
-		if (!entity.teachers.isEmpty) {
-			val newUsers = users.appendedAll(entity.teachers)
-			put("users", newUsers)
-		} else {
-			put("users", users)
-		}
 		super.editSetting(entity)
 	}
 
@@ -70,12 +63,14 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 				entityDao.saveOrUpdate(reviseTask)
 			} else {
 				reviseTasks.foreach(rt => {
-					clazz.teachers.map(_.user).foreach(user => {
-						if (!rt.teachers.contains(user)) {
-							rt.teachers.addOne(user)
-							entityDao.saveOrUpdate(rt)
-						}
-					})
+					if (!clazz.teachers.isEmpty) {
+						clazz.teachers.map(_.user).foreach(user => {
+							if (!rt.teachers.contains(user)) {
+								rt.teachers.addOne(user)
+								entityDao.saveOrUpdate(rt)
+							}
+						})
+					}
 				})
 			}
 		})
@@ -85,14 +80,12 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 
 	override def saveAndRedirect(reviseTask: ReviseTask): View = {
 		val semester = if (reviseTask.persisted) reviseTask.semester else entityDao.get(classOf[Semester], intId("reviseTask.semester"))
-		val course = if (reviseTask.persisted) reviseTask.course else entityDao.findBy(classOf[Course],"code",List(get("reviseTask.course").get)).head
+		val course = if (reviseTask.persisted) reviseTask.course else entityDao.findBy(classOf[Course], "code", List(get("reviseTask.course").get)).head
 		reviseTask.semester = semester
 		reviseTask.course = course
 		get("reviseTask.author").foreach(authorCode => {
-//			val userBuilder = OqlBuilder.from(classOf[User],"user")
-//			userBuilder.where("user.code=:code",authorCode)
-			val author = entityDao.getAll(classOf[User]).find(_.code == authorCode)
-			reviseTask.author = author
+			val author = entityDao.findBy(classOf[User], "code", List(authorCode)).head
+			reviseTask.author = Option(author)
 		})
 		super.saveAndRedirect(reviseTask)
 	}

@@ -55,7 +55,8 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 	def attachment(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val file = new File(Constants.AttachmentBase + "lecturePlan/" + lecturePlan.attachment.key)
+			val path = Constants.AttachmentBase + lecturePlan.semester.id.toString + "/" + lecturePlan.course.id.toString
+			val file = new File(path + "/" + lecturePlan.attachment.key)
 			if (file.exists) {
 				Stream(file, lecturePlan.attachment.name)
 			} else {
@@ -68,7 +69,7 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 
 	override def saveAndRedirect(lecturePlan: LecturePlan): View = {
 		val user = getUser
-		val course = entityDao.getAll(classOf[Course]).find(_.code == get("lecturePlan.course").get).get
+		val course = entityDao.findBy(classOf[Course],"code",List(get("lecturePlan.course").get)).head
 		if (!lecturePlan.persisted) {
 			if (duplicate(classOf[LecturePlan].getName, null, Map("semester" -> lecturePlan.semester, "author" -> user, "course" -> course, "locale" -> lecturePlan.locale))) {
 				return redirect("search", "该授课计划存在,请修改计划")
@@ -102,7 +103,8 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 		val lecturePlanes = entityDao.find(classOf[LecturePlan], longIds("lecturePlan"))
 		lecturePlanes.foreach {
 			lecturePlan =>
-				val file = new File(Constants.AttachmentBase + "lecturePlan/" + lecturePlan.attachment.key)
+				val path = Constants.AttachmentBase + lecturePlan.semester.id.toString + "/" + lecturePlan.course.id.toString
+				val file = new File(path + "/" + lecturePlan.attachment.key)
 				if (file.exists()) file.delete()
 		}
 		super.remove()
@@ -112,7 +114,8 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 	def view(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val file = new File(Constants.AttachmentBase + "lecturePlan/" + lecturePlan.attachment.key)
+			val path = Constants.AttachmentBase + lecturePlan.semester.id.toString + "/" + lecturePlan.course.id.toString
+			val file = new File(path + "/" + lecturePlan.attachment.key)
 			if (file.exists) put("lecturePlan", lecturePlan)
 		}
 		forward()

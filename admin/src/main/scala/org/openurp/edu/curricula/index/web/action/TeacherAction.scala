@@ -25,7 +25,7 @@ import java.util.Locale
 import javax.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.{Collections, Order}
-import org.beangle.commons.io.IOs
+import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
@@ -107,6 +107,9 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		courseBlog.materials = get("courseBlog.materials")
 		courseBlog.website = get("courseBlog.website")
 
+		val path = Constants.AttachmentBase + reviseTask.semester.id.toString + "/" + reviseTask.course.id.toString
+		Dirs.on(path).mkdirs()
+
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
@@ -117,7 +120,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		syllabus.updatedAt = Instant.now()
 		if (!getAll("syllabus.attachment").exists(_ == "")) {
 			if (null != syllabus.attachment && null != syllabus.attachment.key) {
-				val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+				val file = new File(path + "/" + syllabus.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
@@ -125,10 +128,10 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
 				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				attachment.key = "syllabus_" + getUser.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
-				IOs.copy(part.getInputStream, new FileOutputStream(Constants.AttachmentBase + "syllabus/" + attachment.key))
+				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
 				syllabus.attachment = attachment
 			}
 		}
@@ -152,10 +155,10 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
 				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				attachment.key = "lecture_plan_" + getUser.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
-				IOs.copy(part.getInputStream, new FileOutputStream(Constants.AttachmentBase + "lecturePlan/" + attachment.key))
+				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
 				lecturePlan.attachment = attachment
 			}
 		}

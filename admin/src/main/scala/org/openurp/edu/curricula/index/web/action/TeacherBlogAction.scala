@@ -31,8 +31,13 @@ class TeacherBlogAction extends AbstractAction[TeacherBlog] {
 		if (teacherBlogs.isEmpty) {
 			redirect("editNew")
 		} else {
-			redirect("info", "&id=" + teacherBlogs.head.id,null)
+			redirect("info", "&id=" + teacherBlogs.head.id, null)
 		}
+	}
+
+	override def editSetting(entity:TeacherBlog): Unit = {
+		put("user", getUser)
+		super.editSetting(entity)
 	}
 
 	override def saveAndRedirect(teacherBlog: TeacherBlog): View = {

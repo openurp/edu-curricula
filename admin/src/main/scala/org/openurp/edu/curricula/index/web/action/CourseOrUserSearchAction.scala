@@ -49,12 +49,6 @@ class CourseOrUserSearchAction extends RestfulAction[Course] with ProjectSupport
 		get("term").foreach(codeOrName => {
 			query.where("(user.name like :name or user.code like :code)", '%' + codeOrName + '%', '%' + codeOrName + '%')
 		})
-//		get("term").orNull match {
-//			case codeOrName =>{
-//				query.where("(user.name like :name or user.code like :code)", '%' + codeOrName + '%', '%' + codeOrName + '%')
-//			}
-//			case null =>
-//		}
 		query.limit(getPageLimit)
 		put("users", entityDao.search(query))
 		forward("usersJSON")

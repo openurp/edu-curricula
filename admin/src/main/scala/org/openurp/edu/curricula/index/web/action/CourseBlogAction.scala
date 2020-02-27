@@ -25,7 +25,7 @@ import java.util.Locale
 import javax.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Order
-import org.beangle.commons.io.IOs
+import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
@@ -78,7 +78,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 	override def saveAndRedirect(courseBlog: CourseBlog): View = {
 		val user = getUser
-		val course = if (courseBlog.persisted) courseBlog.course else entityDao.getAll(classOf[Course]).find(_.code == get("courseBlog.course").get).get
+		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course],"code",List(get("courseBlog.course").get)).head
 		val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
 		if (!courseBlog.persisted) {
 			if (duplicate(classOf[CourseBlog].getName, null, Map("semester" -> courseBlog.semester, "author" -> user, "course" -> courseBlog.course))) {
@@ -88,6 +88,9 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlog.author = user
 		courseBlog.course = course
 		courseBlog.department = course.department
+
+		val path = Constants.AttachmentBase + semester.id.toString + "/" + course.id.toString
+		Dirs.on(path).mkdirs()
 
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
@@ -107,10 +110,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
 				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				//${当前存储的文件目录}/学期id/courseid/syllabus_author_id.文件扩展名
+				//				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				attachment.key = "syllabus_" + user.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
-				IOs.copy(part.getInputStream, new FileOutputStream(Constants.AttachmentBase + "syllabus/" + attachment.key))
+				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
 				syllabus.attachment = attachment
 			}
 		}
@@ -134,10 +139,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
 				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				//${当前存储的文件目录}/学期id/courseid/lecture_plan_${author_id}.文件扩展名
+				//				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				attachment.key = "lecture_plan_" + user.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
-				IOs.copy(part.getInputStream, new FileOutputStream(Constants.AttachmentBase + "lecturePlan/" + attachment.key))
+				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
 				lecturePlan.attachment = attachment
 			}
 		}

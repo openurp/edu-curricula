@@ -4,6 +4,8 @@
 [@b.toolbar title="教师资料维护"]bar.addBack();[/@]
   [#assign sa][#if teacherBlog.persisted]!update?id=${teacherBlog.id}[#else]!save[/#if][/#assign]
     [@b.form action=sa theme="list" enctype="multipart/form-data"]
+      [@b.field label="工号"]${user.code}[/@]
+      [@b.field label="姓名"]${user.name}[/@]
       [@b.textarea label="个人简介" name="teacherBlog.intro" value=(teacherBlog.intro)! cols="100" rows="10" required="true" maxlength="5000"/]
       [@b.textarea label="方向" name="teacherBlog.research" value=(teacherBlog.research)! cols="100" rows="3"/]
       [@b.textarea label="科研成果" name="teacherBlog.harvest" value=(teacherBlog.harvest)!  cols="100" rows="10" maxlength="5000"/]
