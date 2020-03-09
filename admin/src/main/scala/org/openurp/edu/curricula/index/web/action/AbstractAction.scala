@@ -35,7 +35,6 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 	}
 
 	override def indexSetting(): Unit = {
-		put("currentSemester", getCurrentSemester)
 		put("languages", languages)
 		put("departments", getDeparts)
 		super.indexSetting()

@@ -4,7 +4,6 @@
     <url path="/" suffix=""  style="seo" />
     <interceptors>
       <interceptor name="web.Interceptor.hibernate"/>
-      <interceptor name="web.Interceptor.security"/>
     </interceptors>
   </profile>
   <static>

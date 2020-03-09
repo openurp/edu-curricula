@@ -28,9 +28,25 @@ import org.openurp.edu.curricula.app.model.ReviseTask
 
 class ReviseTaskAction extends AbstractAction[ReviseTask] {
 
+	override def indexSetting(): Unit = {
+		put("currentSemester", getSemester)
+		super.indexSetting()
+	}
+
 	override def getQueryBuilder: OqlBuilder[ReviseTask] = {
 		val builder: OqlBuilder[ReviseTask] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("reviseTask.semester=:semester", getSemester)
+		get("teachers").foreach(e => {
+			e match {
+				case "1" => builder.where("size(reviseTask.teachers) > 1")
+				case "0" => builder.where("size(reviseTask.teachers) = 1")
+				case _ =>
+			}
+		})
+		val teacherName = get("teacherName").orNull
+		if (teacherName != null && teacherName != "") {
+			builder.where("exists(from reviseTask.teachers t where t.name like :name", '%' + teacherName + '%')
+		}
 		populateConditions(builder)
 		builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
 	}
@@ -46,7 +62,7 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 	}
 
 	def importFromClazz(): View = {
-		val semester = entityDao.get(classOf[Semester], intId("semester"))
+		val semester = getSemester
 		val clazzBuilder = OqlBuilder.from(classOf[Clazz], "clazz")
 		clazzBuilder.where("clazz.semester=:semeter", semester)
 		val clazzes = entityDao.search(clazzBuilder)
@@ -74,7 +90,7 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 				})
 			}
 		})
-		redirect("index")
+		redirect("search","&reviseTask.semester.id=" + semester.id, null)
 	}
 
 
@@ -90,4 +106,15 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 		super.saveAndRedirect(reviseTask)
 	}
 
+
+	def appointedAuthor(): View = {
+		val builder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
+		builder.where("size(reviseTask.teachers) = 1")
+		val reviseTasks = entityDao.search(builder)
+		reviseTasks.foreach(reviseTask => {
+			reviseTask.author = Option(reviseTask.teachers.head)
+		})
+		entityDao.saveOrUpdate(reviseTasks)
+		redirect("search")
+	}
 }

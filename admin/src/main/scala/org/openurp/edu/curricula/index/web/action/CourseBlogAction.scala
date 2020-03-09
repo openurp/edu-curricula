@@ -37,6 +37,11 @@ import org.openurp.edu.curricula.model.{Attachment, CourseBlog, LecturePlan, Syl
 
 class CourseBlogAction extends AbstractAction[CourseBlog] {
 
+	override def indexSetting(): Unit = {
+		put("currentSemester", getSemester)
+		super.indexSetting()
+	}
+
 	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("courseBlog.semester=:semester", getSemester)
