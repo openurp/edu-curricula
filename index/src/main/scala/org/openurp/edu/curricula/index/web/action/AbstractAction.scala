@@ -30,56 +30,10 @@ import org.openurp.edu.curricula.model.CourseBlog
 
 class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSupport {
 
-	protected def languages: Map[String, String] = {
-		Map("zh" -> "中文", "en" -> "English")
-	}
-
 	override def indexSetting(): Unit = {
 		put("currentSemester", getCurrentSemester)
-		put("languages", languages)
-		put("departments", getDeparts)
+		put("departments", getProject.departments)
 		super.indexSetting()
-	}
-
-	override def search(): View = {
-		put("languages", languages)
-		super.search()
-	}
-
-	override def editSetting(entity: T): Unit = {
-		put("currentSemester", getCurrentSemester)
-		put("languages", languages)
-		super.editSetting(entity)
-	}
-
-	override def info(id: String): View = {
-		put("languages", languages)
-		super.info(id)
-	}
-
-
-	def duplicate(entityName: String, id: Any, params: Map[String, Any]): Boolean = {
-		val b = new StringBuilder("from ")
-		b.append(entityName).append(" where (1=1)")
-		val paramsMap = new collection.mutable.HashMap[String, Any]
-		var i = 0
-		for ((key, value) <- params) {
-			b.append(" and ").append(key).append('=').append(":param" + i)
-			paramsMap.put("param" + i, value)
-			i += 1
-		}
-		val list = entityDao.search(b.toString(), paramsMap.toMap).asInstanceOf[Seq[Entity[_]]]
-		if (!list.isEmpty) {
-			if (null == id) return true
-			else {
-				for (e <- list) if (!(e.id == id)) return true
-			}
-		}
-		return false
-	}
-
-	def getUser: User = {
-		entityDao.search(OqlBuilder.from(classOf[User], "user").where("user.code=:code", Securities.user)).head
 	}
 
 

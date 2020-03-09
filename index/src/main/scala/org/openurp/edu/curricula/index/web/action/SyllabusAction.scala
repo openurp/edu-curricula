@@ -41,7 +41,8 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 	def attachment(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+			val path = Constants.AttachmentBase + syllabus.semester.id.toString + "/" + syllabus.course.id.toString
+			val file = new File(path + "/" + syllabus.attachment.key)
 			if (file.exists) {
 				Stream(file, syllabus.attachment.name)
 			} else {
@@ -56,7 +57,8 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 	def view(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+			val path = Constants.AttachmentBase + syllabus.semester.id.toString + "/" + syllabus.course.id.toString
+			val file = new File(path + "/" + syllabus.attachment.key)
 			if (file.exists) put("syllabus", syllabus)
 		}
 		forward()
