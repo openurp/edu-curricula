@@ -107,7 +107,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		syllabus.updatedAt = Instant.now()
 		if (!getAll("syllabus.attachment").exists(_ == "")) {
 			if (null != syllabus.attachment && null != syllabus.attachment.key) {
-				val file = new File(Constants.AttachmentBase + "syllabus/" + syllabus.attachment.key)
+				val file = new File(path + "/" + syllabus.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
@@ -115,8 +115,6 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
 				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				//${当前存储的文件目录}/学期id/courseid/syllabus_author_id.文件扩展名
-				//				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				attachment.key = "syllabus_" + user.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
@@ -136,7 +134,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		lecturePlan.updatedAt = Instant.now()
 		if (!getAll("lecturePlan.attachment").exists(_ == "")) {
 			if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-				val file = new File(Constants.AttachmentBase + "lecturePlan/" + syllabus.attachment.key)
+				val file = new File(path + "/" + lecturePlan.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]

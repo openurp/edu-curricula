@@ -28,6 +28,6 @@
 	</tr>
 </table>
 <div style="text-align:center">
-	<a class="btn btn-default" href="${b.url('!edit?id=' +teacherBlog.id)}" role="button">修改</a>
+	[@b.a class="btn btn-default" href="!edit?id=" +teacherBlog.id role="button"]修改[/@]
 </div>
 [@b.foot/]

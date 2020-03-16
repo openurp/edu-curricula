@@ -18,24 +18,13 @@
  */
 package org.openurp.edu.curricula.index.web.action
 
-import java.io.{File, FileOutputStream}
-import java.time.Instant
-import java.util.Locale
-
-import javax.servlet.http.Part
-import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Order
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.curricula.index.Constants
-import org.openurp.edu.curricula.model.{Attachment, CourseBlog, LecturePlan, Syllabus}
+import org.openurp.edu.curricula.model.{CourseBlog, LecturePlan, Syllabus}
 
 
-class CourseBlogAction extends AbstractAction[CourseBlog] {
+class IndexAction extends AbstractAction[CourseBlog] {
 
 	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)

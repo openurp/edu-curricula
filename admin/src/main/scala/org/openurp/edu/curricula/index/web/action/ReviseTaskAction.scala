@@ -23,7 +23,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
 import org.openurp.base.model.User
 import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.course.model.Clazz
+import org.openurp.edu.clazz.model.Clazz
 import org.openurp.edu.curricula.app.model.ReviseTask
 
 class ReviseTaskAction extends AbstractAction[ReviseTask] {

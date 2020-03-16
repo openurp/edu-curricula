@@ -1,5 +1,4 @@
 [#ftl]
-[@b.head/]
 [@b.toolbar title='历史课程资料' /]
 [@b.grid  items=courseBlogs var="courseBlog" ]
   [@b.row]
@@ -11,4 +10,3 @@
     [@b.col width="15%" property="status" title="审核状态"]${(courseBlog.status.name)!}[/@]
   [/@]
 [/@]
-[@b.foot/]

@@ -4,9 +4,8 @@
 [@edu_base.semester_bar name="reviseTask.semester.id" value=currentSemester/]
 [@b.form name="searchForm" action=""/]
 [@b.div id="listFrame"/]
-<br><br>
-[#include "courseBlogList.ftl" /]
 
+[#include "courseBlogList.ftl" /]
 <script>
   document.semesterForm.method="get";
   var form = document.searchForm;
