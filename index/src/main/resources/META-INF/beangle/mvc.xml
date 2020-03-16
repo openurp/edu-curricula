@@ -8,5 +8,6 @@
   </profile>
   <static>
     <bundle name="qrcodejs" version="1c78ccd"/>
+    <bundle name="pdfjs" version="1.9.426"/>
   </static>
 </mvc>
