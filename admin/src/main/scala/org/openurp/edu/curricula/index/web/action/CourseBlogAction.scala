@@ -22,12 +22,14 @@ import java.io.{File, FileOutputStream}
 import java.time.Instant
 import java.util.Locale
 
+import com.itextpdf.text.pdf.PdfWriter
 import javax.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Order
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.doc.pdf.Encryptor
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.{Course, Semester}
@@ -119,12 +121,14 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
 				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
+//				val syllabusFile = new File(path + "/" + attachment.key)
+//				Encryptor.encrypt(syllabusFile, None, "123", PdfWriter.ALLOW_PRINTING)
 				syllabus.attachment = attachment
 			}
 		}
 		entityDao.saveOrUpdate(syllabus)
 
-		//lecturePlan
+				//lecturePlan
 		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
 		val lecturePlan = if (lecturePlans.isEmpty) new LecturePlan else lecturePlans.head
 		lecturePlan.semester = semester
@@ -148,6 +152,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
 				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
+//				val lecturePlanFile = new File(path + "/" + attachment.key)
+//				Encryptor.encrypt(lecturePlanFile, None, "123", PdfWriter.ALLOW_PRINTING)
 				lecturePlan.attachment = attachment
 			}
 		}
