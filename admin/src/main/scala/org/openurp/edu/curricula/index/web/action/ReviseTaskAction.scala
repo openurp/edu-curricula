@@ -90,7 +90,7 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 				})
 			}
 		})
-		redirect("search","&reviseTask.semester.id=" + semester.id, null)
+		redirect("search", "&reviseTask.semester.id=" + semester.id, null)
 	}
 
 
@@ -100,21 +100,25 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 		reviseTask.semester = semester
 		reviseTask.course = course
 		get("reviseTask.author").foreach(authorCode => {
-			val author = entityDao.findBy(classOf[User], "code", List(authorCode)).head
-			reviseTask.author = Option(author)
+			if (authorCode != "") {
+				val author = entityDao.findBy(classOf[User], "code", List(authorCode)).head
+				reviseTask.author = Option(author)
+			}
 		})
 		super.saveAndRedirect(reviseTask)
 	}
 
 
 	def appointedAuthor(): View = {
+		val ids = longIds("reviseTask")
 		val builder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
+		builder.where("reviseTask.id in :ids", ids)
 		builder.where("size(reviseTask.teachers) = 1")
 		val reviseTasks = entityDao.search(builder)
 		reviseTasks.foreach(reviseTask => {
 			reviseTask.author = Option(reviseTask.teachers.head)
 		})
 		entityDao.saveOrUpdate(reviseTasks)
-		redirect("search")
+		redirect("search","info.save.success")
 	}
 }

@@ -34,7 +34,7 @@ import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.curricula.index.Constants
-import org.openurp.edu.curricula.model.{Attachment, CourseBlog, LecturePlan, Syllabus}
+import org.openurp.edu.curricula.model.{Attachment, BlogStatus, CourseBlog, LecturePlan, Syllabus}
 
 
 class CourseBlogAction extends AbstractAction[CourseBlog] {
@@ -47,6 +47,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("courseBlog.semester=:semester", getSemester)
+		addDepart(builder,"courseBlog.department")
 		populateConditions(builder)
 		builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
 	}
@@ -85,7 +86,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 	override def saveAndRedirect(courseBlog: CourseBlog): View = {
 		val user = getUser
-		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course],"code",List(get("courseBlog.course").get)).head
+		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
 		val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
 		if (!courseBlog.persisted) {
 			if (duplicate(classOf[CourseBlog].getName, null, Map("semester" -> courseBlog.semester, "author" -> user, "course" -> courseBlog.course))) {
@@ -95,6 +96,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlog.author = user
 		courseBlog.course = course
 		courseBlog.department = course.department
+		courseBlog.status = BlogStatus.Submited
 
 		val path = Constants.AttachmentBase + semester.id.toString + "/" + course.id.toString
 		Dirs.on(path).mkdirs()
@@ -121,14 +123,14 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
 				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
-//				val syllabusFile = new File(path + "/" + attachment.key)
-//				Encryptor.encrypt(syllabusFile, None, "123", PdfWriter.ALLOW_PRINTING)
+				//				val syllabusFile = new File(path + "/" + attachment.key)
+				//				Encryptor.encrypt(syllabusFile, None, "123", PdfWriter.ALLOW_PRINTING)
 				syllabus.attachment = attachment
 			}
 		}
 		entityDao.saveOrUpdate(syllabus)
 
-				//lecturePlan
+		//lecturePlan
 		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
 		val lecturePlan = if (lecturePlans.isEmpty) new LecturePlan else lecturePlans.head
 		lecturePlan.semester = semester
@@ -152,13 +154,27 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
 				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
-//				val lecturePlanFile = new File(path + "/" + attachment.key)
-//				Encryptor.encrypt(lecturePlanFile, None, "123", PdfWriter.ALLOW_PRINTING)
+				//				val lecturePlanFile = new File(path + "/" + attachment.key)
+				//				Encryptor.encrypt(lecturePlanFile, None, "123", PdfWriter.ALLOW_PRINTING)
 				lecturePlan.attachment = attachment
 			}
 		}
 		entityDao.saveOrUpdate(lecturePlan)
 		super.saveAndRedirect(courseBlog)
+	}
+
+	def audit(): View = {
+		val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
+		get("passed").orNull match {
+			case "1" => courseBlogs.foreach(courseBlog => {
+				courseBlog.status = BlogStatus.Passed
+			})
+			case "0" => courseBlogs.foreach(courseBlog => {
+				courseBlog.status = BlogStatus.Unpassed
+			})
+		}
+		entityDao.saveOrUpdate(courseBlogs)
+		redirect("search", "info.save.success")
 	}
 
 

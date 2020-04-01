@@ -23,6 +23,7 @@
         [/@]
         [@b.field label="选择负责人"]
           <select id="users" name="reviseTask.author" style="width:200px;" >
+            <option value="">...</option>
             [#if reviseTask.author ??]
               [#list reviseTask.teachers as teacher]
                 <option value="${(teacher.code)!}" [#if reviseTask.author == teacher]selected[/#if]>${(teacher.name)!}(${(teacher.code)!})</option>
@@ -38,6 +39,7 @@
       [#else]
         [@b.field label="选择负责人"]
           <select id="users" name="reviseTask.author" style="width:200px;" >
+            <option value="">...</option>
             <option value="${(reviseTask.author.code)!}" selected>${(reviseTask.author.name)!}${(reviseTask.author.code)!}</option>
           </select>
         [/@]
