@@ -4,8 +4,9 @@
   [@b.gridbar]
     bar.addItem("${b.text("action.new")}",action.add());
     bar.addItem("${b.text("action.modify")}",action.edit());
-    bar.addItem("审核通过",action.multi("audit","确定通过?","passed=1"));
-    bar.addItem("审核不通过",action.multi("audit","确定不同意?","passed=0"));
+    bar.addItem("审核通过",action.multi("audit","确定通过审核?","passed=1"));
+    bar.addItem("审核不通过",action.multi("audit","确定不通过审核?","passed=0"));
+    bar.addItem("发布",action.multi('publish'));
     bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
   [/@]
   [@b.row]

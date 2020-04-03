@@ -14,9 +14,11 @@
       [@b.field label="审核状态"]
         <select name="courseBlog.status">
           <option value="">全部</option>
+          <option value="0">草稿</option>
           <option value="1">已提交</option>
           <option value="3">通过</option>
           <option value="2">未通过</option>
+          <option value="4">已发布</option>
         </select>
       [/@]
       <input type="hidden" name="orderBy" value="courseBlog.course.code"/>

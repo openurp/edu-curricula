@@ -21,7 +21,7 @@ package org.openurp.edu.curricula.index.web.action
 import org.beangle.commons.collection.Order
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.curricula.model.{CourseBlog, LecturePlan, Syllabus}
+import org.openurp.edu.curricula.model.{BlogStatus, CourseBlog, LecturePlan, Syllabus}
 
 
 class IndexAction extends AbstractAction[CourseBlog] {
@@ -29,6 +29,7 @@ class IndexAction extends AbstractAction[CourseBlog] {
 	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("courseBlog.semester=:semester", getCurrentSemester)
+		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		populateConditions(builder)
 		builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
 	}

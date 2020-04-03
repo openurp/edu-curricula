@@ -33,14 +33,11 @@ import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.Semester
 import org.openurp.edu.curricula.index.Constants
 import org.openurp.edu.curricula.app.model.{ReviseSetting, ReviseTask}
-import org.openurp.edu.curricula.model.{Attachment, CourseBlog, LecturePlan, Syllabus}
+import org.openurp.edu.curricula.model.{Attachment, BlogStatus, CourseBlog, LecturePlan, Syllabus}
 
 class TeacherAction extends AbstractAction[ReviseTask] {
 
 	override def indexSetting(): Unit = {
-		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.author=:author", getUser)
-		put("courseBlogs", entityDao.search(builder))
 		val semesterString = get("reviseTask.semester.id").orNull
 		val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
 		put("currentSemester", semester)
@@ -58,6 +55,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
 		val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "rt")
 		reviseTaskBuilder.where("rt.semester=:semester", semester)
+		reviseTaskBuilder.where("rt.author=:author", getUser)
 		val reviseTasks = entityDao.search(reviseTaskBuilder)
 		reviseTasks.foreach(reviseTask => {
 			val courseBlogs = getCourseBlogs(reviseTask)
@@ -73,6 +71,11 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		if (!reviseSettings.isEmpty) {
 			put("reviseSetting", reviseSettings.head)
 		}
+		put("BlogStatus", BlogStatus)
+
+		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+		builder.where("courseBlog.author=:author", getUser)
+		put("courseBlogs", entityDao.search(builder))
 		super.search()
 	}
 
@@ -185,4 +188,13 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		entityDao.search(builder)
 	}
 
+	def submit(): View = {
+		val reviseTask = entityDao.get(classOf[ReviseTask], longId("reviseTask"))
+		val courseBlogs = getCourseBlogs(reviseTask)
+		courseBlogs.foreach(courseBlog => {
+			courseBlog.status = BlogStatus.Submited
+		})
+		entityDao.saveOrUpdate(courseBlogs)
+		redirect("search", "info.save.success")
+	}
 }

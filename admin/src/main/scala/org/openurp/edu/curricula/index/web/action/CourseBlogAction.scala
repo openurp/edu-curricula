@@ -22,19 +22,16 @@ import java.io.{File, FileOutputStream}
 import java.time.Instant
 import java.util.Locale
 
-import com.itextpdf.text.pdf.PdfWriter
 import javax.servlet.http.Part
-import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.Order
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.doc.pdf.Encryptor
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.curricula.index.Constants
-import org.openurp.edu.curricula.model.{Attachment, BlogStatus, CourseBlog, LecturePlan, Syllabus}
+import org.openurp.edu.curricula.model._
 
 
 class CourseBlogAction extends AbstractAction[CourseBlog] {
@@ -47,7 +44,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("courseBlog.semester=:semester", getSemester)
-		addDepart(builder,"courseBlog.department")
+		addDepart(builder, "courseBlog.department")
 		populateConditions(builder)
 		builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
 	}
@@ -173,6 +170,17 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				courseBlog.status = BlogStatus.Unpassed
 			})
 		}
+		entityDao.saveOrUpdate(courseBlogs)
+		redirect("search", "info.save.success")
+	}
+
+	def publish(): View = {
+		val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
+		courseBlogs.foreach(courseBlog => {
+			if (courseBlog.status == BlogStatus.Passed) {
+				courseBlog.status = BlogStatus.Published
+			}
+		})
 		entityDao.saveOrUpdate(courseBlogs)
 		redirect("search", "info.save.success")
 	}
