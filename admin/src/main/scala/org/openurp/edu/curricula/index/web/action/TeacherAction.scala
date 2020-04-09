@@ -55,7 +55,9 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
 		val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "rt")
 		reviseTaskBuilder.where("rt.semester=:semester", semester)
-		reviseTaskBuilder.where("rt.author=:author", getUser)
+		if (getUser.persisted) {
+			reviseTaskBuilder.where("rt.author=:author", getUser)
+		}
 		val reviseTasks = entityDao.search(reviseTaskBuilder)
 		reviseTasks.foreach(reviseTask => {
 			val courseBlogs = getCourseBlogs(reviseTask)
@@ -76,6 +78,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
 		builder.where("courseBlog.author=:author", getUser)
 		put("courseBlogs", entityDao.search(builder))
+		put("user", getUser)
 		super.search()
 	}
 

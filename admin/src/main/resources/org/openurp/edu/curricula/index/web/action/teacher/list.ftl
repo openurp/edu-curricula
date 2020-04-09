@@ -1,5 +1,6 @@
 [#ftl]
 [@b.head/]
+[#if user ??]
 [@b.grid  items=reviseTasks var="reviseTask"]
   [@b.row]
     [@b.col width="20%" property="course.code" title="课程代码"/]
@@ -27,4 +28,6 @@
 [/@]
 <br><br><br><br>
 [#include "courseBlogList.ftl" /]
+[#else ]请添加此登录用户的人员信息
+[/#if]
 [@b.foot/]
