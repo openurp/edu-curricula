@@ -36,6 +36,7 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 	override def getQueryBuilder: OqlBuilder[ReviseTask] = {
 		val builder: OqlBuilder[ReviseTask] = OqlBuilder.from(entityName, simpleEntityName)
 		builder.where("reviseTask.semester=:semester", getSemester)
+		addDepart(builder, "reviseTask.course.department")
 		get("teachers").foreach(e => {
 			e match {
 				case "1" => builder.where("size(reviseTask.teachers) > 1")
@@ -119,6 +120,6 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 			reviseTask.author = Option(reviseTask.teachers.head)
 		})
 		entityDao.saveOrUpdate(reviseTasks)
-		redirect("search","info.save.success")
+		redirect("search", "info.save.success")
 	}
 }

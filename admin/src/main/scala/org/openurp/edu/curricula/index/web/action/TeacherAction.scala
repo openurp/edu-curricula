@@ -50,34 +50,34 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 	}
 
 	override def search(): View = {
-		val courseBlogMap = Collections.newMap[ReviseTask, CourseBlog]
-		val semesterString = get("reviseTask.semester.id").orNull
-		val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
-		val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "rt")
-		reviseTaskBuilder.where("rt.semester=:semester", semester)
-		if (getUser.persisted) {
+		if (getUser != null) {
+			val courseBlogMap = Collections.newMap[ReviseTask, CourseBlog]
+			val semesterString = get("reviseTask.semester.id").orNull
+			val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+			val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "rt")
+			reviseTaskBuilder.where("rt.semester=:semester", semester)
 			reviseTaskBuilder.where("rt.author=:author", getUser)
-		}
-		val reviseTasks = entityDao.search(reviseTaskBuilder)
-		reviseTasks.foreach(reviseTask => {
-			val courseBlogs = getCourseBlogs(reviseTask)
-			courseBlogs.foreach(courseBlog => {
-				courseBlogMap.put(reviseTask, courseBlog)
+			val reviseTasks = entityDao.search(reviseTaskBuilder)
+			reviseTasks.foreach(reviseTask => {
+				val courseBlogs = getCourseBlogs(reviseTask)
+				courseBlogs.foreach(courseBlog => {
+					courseBlogMap.put(reviseTask, courseBlog)
+				})
 			})
-		})
-		put("courseBlogMap", courseBlogMap)
-		val reviseSettingBuilder = OqlBuilder.from(classOf[ReviseSetting], "rs")
-		reviseSettingBuilder.where("rs.semester=:semester", semester)
-		reviseSettingBuilder.where(":now between rs.beginAt and rs.endAt", Instant.now())
-		val reviseSettings = entityDao.search(reviseSettingBuilder)
-		if (!reviseSettings.isEmpty) {
-			put("reviseSetting", reviseSettings.head)
-		}
-		put("BlogStatus", BlogStatus)
+			put("courseBlogMap", courseBlogMap)
+			val reviseSettingBuilder = OqlBuilder.from(classOf[ReviseSetting], "rs")
+			reviseSettingBuilder.where("rs.semester=:semester", semester)
+			reviseSettingBuilder.where(":now between rs.beginAt and rs.endAt", Instant.now())
+			val reviseSettings = entityDao.search(reviseSettingBuilder)
+			if (!reviseSettings.isEmpty) {
+				put("reviseSetting", reviseSettings.head)
+			}
+			put("BlogStatus", BlogStatus)
 
-		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.author=:author", getUser)
-		put("courseBlogs", entityDao.search(builder))
+			val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+			builder.where("courseBlog.author=:author", getUser)
+			put("courseBlogs", entityDao.search(builder))
+		}
 		put("user", getUser)
 		super.search()
 	}

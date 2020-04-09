@@ -82,7 +82,12 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 	}
 
 	def getUser: User = {
-		entityDao.findBy(classOf[User], "code", List(Securities.user)).head
+		val users = entityDao.findBy(classOf[User], "code", List(Securities.user))
+		if (users.isEmpty) {
+			null
+		} else {
+			users.head
+		}
 	}
 
 

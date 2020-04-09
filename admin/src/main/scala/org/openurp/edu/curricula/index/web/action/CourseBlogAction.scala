@@ -164,10 +164,18 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
 		get("passed").orNull match {
 			case "1" => courseBlogs.foreach(courseBlog => {
-				courseBlog.status = BlogStatus.Passed
+				if (courseBlog.status != BlogStatus.Draft && courseBlog.status != BlogStatus.Published) {
+					courseBlog.status = BlogStatus.Passed
+					courseBlog.auditor = Option(getUser)
+					courseBlog.auditAt = Option(Instant.now())
+				}
 			})
 			case "0" => courseBlogs.foreach(courseBlog => {
-				courseBlog.status = BlogStatus.Unpassed
+				if (courseBlog.status != BlogStatus.Draft && courseBlog.status != BlogStatus.Published) {
+					courseBlog.status = BlogStatus.Unpassed
+					courseBlog.auditor = Option(getUser)
+					courseBlog.auditAt = Option(Instant.now())
+				}
 			})
 		}
 		entityDao.saveOrUpdate(courseBlogs)
@@ -179,6 +187,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlogs.foreach(courseBlog => {
 			if (courseBlog.status == BlogStatus.Passed) {
 				courseBlog.status = BlogStatus.Published
+				courseBlog.auditor = Option(getUser)
+				courseBlog.auditAt = Option(Instant.now())
 			}
 		})
 		entityDao.saveOrUpdate(courseBlogs)

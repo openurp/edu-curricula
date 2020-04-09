@@ -18,6 +18,8 @@
  */
 package org.openurp.edu.curricula.model
 
+import java.time.Instant
+
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
@@ -31,33 +33,39 @@ import scala.collection.mutable
  */
 class CourseBlog extends LongId with Updated {
 
-  /** 学年学期 */
-  var semester: Semester = _
+	/** 学年学期 */
+	var semester: Semester = _
 
-  /** 课程 */
-  var course: Course = _
+	/** 课程 */
+	var course: Course = _
 
-  /** 授课教师 */
-  var teachers: mutable.Set[User] = Collections.newSet[User]
+	/** 授课教师 */
+	var teachers: mutable.Set[User] = Collections.newSet[User]
 
-  /** 简介 */
-  var description: String = _
+	/** 简介 */
+	var description: String = _
 
-  /** 英文简介 */
-  var enDescription: Option[String] = None
+	/** 英文简介 */
+	var enDescription: Option[String] = None
 
-  /** 开课院系 */
-  var department: Department = _
+	/** 开课院系 */
+	var department: Department = _
 
-  /** 作者 */
-  var author: User = _
+	/** 作者 */
+	var author: User = _
 
-  /** 教材和辅助资料 */
-  var materials: Option[String] = None
+	/** 教材和辅助资料 */
+	var materials: Option[String] = None
 
-  /** 课程网站 */
-  var website: Option[String] = None
+	/** 课程网站 */
+	var website: Option[String] = None
 
-  /** 状态 */
-  var status: BlogStatus.Status = BlogStatus.Draft
+	/** 状态 */
+	var status: BlogStatus.Status = BlogStatus.Draft
+
+	/** 审核人 */
+	var auditor: Option[User] = None
+
+	/** 审核时间 */
+	var auditAt: Option[Instant] = None
 }
