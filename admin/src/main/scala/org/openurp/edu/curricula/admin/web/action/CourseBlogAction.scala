@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.curricula.index.web.action
+package org.openurp.edu.curricula.admin.web.action
 
 import java.io.{File, FileOutputStream}
 import java.time.Instant
@@ -30,7 +30,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.curricula.index.Constants
+import org.openurp.edu.curricula.admin.Constants
 import org.openurp.edu.curricula.model._
 
 
@@ -95,9 +95,13 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
 
+		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
+		courseBlogMeta.foreach(meta => {
+			courseBlog.meta = Option(meta)
+		})
+
 		val path = Constants.AttachmentBase + semester.id.toString + "/" + course.id.toString
 		Dirs.on(path).mkdirs()
-
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
@@ -157,7 +161,15 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 		}
 		entityDao.saveOrUpdate(lecturePlan)
-		super.saveAndRedirect(courseBlog)
+		saveOrUpdate(courseBlog)
+
+		val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(course))
+		courseBlogMeta.foreach(meta => {
+			meta.count = courseBlogs.size
+			meta.updatedAt = Instant.now()
+			meta.author = getUser
+		})
+		redirect("search", "info.save.success")
 	}
 
 	def audit(): View = {

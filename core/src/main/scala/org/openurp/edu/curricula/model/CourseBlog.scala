@@ -68,4 +68,7 @@ class CourseBlog extends LongId with Updated {
 
 	/** 审核时间 */
 	var auditAt: Option[Instant] = None
+
+	/** 元信息 */
+	var meta: Option[CourseBlogMeta] = None
 }

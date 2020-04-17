@@ -16,16 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.curricula.index.web.action
+package org.openurp.edu.curricula.admin
 
-import org.beangle.cdi.bind.BindModule
+import org.beangle.commons.lang.SystemInfo
 
-class DefaultModule extends BindModule {
-	override protected def binding(): Unit = {
-		bind(classOf[SyllabusAction],classOf[LecturePlanAction],classOf[CourseBlogAction])
-
-		bind(classOf[ReviseTaskAction],classOf[ReviseSettingAction])
-		bind(classOf[CourseOrUserSearchAction])
-		bind(classOf[TeacherAction],classOf[TeacherBlogAction])
-	}
+object Constants {
+  val AttachmentBase = SystemInfo.user.home + "/curricula/"
 }

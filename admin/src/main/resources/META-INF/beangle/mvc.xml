@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <mvc>
-  <profile name="openurp-edu-curricula-admin" package="org.openurp.edu.curricula.index.web.action">
+  <profile name="openurp-edu-curricula-admin" package="org.openurp.edu.curricula.admin.web.action">
     <url path="/" suffix=""  style="seo" />
     <interceptors>
       <interceptor name="web.Interceptor.hibernate"/>

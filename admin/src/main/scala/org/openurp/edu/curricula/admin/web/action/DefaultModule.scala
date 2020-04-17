@@ -16,20 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.curricula.index.web.action
+package org.openurp.edu.curricula.admin.web.action
 
-import org.beangle.webmvc.api.view.View
-import org.openurp.edu.curricula.app.model.ReviseSetting
+import org.beangle.cdi.bind.BindModule
 
-class ReviseSettingAction extends AbstractAction[ReviseSetting] {
+class DefaultModule extends BindModule {
+	override protected def binding(): Unit = {
+		bind(classOf[SyllabusAction],classOf[LecturePlanAction],classOf[CourseBlogAction])
 
-	override def saveAndRedirect(reviseSetting: ReviseSetting): View = {
-		if (!reviseSetting.persisted) {
-			if (duplicate(classOf[ReviseSetting].getName, null, Map("semester" -> reviseSetting.semester))) {
-				return redirect("search", "该修订设置存在,请修改修订设置")
-			}
-		}
-		super.saveAndRedirect(reviseSetting)
+		bind(classOf[ReviseTaskAction],classOf[ReviseSettingAction])
+		bind(classOf[CourseOrUserSearchAction])
+		bind(classOf[TeacherAction],classOf[TeacherBlogAction])
+		bind(classOf[CourseGroupAction],classOf[CourseBlogMetaAction])
 	}
-
 }

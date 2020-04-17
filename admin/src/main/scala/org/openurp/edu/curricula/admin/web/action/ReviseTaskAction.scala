@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.curricula.index.web.action
+package org.openurp.edu.curricula.admin.web.action
 
 import org.beangle.commons.collection.Order
 import org.beangle.data.dao.OqlBuilder
@@ -25,6 +25,7 @@ import org.openurp.base.model.User
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.clazz.model.Clazz
 import org.openurp.edu.curricula.app.model.ReviseTask
+import org.openurp.edu.curricula.model.CourseBlogMeta
 
 class ReviseTaskAction extends AbstractAction[ReviseTask] {
 
@@ -89,6 +90,14 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 						})
 					}
 				})
+			}
+			val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
+			if (metas.isEmpty) {
+				val meta = new CourseBlogMeta
+				meta.course = clazz.course
+				meta.count = 0
+				meta.author = getUser
+				entityDao.saveOrUpdate(meta)
 			}
 		})
 		redirect("search", "&reviseTask.semester.id=" + semester.id, null)

@@ -18,8 +18,8 @@
  */
 package org.openurp.edu.curricula.model
 
+
 import org.beangle.data.orm.MappingModule
-import org.beangle.data.orm.IdGenerator
 
 class DefaultMapping extends MappingModule {
 
@@ -42,5 +42,10 @@ class DefaultMapping extends MappingModule {
 
 		}
 
+		bind[CourseGroup] declare{ e=>
+			e.children is(depends("parent"), orderby("indexno"))
+		}
+
+		bind[CourseBlogMeta]
 	}
 }

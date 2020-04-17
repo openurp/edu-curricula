@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.curricula.index.web.action
+package org.openurp.edu.curricula.admin.web.action
 
 import java.io.{File, FileOutputStream}
 import java.time.Instant
@@ -31,7 +31,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.Semester
-import org.openurp.edu.curricula.index.Constants
+import org.openurp.edu.curricula.admin.Constants
 import org.openurp.edu.curricula.app.model.{ReviseSetting, ReviseTask}
 import org.openurp.edu.curricula.model.{Attachment, BlogStatus, CourseBlog, LecturePlan, Syllabus}
 
