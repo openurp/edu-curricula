@@ -18,6 +18,8 @@
  */
 package org.openurp.edu.curricula.admin.web.action
 
+import java.time.Instant
+
 import org.beangle.commons.collection.Order
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
@@ -97,6 +99,7 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 				meta.course = clazz.course
 				meta.count = 0
 				meta.author = getUser
+				meta.updatedAt = Instant.now()
 				entityDao.saveOrUpdate(meta)
 			}
 		})

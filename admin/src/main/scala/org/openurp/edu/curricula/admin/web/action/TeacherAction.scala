@@ -33,7 +33,7 @@ import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.Semester
 import org.openurp.edu.curricula.admin.Constants
 import org.openurp.edu.curricula.app.model.{ReviseSetting, ReviseTask}
-import org.openurp.edu.curricula.model.{Attachment, BlogStatus, CourseBlog, LecturePlan, Syllabus}
+import org.openurp.edu.curricula.model.{Attachment, BlogStatus, CourseBlog, CourseBlogMeta, CourseGroup, LecturePlan, Syllabus}
 
 class TeacherAction extends AbstractAction[ReviseTask] {
 
@@ -41,6 +41,8 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		val semesterString = get("reviseTask.semester.id").orNull
 		val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
 		put("currentSemester", semester)
+		put("project", getProject)
+		forward()
 	}
 
 	override def getQueryBuilder: OqlBuilder[ReviseTask] = {
@@ -95,6 +97,20 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 				put("lecturePlans", lecturePlans)
 			}
 		})
+		var folders = Collections.newBuffer[CourseGroup]
+		// 查找没有子节点的分组
+		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		folderBuilder.orderBy("courseGroup.indexno")
+		val courseGroups = entityDao.search(folderBuilder)
+		courseGroups.foreach(courseGroup => {
+			if (courseGroup.children.isEmpty) {
+				folders += courseGroup
+			}
+		})
+		put("courseGroups", folders)
+
+		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
+		put("meta",metas.head)
 		super.editSetting(reviseTask)
 	}
 
@@ -112,6 +128,11 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		courseBlog.enDescription = get("courseBlog.enDescription")
 		courseBlog.materials = get("courseBlog.materials")
 		courseBlog.website = get("courseBlog.website")
+
+		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
+		courseBlogMeta.foreach(meta => {
+			courseBlog.meta = Option(meta)
+		})
 
 		val path = Constants.AttachmentBase + reviseTask.semester.id.toString + "/" + reviseTask.course.id.toString
 		Dirs.on(path).mkdirs()
@@ -170,14 +191,31 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		}
 		entityDao.saveOrUpdate(lecturePlan)
 		entityDao.saveOrUpdate(courseBlog)
-		redirect("search", "info.save.success")
+
+		val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(reviseTask.course))
+		courseBlogMeta.foreach(meta => {
+			meta.count = newCourseBlogs.size
+			meta.updatedAt = Instant.now()
+			meta.author = getUser
+		})
+		entityDao.saveOrUpdate(courseBlogMeta)
+		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id,"info.save.success")
 	}
 
 	override def remove(): View = {
 		val reviseTask = entityDao.get(classOf[ReviseTask], longId("reviseTask"))
 		val courseBlogs = getCourseBlogs(reviseTask)
 		entityDao.remove(courseBlogs)
-		redirect("search", "info.delete.success")
+
+		val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(reviseTask.course))
+		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
+		courseBlogMeta.foreach(meta => {
+			meta.count = newCourseBlogs.size
+			meta.updatedAt = Instant.now()
+			meta.author = getUser
+		})
+		entityDao.saveOrUpdate(courseBlogMeta)
+		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id,"info.delete.success")
 	}
 
 
@@ -198,6 +236,6 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			courseBlog.status = BlogStatus.Submited
 		})
 		entityDao.saveOrUpdate(courseBlogs)
-		redirect("search", "info.save.success")
+		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id,"info.save.success")
 	}
 }

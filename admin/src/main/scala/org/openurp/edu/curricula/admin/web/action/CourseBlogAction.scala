@@ -23,7 +23,7 @@ import java.time.Instant
 import java.util.Locale
 
 import javax.servlet.http.Part
-import org.beangle.commons.collection.Order
+import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
@@ -78,6 +78,17 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				put("lecturePlans", lecturePlans)
 			}
 		}
+		var folders = Collections.newBuffer[CourseGroup]
+		// 查找没有子节点的分组
+		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		folderBuilder.orderBy("courseGroup.indexno")
+		val courseGroups = entityDao.search(folderBuilder)
+		courseGroups.foreach(courseGroup => {
+			if (courseGroup.children.isEmpty) {
+				folders += courseGroup
+			}
+		})
+		put("courseGroups", folders)
 		super.editSetting(courseBlog)
 	}
 
@@ -169,6 +180,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			meta.updatedAt = Instant.now()
 			meta.author = getUser
 		})
+		entityDao.saveOrUpdate(courseBlogMeta)
 		redirect("search", "info.save.success")
 	}
 
@@ -205,6 +217,21 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		})
 		entityDao.saveOrUpdate(courseBlogs)
 		redirect("search", "info.save.success")
+	}
+
+	override def removeAndRedirect(courseBlogs: Seq[CourseBlog]): View = {
+		courseBlogs.foreach(courseBlog => {
+			val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
+			val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
+			courseBlogMeta.foreach(meta => {
+				meta.count = newCourseBlogs.size
+				meta.updatedAt = Instant.now()
+				meta.author = getUser
+			})
+			entityDao.saveOrUpdate(courseBlogMeta)
+		})
+		remove(courseBlogs)
+		redirect("search", "info.remove.success")
 	}
 
 

@@ -10,6 +10,11 @@
       [@b.select name="courseBlogMeta.course.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
       [@b.select name="courseBlogMeta.course.courseType.id" label="课程类别" items=courseTypes?sort_by("code") empty="..."/]
       [@b.select name="courseBlogMeta.courseGroup.id" label="课程分组" items=courseGroups?sort_by("code") empty="..."/]
+      [@b.select name="hasGroup" items={} label="是否设置分组"]
+        <option value="">...</option>
+        <option value="0">已设置</option>
+        <option value="1">未设置</option>
+      [/@]
       <input type="hidden" name="orderBy" value="courseBlogMeta.course.code"/>
     [/@]
     </td>

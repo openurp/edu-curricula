@@ -7,6 +7,7 @@
       [#if courseBlog.persisted]
         [@b.field label="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
         [@b.field label="课程"]${courseBlog.course.name}(${courseBlog.course.code})[/@]
+        [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组" items=courseGroups?sort_by("code") value=(courseBlog.meta.courseGroup)! option="id,name" empty="..."/]
       [#else]
         [@edu_base.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester required="true"/]
         [@b.field label="选择课程" required='true']

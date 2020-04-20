@@ -37,6 +37,7 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 	override def indexSetting(): Unit = {
 		put("languages", languages)
 		put("departments", getDeparts)
+		put("project", getProject)
 		super.indexSetting()
 	}
 
@@ -52,6 +53,7 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 		put("semesters", entityDao.search(builder))
 		put("currentSemester", getCurrentSemester)
 		put("languages", languages)
+		put("project", getProject)
 		super.editSetting(entity)
 	}
 
