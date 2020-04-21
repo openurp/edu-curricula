@@ -1,19 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.openurp.edu.curricula</groupId>
-    <artifactId>openurp-edu-curricula-parent</artifactId>
+    <groupId>org.openurp.edu.course</groupId>
+    <artifactId>openurp-edu-course-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openurp.edu.curricula</groupId>
-  <artifactId>openurp-edu-curricula-core</artifactId>
+  <groupId>org.openurp.edu.course</groupId>
+  <artifactId>openurp-edu-course-core</artifactId>
   <packaging>jar</packaging>
-  <name>OpenURP Edu Curricula Core</name>
+  <name>OpenURP Edu course Core</name>
 
   <properties>
-    <bundle.symbolicName>org.openurp.edu.curricula.core</bundle.symbolicName>
-    <bundle.namespace>org.openurp.edu.curricula</bundle.namespace>
+    <bundle.symbolicName>org.openurp.edu.course.core</bundle.symbolicName>
+    <bundle.namespace>org.openurp.edu.course</bundle.namespace>
   </properties>
 
   <dependencies>

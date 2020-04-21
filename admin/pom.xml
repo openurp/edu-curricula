@@ -1,25 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.openurp.edu.curricula</groupId>
-    <artifactId>openurp-edu-curricula-parent</artifactId>
+    <groupId>org.openurp.edu.course</groupId>
+    <artifactId>openurp-edu-course-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openurp.edu.curricula</groupId>
-  <artifactId>openurp-edu-curricula-admin</artifactId>
+  <groupId>org.openurp.edu.course</groupId>
+  <artifactId>openurp-edu-course-admin</artifactId>
   <packaging>war</packaging>
-  <name>OpenURP Edu Curricula Admin</name>
+  <name>OpenURP Edu course Admin</name>
 
   <properties>
-    <bundle.symbolicName>org.openurp.edu.curricula.index</bundle.symbolicName>
-    <bundle.namespace>org.openurp.edu.curricula</bundle.namespace>
+    <bundle.symbolicName>org.openurp.edu.course.index</bundle.symbolicName>
+    <bundle.namespace>org.openurp.edu.course</bundle.namespace>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.openurp.edu.curricula</groupId>
-      <artifactId>openurp-edu-curricula-core</artifactId>
+      <groupId>org.openurp.edu.course</groupId>
+      <artifactId>openurp-edu-course-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -55,6 +55,11 @@
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk15on</artifactId>
       <version>1.64</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beangle.commons</groupId>
+      <artifactId>beangle-commons-file_2.13</artifactId>
+      <version>${beangle.commons.version}</version>
     </dependency>
   </dependencies>
 </project>
