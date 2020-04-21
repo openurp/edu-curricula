@@ -53,7 +53,7 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 	def attachment(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val path = Constants.AttachmentBase + lecturePlan.semester.id.toString + "/" + lecturePlan.course.id.toString
+			val path = Constants.AttachmentBase + lecturePlan.semester.id.toString
 			val file = new File(path + "/" + lecturePlan.attachment.key)
 			if (file.exists) {
 				Stream(file, lecturePlan.attachment.name)
@@ -101,7 +101,7 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 		val lecturePlanes = entityDao.find(classOf[LecturePlan], longIds("lecturePlan"))
 		lecturePlanes.foreach {
 			lecturePlan =>
-				val path = Constants.AttachmentBase + lecturePlan.semester.id.toString + "/" + lecturePlan.course.id.toString
+				val path = Constants.AttachmentBase + lecturePlan.semester.id.toString
 				val file = new File(path + "/" + lecturePlan.attachment.key)
 				if (file.exists()) file.delete()
 		}
@@ -112,7 +112,7 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 		def view(@param("id") id: Long): View = {
 			val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 			if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-				val path = Constants.AttachmentBase + lecturePlan.semester.id.toString + "/" + lecturePlan.course.id.toString
+				val path = Constants.AttachmentBase + lecturePlan.semester.id.toString
 				val file = new File(path + "/" + lecturePlan.attachment.key)
 				if (file.exists) put("lecturePlan", lecturePlan)
 			}
