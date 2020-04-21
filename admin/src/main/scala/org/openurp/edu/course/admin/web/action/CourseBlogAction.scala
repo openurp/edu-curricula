@@ -24,6 +24,7 @@ import java.util.Locale
 
 import javax.servlet.http.Part
 import org.beangle.commons.collection.{Collections, Order}
+import org.beangle.commons.file.digest.Sha1
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
@@ -111,7 +112,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			courseBlog.meta = Option(meta)
 		})
 
-		val path = Constants.AttachmentBase + semester.id.toString + "/" + course.id.toString
+		val path = Constants.AttachmentBase + semester.id.toString
 		Dirs.on(path).mkdirs()
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
@@ -128,13 +129,17 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
+				val syllabusFile = new File(path + "/" + Instant.now().toString)
+				IOs.copy(part.getInputStream, new FileOutputStream(syllabusFile))
+				val sha = Sha1.digest(syllabusFile)
+				val target = new File(path + "/" + sha)
+				syllabusFile.renameTo(target)
+
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
-				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				attachment.key = "syllabus_" + user.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				attachment.key = "/" + semester.id.toString + "/" + sha
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
-				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
 				//				val syllabusFile = new File(path + "/" + attachment.key)
 				//				Encryptor.encrypt(syllabusFile, None, "123", PdfWriter.ALLOW_PRINTING)
 				syllabus.attachment = attachment
@@ -157,15 +162,18 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
+				val lecturePlanFile = new File(path + "/" + Instant.now().toString)
+				IOs.copy(part.getInputStream, new FileOutputStream(lecturePlanFile))
+				val sha = Sha1.digest(lecturePlanFile)
+				val target = new File(path + "/" + sha)
+				lecturePlanFile.renameTo(target)
+
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
-				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				//${当前存储的文件目录}/学期id/courseid/lecture_plan_${author_id}.文件扩展名
-				//				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
-				attachment.key = "lecture_plan_" + user.id.toString + (if (Strings.isEmpty(ext)) "" else "." + ext)
+				attachment.key = "/" + semester.id.toString + "/" + sha
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
-				IOs.copy(part.getInputStream, new FileOutputStream(path + "/" + attachment.key))
+				//				attachment.key = Digests.md5Hex(part.getSubmittedFileName + Instant.now().toString) + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				//				val lecturePlanFile = new File(path + "/" + attachment.key)
 				//				Encryptor.encrypt(lecturePlanFile, None, "123", PdfWriter.ALLOW_PRINTING)
 				lecturePlan.attachment = attachment

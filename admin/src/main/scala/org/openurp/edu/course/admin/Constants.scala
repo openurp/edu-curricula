@@ -18,8 +18,8 @@
  */
 package org.openurp.edu.course.admin
 
-import org.beangle.commons.lang.SystemInfo
+import org.openurp.app.Urp
 
 object Constants {
-  val AttachmentBase = SystemInfo.user.home + "/course/"
+	val AttachmentBase = Urp.home + "/blobs/edu/course"
 }
