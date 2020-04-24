@@ -111,7 +111,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		put("courseGroups", folders)
 
 		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
-		put("meta",metas.head)
+		put("meta", metas.head)
 		super.editSetting(reviseTask)
 	}
 
@@ -123,6 +123,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		courseBlog.department = reviseTask.course.department
 		courseBlog.author = getUser
 		courseBlog.updatedAt = Instant.now()
+		courseBlog.teachers ++= reviseTask.teachers
 		get("courseBlog.description").foreach(description => {
 			courseBlog.description = description
 		})
@@ -135,7 +136,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			courseBlog.meta = Option(meta)
 		})
 
-		val path = Constants.AttachmentBase + reviseTask.semester.id.toString
+		val path = Constants.AttachmentBase + "/" + reviseTask.semester.id.toString
 		Dirs.on(path).mkdirs()
 
 		//保存syllabus
@@ -148,12 +149,12 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		syllabus.updatedAt = Instant.now()
 		if (!getAll("syllabus.attachment").exists(_ == "")) {
 			if (null != syllabus.attachment && null != syllabus.attachment.key) {
-				val file = new File(path + "/" + syllabus.attachment.key)
+				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
-				val syllabusFile = new File(path + "/" + Instant.now().toString)
+				val syllabusFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
 				IOs.copy(part.getInputStream, new FileOutputStream(syllabusFile))
 				val sha = Sha1.digest(syllabusFile)
 				val target = new File(path + "/" + sha)
@@ -179,12 +180,12 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		lecturePlan.updatedAt = Instant.now()
 		if (!getAll("lecturePlan.attachment").exists(_ == "")) {
 			if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-				val file = new File(Constants.AttachmentBase + "lecturePlan/" + syllabus.attachment.key)
+				val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
-				val lecturePlanFile = new File(path + "/" + Instant.now().toString)
+				val lecturePlanFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
 				IOs.copy(part.getInputStream, new FileOutputStream(lecturePlanFile))
 				val sha = Sha1.digest(lecturePlanFile)
 				val target = new File(path + "/" + sha)
@@ -208,12 +209,29 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			meta.author = getUser
 		})
 		entityDao.saveOrUpdate(courseBlogMeta)
-		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id,"info.save.success")
+		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id, "info.save.success")
 	}
 
 	override def remove(): View = {
 		val reviseTask = entityDao.get(classOf[ReviseTask], longId("reviseTask"))
 		val courseBlogs = getCourseBlogs(reviseTask)
+		courseBlogs.foreach(courseBlog => {
+			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+			syllabuses.foreach {
+				syllabus =>
+					val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
+					if (file.exists()) file.delete()
+			}
+			entityDao.remove(syllabuses)
+
+			val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
+			lecturePlans.foreach {
+				lecturePlan =>
+					val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
+					if (file.exists()) file.delete()
+			}
+			entityDao.remove(lecturePlans)
+		})
 		entityDao.remove(courseBlogs)
 
 		val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(reviseTask.course))
@@ -224,7 +242,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			meta.author = getUser
 		})
 		entityDao.saveOrUpdate(courseBlogMeta)
-		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id,"info.delete.success")
+		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id, "info.delete.success")
 	}
 
 
@@ -245,6 +263,6 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			courseBlog.status = BlogStatus.Submited
 		})
 		entityDao.saveOrUpdate(courseBlogs)
-		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id,"info.save.success")
+		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id, "info.save.success")
 	}
 }

@@ -30,20 +30,10 @@ import org.openurp.edu.course.model.CourseBlog
 
 class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSupport {
 
-	protected def languages: Map[String, String] = {
-		Map("zh" -> "中文", "en" -> "English")
-	}
-
 	override def indexSetting(): Unit = {
-		put("languages", languages)
 		put("departments", getDeparts)
 		put("project", getProject)
 		super.indexSetting()
-	}
-
-	override def search(): View = {
-		put("languages", languages)
-		super.search()
 	}
 
 	override def editSetting(entity: T): Unit = {
@@ -52,16 +42,9 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 		builder.orderBy("semester.code desc")
 		put("semesters", entityDao.search(builder))
 		put("currentSemester", getCurrentSemester)
-		put("languages", languages)
 		put("project", getProject)
 		super.editSetting(entity)
 	}
-
-	override def info(id: String): View = {
-		put("languages", languages)
-		super.info(id)
-	}
-
 
 	def duplicate(entityName: String, id: Any, params: Map[String, Any]): Boolean = {
 		val b = new StringBuilder("from ")

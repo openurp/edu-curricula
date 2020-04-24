@@ -22,16 +22,16 @@ import java.io.File
 
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.{Status, Stream, View}
+import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.edu.course.index.Constants
 import org.openurp.edu.course.model.LecturePlan
 
-class LecturePlanAction extends AbstractAction[LecturePlan] {
+class LecturePlanAction extends RestfulAction[LecturePlan] {
 
 	def attachment(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val path = Constants.AttachmentBase + lecturePlan.semester.id.toString
-			val file = new File(path + "/" + lecturePlan.attachment.key)
+			val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
 			if (file.exists) {
 				Stream(file, lecturePlan.attachment.name)
 			} else {
@@ -45,8 +45,7 @@ class LecturePlanAction extends AbstractAction[LecturePlan] {
 	def view(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val path = Constants.AttachmentBase + lecturePlan.semester.id.toString
-			val file = new File(path + "/" + lecturePlan.attachment.key)
+			val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
 			if (file.exists) put("lecturePlan", lecturePlan)
 		}
 		forward()

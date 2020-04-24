@@ -40,7 +40,7 @@ class CourseBlog extends LongId with Updated {
 	var course: Course = _
 
 	/** 授课教师 */
-	var teachers: mutable.Set[User] = Collections.newSet[User]
+	var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
 
 	/** 简介 */
 	var description: String = _

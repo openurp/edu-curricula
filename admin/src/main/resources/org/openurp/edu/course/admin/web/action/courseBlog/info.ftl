@@ -13,7 +13,7 @@
     <td class="title" width="15%">开课院系:</td>
     <td class="content">${courseBlog.department.name!}</td>
     <td class="title" width="15%">任课教师:</td>
-    <td class="content">[#list courseBlog.teachers as teacher]${teacher.user.name}[#if teacher_has_next],[/#if][/#list]</td>
+    <td class="content">[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
     <td class="title" width="15%">负责人:</td>
     <td class="content">${courseBlog.author.name!}</td>
   </tr>

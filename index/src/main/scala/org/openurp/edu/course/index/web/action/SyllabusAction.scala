@@ -18,31 +18,20 @@
  */
 package org.openurp.edu.course.index.web.action
 
-import java.io.{File, FileOutputStream}
-import java.time.Instant
+import java.io.File
 
-import javax.servlet.http.Part
-import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.collection.Order
-import org.beangle.commons.io.IOs
-import org.beangle.commons.lang.Strings
-import org.beangle.data.dao.OqlBuilder
-import org.beangle.security.Securities
 import org.beangle.webmvc.api.annotation.param
-import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.{Status, Stream, View}
-import org.openurp.base.model.User
-import org.openurp.edu.base.model.{Course, Semester}
+import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.edu.course.index.Constants
-import org.openurp.edu.course.model.{Attachment, LecturePlan, Syllabus}
+import org.openurp.edu.course.model.Syllabus
 
-class SyllabusAction extends AbstractAction[Syllabus] {
+class SyllabusAction extends RestfulAction[Syllabus] {
 
 	def attachment(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val path = Constants.AttachmentBase + syllabus.semester.id.toString
-			val file = new File(path + "/" + syllabus.attachment.key)
+			val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
 			if (file.exists) {
 				Stream(file, syllabus.attachment.name)
 			} else {
@@ -57,8 +46,7 @@ class SyllabusAction extends AbstractAction[Syllabus] {
 	def view(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val path = Constants.AttachmentBase + syllabus.semester.id.toString
-			val file = new File(path + "/" + syllabus.attachment.key)
+			val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
 			if (file.exists) put("syllabus", syllabus)
 		}
 		forward()

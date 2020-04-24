@@ -1,7 +1,7 @@
 [#ftl/]
 [@b.head/]
 [@b.toolbar title="课程详细资料"]bar.addBack();[/@]
-<table class="gridtable" style="width:80%" align="center">
+<table class="gridtable" style="width:60%" align="center">
   <tr>
     <td class="title" width="15%" bgcolor="#e1ecff">学年学期:</td>
     <td class="content" >${courseBlog.semester.schoolYear!}学年${courseBlog.semester.name!}学期</td>
@@ -20,7 +20,7 @@
   </tr>
   <tr>
     <td class="title" width="15%" bgcolor="#e1ecff">任课教师:</td>
-    <td class="content">[#list courseBlog.teachers as teacher]${teacher.user.name}[#if teacher_has_next],[/#if][/#list]</td>
+    <td class="content">[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
   </tr>
   <tr>
     <td class="title" width="15%" bgcolor="#e1ecff">负责人:</td>
@@ -33,18 +33,6 @@
   <tr>
     <td class="title" width="15%" bgcolor="#e1ecff">英文简介:</td>
     <td class="content">${courseBlog.enDescription!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="15%" bgcolor="#e1ecff">教材和辅助资料:</td>
-    <td class="content">${courseBlog.materials!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="15%" bgcolor="#e1ecff">课程网站:</td>
-    <td class="content">${courseBlog.website!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="15%" bgcolor="#e1ecff">最近维护时间:</td>
-    <td class="content">${courseBlog.updatedAt?string("yyyy-MM-dd HH:mm")!}</td>
   </tr>
   [#if syllabuses ?? && syllabuses?size>0]
     <tr>
@@ -76,5 +64,13 @@
       </td>
     </tr>
   [/#if]
+  <tr>
+    <td class="title" width="15%" bgcolor="#e1ecff">教材和辅助资料:</td>
+    <td class="content">${courseBlog.materials!}</td>
+  </tr>
+  <tr>
+    <td class="title" width="15%" bgcolor="#e1ecff">课程网站:</td>
+    <td class="content">${courseBlog.website!}</td>
+  </tr>
 </table>
 [@b.foot/]

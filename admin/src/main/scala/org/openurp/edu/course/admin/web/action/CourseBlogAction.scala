@@ -112,7 +112,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			courseBlog.meta = Option(meta)
 		})
 
-		val path = Constants.AttachmentBase + semester.id.toString
+		val path = Constants.AttachmentBase + "/" + semester.id.toString
 		Dirs.on(path).mkdirs()
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
@@ -124,12 +124,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		syllabus.updatedAt = Instant.now()
 		if (!getAll("syllabus.attachment").exists(_ == "")) {
 			if (null != syllabus.attachment && null != syllabus.attachment.key) {
-				val file = new File(path + "/" + syllabus.attachment.key)
+				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
-				val syllabusFile = new File(path + "/" + Instant.now().toString)
+				val syllabusFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
 				IOs.copy(part.getInputStream, new FileOutputStream(syllabusFile))
 				val sha = Sha1.digest(syllabusFile)
 				val target = new File(path + "/" + sha)
@@ -157,12 +157,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		lecturePlan.updatedAt = Instant.now()
 		if (!getAll("lecturePlan.attachment").exists(_ == "")) {
 			if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-				val file = new File(path + "/" + lecturePlan.attachment.key)
+				val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
 				if (file.exists()) file.delete()
 			}
 			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
-				val lecturePlanFile = new File(path + "/" + Instant.now().toString)
+				val lecturePlanFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
 				IOs.copy(part.getInputStream, new FileOutputStream(lecturePlanFile))
 				val sha = Sha1.digest(lecturePlanFile)
 				val target = new File(path + "/" + sha)
@@ -195,40 +195,68 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	def audit(): View = {
 		val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
 		get("passed").orNull match {
-			case "1" => courseBlogs.foreach(courseBlog => {
-				if (courseBlog.status != BlogStatus.Draft && courseBlog.status != BlogStatus.Published) {
-					courseBlog.status = BlogStatus.Passed
-					courseBlog.auditor = Option(getUser)
-					courseBlog.auditAt = Option(Instant.now())
-				}
-			})
-			case "0" => courseBlogs.foreach(courseBlog => {
-				if (courseBlog.status != BlogStatus.Draft && courseBlog.status != BlogStatus.Published) {
-					courseBlog.status = BlogStatus.Unpassed
-					courseBlog.auditor = Option(getUser)
-					courseBlog.auditAt = Option(Instant.now())
-				}
-			})
+			case "1" => {
+				var i = 0
+				courseBlogs.foreach(courseBlog => {
+					if (courseBlog.status != BlogStatus.Draft && courseBlog.status != BlogStatus.Published) {
+						i = i + 1
+						courseBlog.status = BlogStatus.Passed
+						courseBlog.auditor = Option(getUser)
+						courseBlog.auditAt = Option(Instant.now())
+					}
+				})
+				entityDao.saveOrUpdate(courseBlogs)
+				redirect("search", s"成功审核${i}条课程资料")
+			}
+			case "0" => {
+				var j = 0
+				courseBlogs.foreach(courseBlog => {
+					if (courseBlog.status != BlogStatus.Draft && courseBlog.status != BlogStatus.Published) {
+						j = j + 1
+						courseBlog.status = BlogStatus.Unpassed
+						courseBlog.auditor = Option(getUser)
+						courseBlog.auditAt = Option(Instant.now())
+					}
+				})
+				entityDao.saveOrUpdate(courseBlogs)
+				redirect("search", s"成功审核${j}条课程资料")
+			}
 		}
-		entityDao.saveOrUpdate(courseBlogs)
-		redirect("search", "info.save.success")
 	}
 
 	def publish(): View = {
 		val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
+		var i = 0
 		courseBlogs.foreach(courseBlog => {
 			if (courseBlog.status == BlogStatus.Passed) {
+				i = i + 1
 				courseBlog.status = BlogStatus.Published
 				courseBlog.auditor = Option(getUser)
 				courseBlog.auditAt = Option(Instant.now())
 			}
 		})
 		entityDao.saveOrUpdate(courseBlogs)
-		redirect("search", "info.save.success")
+		redirect("search", s"成功发布${i}条课程资料")
 	}
 
 	override def removeAndRedirect(courseBlogs: Seq[CourseBlog]): View = {
 		courseBlogs.foreach(courseBlog => {
+			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+			syllabuses.foreach {
+				syllabus =>
+					val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
+					if (file.exists()) file.delete()
+			}
+			entityDao.remove(syllabuses)
+
+			val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
+			lecturePlans.foreach {
+				lecturePlan =>
+					val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
+					if (file.exists()) file.delete()
+			}
+			entityDao.remove(lecturePlans)
+
 			val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
 			val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
 			courseBlogMeta.foreach(meta => {
