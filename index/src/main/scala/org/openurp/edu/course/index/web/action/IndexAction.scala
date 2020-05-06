@@ -25,10 +25,11 @@ import org.beangle.data.model.util.Hierarchicals
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
+import org.openurp.edu.base.web.ProjectSupport
 import org.openurp.edu.course.model._
 
 
-class IndexAction extends RestfulAction[CourseBlog] {
+class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport{
 
 	override def indexSetting(): Unit = {
 		// 没有子节点的分组
@@ -43,7 +44,7 @@ class IndexAction extends RestfulAction[CourseBlog] {
 		})
 		put("courseGroups", courseGroups)
 		val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
-		//		builder.where("courseBlog.semester=:semester", getCurrentSemester)
+		courseBlogBuilder.where("courseBlog.semester=:semester", getCurrentSemester)
 		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
 		courseBlogBuilder.select("distinct courseBlog.department")
 		val departments = entityDao.search(courseBlogBuilder)
@@ -54,7 +55,7 @@ class IndexAction extends RestfulAction[CourseBlog] {
 
 	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
-		//		builder.where("courseBlog.semester=:semester", getCurrentSemester)
+				builder.where("courseBlog.semester=:semester", getCurrentSemester)
 		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		val first = getInt("courseGroup")
 		val second = getInt("courseGroup_child")
