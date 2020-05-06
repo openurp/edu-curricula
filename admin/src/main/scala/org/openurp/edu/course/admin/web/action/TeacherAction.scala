@@ -123,7 +123,11 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		courseBlog.department = reviseTask.course.department
 		courseBlog.author = getUser
 		courseBlog.updatedAt = Instant.now()
-		courseBlog.teachers ++= reviseTask.teachers
+		reviseTask.teachers.foreach(teacher => {
+			if (!courseBlog.teachers.contains(teacher)) {
+				courseBlog.teachers += teacher
+			}
+		})
 		get("courseBlog.description").foreach(description => {
 			courseBlog.description = description
 		})

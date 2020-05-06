@@ -18,34 +18,20 @@
  */
 package org.openurp.edu.course.index.web.action
 
-import org.beangle.data.dao.OqlBuilder
-import org.beangle.data.model.Entity
-import org.beangle.security.Securities
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.base.model.User
-import org.openurp.edu.base.model.Semester
-import org.openurp.edu.base.web.ProjectSupport
-import org.openurp.edu.course.model.CourseBlog
+import org.openurp.edu.course.model.CourseGroup
 
-class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSupport {
+class CourseGroupSearchAction extends RestfulAction[CourseGroup] {
 
-	override def indexSetting(): Unit = {
-		put("currentSemester", getCurrentSemester)
-		put("departments", getProject.departments)
-		put("project", getProject)
-		super.indexSetting()
+	def childrenAjax(): View = {
+		val a = getInt("courseGroupId")
+		getInt("courseGroupId").foreach(courseGroupId => {
+			val courseGroup = entityDao.get(classOf[CourseGroup], courseGroupId)
+			val courseGroupChildren = courseGroup.children
+			put("courseGroups", courseGroupChildren)
+		})
+		forward("childrenJSON")
 	}
-
-
-	def getDatas[T <: Entity[_]](clazz: Class[T], courseBlog: CourseBlog): Seq[T] = {
-		val builder = OqlBuilder.from(clazz, "aa")
-		builder.where("aa.course=:course", courseBlog.course)
-		builder.where("aa.semester=:semester", courseBlog.semester)
-		builder.where("aa.author=:author", courseBlog.author)
-		entityDao.search(builder)
-	}
-
-
 
 }
