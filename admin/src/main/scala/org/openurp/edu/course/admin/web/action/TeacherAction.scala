@@ -158,9 +158,10 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
+				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
 				val syllabusFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
 				IOs.copy(part.getInputStream, new FileOutputStream(syllabusFile))
-				val sha = Sha1.digest(syllabusFile)
+				val sha = Sha1.digest(syllabusFile) + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				val target = new File(path + "/" + sha)
 				syllabusFile.renameTo(target)
 
@@ -189,9 +190,10 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			}
 			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
+				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
 				val lecturePlanFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
 				IOs.copy(part.getInputStream, new FileOutputStream(lecturePlanFile))
-				val sha = Sha1.digest(lecturePlanFile)
+				val sha = Sha1.digest(lecturePlanFile) + (if (Strings.isEmpty(ext)) "" else "." + ext)
 				val target = new File(path + "/" + sha)
 				lecturePlanFile.renameTo(target)
 

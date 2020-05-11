@@ -25,11 +25,12 @@ import org.beangle.data.model.util.Hierarchicals
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
+import org.openurp.base.model.Department
 import org.openurp.edu.base.web.ProjectSupport
 import org.openurp.edu.course.model._
 
 
-class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport{
+class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 
 	override def indexSetting(): Unit = {
 		// 没有子节点的分组
@@ -49,14 +50,27 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport{
 		courseBlogBuilder.select("distinct courseBlog.department")
 		val departments = entityDao.search(courseBlogBuilder)
 		put("departments", departments)
+		getInt("courseGroup_child").foreach(childId => {
+			val courseGroup_child = entityDao.get(classOf[CourseGroup], childId)
+			put("courseGroup_children", courseGroup_child.parent.get.children)
+			put("courseGroup_child_children", courseGroup_child.children)
+			put("choosedCourseGroup", courseGroup_child.parent)
+			put("choosedCourseGroup_child", courseGroup_child)
+		})
+		getInt("courseBlog.department.id").foreach(departmentId => {
+			val department = entityDao.get(classOf[Department], departmentId)
+			put("choosedDepartment", department)
+		})
 		super.indexSetting()
 	}
 
-
-	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
-		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
-				builder.where("courseBlog.semester=:semester", getCurrentSemester)
+	override def search(): View = {
+		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+		builder.where("courseBlog.semester=:semester", getCurrentSemester)
 		builder.where("courseBlog.status =:status", BlogStatus.Published)
+		get("nameOrCode").foreach(nameOrCode => {
+			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", '%' + nameOrCode + '%', '%' + nameOrCode + '%')
+		})
 		val first = getInt("courseGroup")
 		val second = getInt("courseGroup_child")
 		val third = getInt("courseGroup_child_child")
@@ -72,7 +86,10 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport{
 			builder.where("courseBlog.meta.courseGroup in :groups", groups)
 		}
 		populateConditions(builder)
-		builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
+		builder.orderBy(get(Order.OrderStr).orNull)
+		val courseblogs = entityDao.search(builder)
+		put("courseBlogs", courseblogs)
+		forward()
 	}
 
 	def getCourseGroups(id: Int): Set[CourseGroup] = {
