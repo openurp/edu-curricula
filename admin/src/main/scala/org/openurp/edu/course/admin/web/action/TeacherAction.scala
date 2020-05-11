@@ -98,17 +98,9 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 				put("lecturePlans", lecturePlans)
 			}
 		})
-		var folders = Collections.newBuffer[CourseGroup]
-		// 查找没有子节点的分组
-		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
-		folderBuilder.orderBy("courseGroup.indexno")
-		val courseGroups = entityDao.search(folderBuilder)
-		courseGroups.foreach(courseGroup => {
-			if (courseGroup.children.isEmpty) {
-				folders += courseGroup
-			}
-		})
-		put("courseGroups", folders)
+		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		builder.orderBy("courseGroup.indexno")
+		put("courseGroups",entityDao.search(builder))
 
 		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
 		put("meta", metas.head)

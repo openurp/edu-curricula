@@ -31,17 +31,9 @@ class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 
 	override def indexSetting(): Unit = {
 		put("courseTypes", getCodes(classOf[CourseType]))
-		var folders = Collections.newBuffer[CourseGroup]
-		// 查找没有子节点的分组
-		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
-		folderBuilder.orderBy("courseGroup.indexno")
-		val courseGroups = entityDao.search(folderBuilder)
-		courseGroups.foreach(courseGroup => {
-			if (courseGroup.children.isEmpty) {
-				folders += courseGroup
-			}
-		})
-		put("courseGroups", folders)
+		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		builder.orderBy("courseGroup.indexno")
+		put("courseGroups",entityDao.search(builder))
 		super.indexSetting()
 	}
 
@@ -62,19 +54,10 @@ class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 	}
 
 	def editGroup(): View = {
-		//		val a =intIds("courseBlogMeta")
 		put("metaIds", get("courseBlogMeta.id"))
-		var folders = Collections.newBuffer[CourseGroup]
-		// 查找没有子节点的分组
-		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
-		folderBuilder.orderBy("courseGroup.indexno")
-		val courseGroups = entityDao.search(folderBuilder)
-		courseGroups.foreach(courseGroup => {
-			if (courseGroup.children.isEmpty) {
-				folders += courseGroup
-			}
-		})
-		put("courseGroups", folders)
+		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		builder.orderBy("courseGroup.indexno")
+		put("courseGroups",entityDao.search(builder))
 		forward()
 	}
 

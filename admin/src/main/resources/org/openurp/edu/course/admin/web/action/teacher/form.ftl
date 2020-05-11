@@ -6,7 +6,17 @@
     [@b.form action=sa theme="list" enctype="multipart/form-data"]
       [@b.field label="学年学期"]${reviseTask.semester.schoolYear}学年${reviseTask.semester.name}学期[/@]
       [@b.field label="课程"]${reviseTask.course.name}(${reviseTask.course.code})[/@]
-      [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组" items=courseGroups?sort_by("code") value=(meta.courseGroup)! option="id,name" empty="..."/]
+      [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组"]
+        <option value="">...</option>
+        [#list courseGroups as courseGroup]
+          <option value="${courseGroup.id}" [#if meta.courseGroup == courseGroup]selected[/#if]>
+            [#if (courseGroup.indexno?split('.'))?size == 2]&nbsp;&nbsp;
+            [#elseif (courseGroup.indexno?split('.'))?size == 3]&nbsp;&nbsp;&nbsp;&nbsp;
+            [/#if]
+            ${courseGroup.name}
+          </option>
+        [/#list]
+      [/@]
       [@b.textarea label="计划简介" name="courseBlog.description" value=(courseBlog.description)! cols="100" rows="10" required="true"/]
       [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! cols="100" rows="10"/]
       [@b.textfield label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! style="width:250px"/]

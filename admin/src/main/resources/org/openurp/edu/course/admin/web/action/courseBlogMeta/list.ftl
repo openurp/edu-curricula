@@ -2,7 +2,7 @@
 [@b.head/]
 [@b.grid  items=courseBlogMetas var="courseBlogMeta"]
   [@b.gridbar]
-    bar.addItem("编辑课程分组",action.multi('editGroup'));
+    bar.addItem("批量编辑课程分组",action.multi('editGroup'));
   [/@]
   [@b.row]
     [@b.boxcol /]
