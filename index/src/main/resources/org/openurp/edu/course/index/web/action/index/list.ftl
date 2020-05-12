@@ -23,8 +23,8 @@
       transition:'none',
       opacity:0,
       overlayClose:true,
-      width:"400px",
-      height:"400px",
+      width:"600px",
+      height:"600px",
       inline:true,
       href:"#blogDiv"
     });

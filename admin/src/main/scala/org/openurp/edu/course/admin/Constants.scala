@@ -21,5 +21,5 @@ package org.openurp.edu.course.admin
 import org.openurp.app.Urp
 
 object Constants {
-	val AttachmentBase = Urp.home + "/blobs/edu/course"
+	val AttachmentBase = Urp.home + "/blob/edu/course"
 }

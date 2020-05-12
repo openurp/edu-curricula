@@ -6,10 +6,10 @@
     [@b.form action=sa theme="list" enctype="multipart/form-data"]
       [@b.field label="学年学期"]${reviseTask.semester.schoolYear}学年${reviseTask.semester.name}学期[/@]
       [@b.field label="课程"]${reviseTask.course.name}(${reviseTask.course.code})[/@]
-      [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组"]
+      [@b.select name="" label="课程分组"]
         <option value="">...</option>
         [#list courseGroups as courseGroup]
-          <option value="${courseGroup.id}" [#if meta.courseGroup == courseGroup]selected[/#if]>
+          <option value="${courseGroup.id}" [#if meta.courseGroup?? && meta.courseGroup == courseGroup]selected[/#if]>
             [#if (courseGroup.indexno?split('.'))?size == 2]&nbsp;&nbsp;
             [#elseif (courseGroup.indexno?split('.'))?size == 3]&nbsp;&nbsp;&nbsp;&nbsp;
             [/#if]
@@ -17,8 +17,8 @@
           </option>
         [/#list]
       [/@]
-      [@b.textarea label="计划简介" name="courseBlog.description" value=(courseBlog.description)! cols="100" rows="10" required="true"/]
-      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! cols="100" rows="10"/]
+      [@b.textarea label="计划简介" name="courseBlog.description" value=(courseBlog.description)! cols="100" rows="10" required="true"  maxlength="5000"/]
+      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! cols="100" rows="10" maxlength="5000"/]
       [@b.textfield label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! style="width:250px"/]
       [@b.textfield label="课程网站" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
       [@b.field label="教学大纲附件" required="true"]

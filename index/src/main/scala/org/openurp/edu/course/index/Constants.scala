@@ -22,5 +22,5 @@ import org.beangle.commons.lang.SystemInfo
 import org.openurp.app.Urp
 
 object Constants {
-  val AttachmentBase = Urp.home + "/blobs/edu/course"
+  val AttachmentBase = Urp.home + "/blob/edu/course"
 }
