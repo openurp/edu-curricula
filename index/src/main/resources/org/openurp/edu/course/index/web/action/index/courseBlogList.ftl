@@ -1,4 +1,5 @@
 [#ftl]
+  <div class="container">
 [@b.head/]
 [@b.toolbar title='历史课程资料' /]
 [@b.grid  items=courseBlogs var="courseBlog" ]
@@ -9,4 +10,5 @@
     [@b.col width="10%" property="course.credits" title="学分"/]
   [/@]
 [/@]
+  </div>
 [@b.foot/]

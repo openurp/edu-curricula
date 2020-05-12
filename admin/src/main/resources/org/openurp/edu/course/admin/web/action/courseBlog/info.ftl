@@ -18,7 +18,7 @@
     <td class="content">${courseBlog.author.name!}</td>
   </tr>
   <tr>
-    <td class="title" width="15%">简介:</td>
+    <td class="title" width="15%">中文简介:</td>
     <td class="content" colspan="5">${courseBlog.description!}</td>
   </tr>
   <tr>

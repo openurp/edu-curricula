@@ -42,7 +42,7 @@ class CourseBlog extends LongId with Updated {
 	/** 授课教师 */
 	var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
 
-	/** 简介 */
+	/** 中文简介 */
 	var description: String = _
 
 	/** 英文简介 */

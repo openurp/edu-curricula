@@ -10,7 +10,7 @@
     <td class="content">${courseBlog.course.name!}</td>
   </tr>
   <tr>
-    <td class="title" width="30%" >简介:</td>
+    <td class="title" width="30%" >中文简介:</td>
     <td class="content">${courseBlog.description!}</td>
   </tr>
   <tr>

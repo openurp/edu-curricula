@@ -1,5 +1,9 @@
 [#ftl]
 <div class="container">
+	<div>
+		<div class="text-right"><a href="${base}/portal/" target="_blank">课程维护</a></div>
+		<div ><img src="${b.static_url("urp","/images/logo_course.png")}"></div>
+	</div>
 [#include "nav.ftl"/]
 [@b.head/]
 <table class="indexpanel">
