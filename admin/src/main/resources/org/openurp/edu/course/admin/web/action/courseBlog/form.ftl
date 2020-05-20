@@ -13,7 +13,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组" ]
           <option value="">...</option>
           [#list courseGroups as courseGroup]
-            <option value="${courseGroup.id}" [#if courseBlog.meta.courseGroup?? && courseBlog.meta.courseGroup == courseGroup]selected[/#if]>
+            <option value="${courseGroup.id}" [#if courseBlog.meta?? && courseBlog.meta.courseGroup?? && courseBlog.meta.courseGroup == courseGroup]selected[/#if]>
               [#if (courseGroup.indexno?split('.'))?size == 2]&nbsp;&nbsp;
               [#elseif (courseGroup.indexno?split('.'))?size == 3]&nbsp;&nbsp;&nbsp;&nbsp;
               [/#if]

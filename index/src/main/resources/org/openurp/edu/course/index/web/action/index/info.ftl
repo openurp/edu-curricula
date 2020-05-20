@@ -1,5 +1,6 @@
 [#ftl/]
 [@b.head/]
+[#if courseBlog.status = BlogStatus.Published]
 <table class="infoTable" width="60%" align="center">
   <tr>
     <td class="title" width="30%" >课程代码:</td>
@@ -29,4 +30,6 @@
 <div style="text-align:center">
   [@b.a href="index!detail?id=${courseBlog.id!}" target="_blank"]进入课程[/@]
 </div>
+[#else ]该课程资料未发布，暂时不能查看
+[/#if]
 [@b.foot/]

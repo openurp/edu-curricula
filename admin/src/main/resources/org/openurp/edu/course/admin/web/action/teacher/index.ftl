@@ -1,7 +1,7 @@
 [#ftl]
 [@b.head/]
 [@b.toolbar title='修订任务'/]
-[@edu_base.semester_bar name="reviseTask.semester.id" value=currentSemester/]
+[@edu_base.semester_bar name="courseBlog.semester.id" value=currentSemester/]
 [@b.form name="searchForm" action=""/]
 [@b.div id="listFrame"/]
 <script>
@@ -10,7 +10,7 @@
   search();
   function search(pageNo,pageSize,orderBy){
     form.target="listFrame";
-    form.action="${b.url('!search?reviseTask.semester.id='+currentSemester.id)}";
+    form.action="${b.url('!search?courseBlog.semester.id='+currentSemester.id)}";
     bg.form.submit(form)
   }
 </script>

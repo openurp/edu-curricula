@@ -29,9 +29,9 @@ class CourseBlogMeta extends IntId with Updated {
 
 	var courseGroup: Option[CourseGroup] = _
 	/*
-	CourseBlog的数量
-	 */
-	var count: Int = _
+//	CourseBlog的数量
+//	 */
+//	var count: Int = _
 	/*
 	最后更新作者
 	 */

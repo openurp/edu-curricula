@@ -94,7 +94,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				return redirect("search", "该课程资料存在,请修改课程资料")
 			}
 		}
-		courseBlog.author = user
+		courseBlog.author = Option(user)
 		courseBlog.course = course
 		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
@@ -102,7 +102,10 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
 		courseBlogMeta.foreach(meta => {
 			courseBlog.meta = Option(meta)
+			meta.updatedAt = Instant.now()
+			meta.author = getUser
 		})
+		entityDao.saveOrUpdate(courseBlogMeta)
 
 		val path = Constants.AttachmentBase + "/" + semester.id.toString
 		Dirs.on(path).mkdirs()
@@ -176,13 +179,6 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		entityDao.saveOrUpdate(lecturePlan)
 		saveOrUpdate(courseBlog)
 
-		val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(course))
-		courseBlogMeta.foreach(meta => {
-			meta.count = courseBlogs.size
-			meta.updatedAt = Instant.now()
-			meta.author = getUser
-		})
-		entityDao.saveOrUpdate(courseBlogMeta)
 		redirect("search", "info.save.success")
 	}
 
@@ -251,10 +247,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 			entityDao.remove(lecturePlans)
 
-			val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
 			val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
 			courseBlogMeta.foreach(meta => {
-				meta.count = newCourseBlogs.size
 				meta.updatedAt = Instant.now()
 				meta.author = getUser
 			})

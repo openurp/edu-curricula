@@ -25,51 +25,37 @@ import java.util.Locale
 import javax.servlet.http.Part
 import org.beangle.commons.codec.digest.Digests
 import org.beangle.commons.collection.{Collections, Order}
+import org.beangle.commons.conversion.impl.NoneConverter
 import org.beangle.commons.file.digest.Sha1
 import org.beangle.commons.io.{Dirs, IOs}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.base.model.Semester
+import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.course.admin.Constants
 import org.openurp.edu.course.app.model.{ReviseSetting, ReviseTask}
 import org.openurp.edu.course.model.{Attachment, BlogStatus, CourseBlog, CourseBlogMeta, CourseGroup, LecturePlan, Syllabus}
 
-class TeacherAction extends AbstractAction[ReviseTask] {
+class TeacherAction extends AbstractAction[CourseBlog] {
 
 	override def indexSetting(): Unit = {
-		val semesterString = get("reviseTask.semester.id").orNull
-		val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
-		put("currentSemester", semester)
+		put("currentSemester", getSemester)
 		put("project", getProject)
 		forward()
 	}
 
-	override def getQueryBuilder: OqlBuilder[ReviseTask] = {
-		val builder: OqlBuilder[ReviseTask] = OqlBuilder.from(entityName, simpleEntityName)
+	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
+		val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
 		populateConditions(builder)
-		builder.where("reviseTask.author=:user", getUser)
+		builder.where("courseBlog.author=:user", getUser)
+		builder.where("courseBlog.semester=:semester", getSemester)
 	}
 
 	override def search(): View = {
 		if (getUser != null) {
-			val courseBlogMap = Collections.newMap[ReviseTask, CourseBlog]
-			val semesterString = get("reviseTask.semester.id").orNull
-			val semester = if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
-			val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "rt")
-			reviseTaskBuilder.where("rt.semester=:semester", semester)
-			reviseTaskBuilder.where("rt.author=:author", getUser)
-			val reviseTasks = entityDao.search(reviseTaskBuilder)
-			reviseTasks.foreach(reviseTask => {
-				val courseBlogs = getCourseBlogs(reviseTask)
-				courseBlogs.foreach(courseBlog => {
-					courseBlogMap.put(reviseTask, courseBlog)
-				})
-			})
-			put("courseBlogMap", courseBlogMap)
 			val reviseSettingBuilder = OqlBuilder.from(classOf[ReviseSetting], "rs")
-			reviseSettingBuilder.where("rs.semester=:semester", semester)
+			reviseSettingBuilder.where("rs.semester=:semester", getSemester)
 			reviseSettingBuilder.where(":now between rs.beginAt and rs.endAt", Instant.now())
 			val reviseSettings = entityDao.search(reviseSettingBuilder)
 			if (!reviseSettings.isEmpty) {
@@ -77,18 +63,33 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			}
 			put("BlogStatus", BlogStatus)
 
-			val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-			builder.where("courseBlog.author=:author", getUser)
-			put("courseBlogs", entityDao.search(builder))
+			val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+			courseBlogBuilder.where("courseBlog.author=:author", getUser)
+			put("blogs", entityDao.search(courseBlogBuilder))
+
+			val syllabusMap = Collections.newMap[CourseBlog, Syllabus]
+			val courseBlogs = entityDao.search(getQueryBuilder)
+			courseBlogs.foreach(courseBlog => {
+				val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+				syllabuses.foreach(syllabus => {
+					syllabusMap.put(courseBlog, syllabus)
+				})
+			})
+			put("syllabusMap", syllabusMap)
+
 		}
 		put("user", getUser)
+
 		super.search()
 	}
 
-	override def editSetting(reviseTask: ReviseTask): Unit = {
-		val courseBlogs = getCourseBlogs(reviseTask)
-		courseBlogs.foreach(courseBlog => {
-			put("courseBlog", courseBlog)
+	def getSemester: Semester = {
+		val semesterString = get("courseBlog.semester.id").orNull
+		if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+	}
+
+	override def editSetting(courseBlog: CourseBlog): Unit = {
+		if (courseBlog.persisted) {
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 			if (!syllabuses.isEmpty) {
 				put("syllabuses", syllabuses)
@@ -97,49 +98,60 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 			if (!lecturePlans.isEmpty) {
 				put("lecturePlans", lecturePlans)
 			}
-		})
-		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		}
+		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
 		builder.orderBy("courseGroup.indexno")
-		put("courseGroups",entityDao.search(builder))
+		put("courseGroups", entityDao.search(builder))
 
-		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
+		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
 		put("meta", metas.head)
-		super.editSetting(reviseTask)
+		super.editSetting(courseBlog)
 	}
 
-	override def saveAndRedirect(reviseTask: ReviseTask): View = {
-		val courseBlogs = getCourseBlogs(reviseTask)
-		val courseBlog = if (!courseBlogs.isEmpty) courseBlogs.head else new CourseBlog
-		courseBlog.semester = reviseTask.semester
-		courseBlog.course = reviseTask.course
-		courseBlog.department = reviseTask.course.department
-		courseBlog.author = getUser
+	override def saveAndRedirect(courseBlog: CourseBlog): View = {
+		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
+		val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
+		courseBlog.semester = semester
+		courseBlog.course = course
+		courseBlog.department = course.department
+		courseBlog.author = Option(getUser)
 		courseBlog.updatedAt = Instant.now()
-		reviseTask.teachers.foreach(teacher => {
-			if (!courseBlog.teachers.contains(teacher)) {
-				courseBlog.teachers += teacher
-			}
-		})
-		get("courseBlog.description").foreach(description => {
-			courseBlog.description = description
-		})
-		courseBlog.enDescription = get("courseBlog.enDescription")
-		courseBlog.materials = get("courseBlog.materials")
-		courseBlog.website = get("courseBlog.website")
 
-		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
+		val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
+		reviseTaskBuilder.where("reviseTask.semester=:semester", semester)
+		reviseTaskBuilder.where("reviseTask.course=:course", course)
+		reviseTaskBuilder.where("reviseTask.author=:author", getUser)
+		val reviseTasks = entityDao.search(reviseTaskBuilder)
+		reviseTasks.foreach(reviseTask => {
+			reviseTask.teachers.foreach(teacher => {
+				if (!courseBlog.teachers.contains(teacher)) {
+					courseBlog.teachers += teacher
+				}
+			})
+		})
+		//		get("courseBlog.description").foreach(description => {
+		//			courseBlog.description = description
+		//		})
+		//		courseBlog.enDescription = get("courseBlog.enDescription")
+		//		courseBlog.materials = get("courseBlog.materials")
+		//		courseBlog.website = get("courseBlog.website")
+
+		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
 		courseBlogMeta.foreach(meta => {
 			courseBlog.meta = Option(meta)
+			meta.updatedAt = Instant.now()
+			meta.author = getUser
 		})
+		entityDao.saveOrUpdate(courseBlogMeta)
 
-		val path = Constants.AttachmentBase + "/" + reviseTask.semester.id.toString
+		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		Dirs.on(path).mkdirs()
 
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
-		syllabus.semester = reviseTask.semester
-		syllabus.course = reviseTask.course
+		syllabus.semester = semester
+		syllabus.course = course
 		syllabus.locale = Locale.CHINESE
 		syllabus.author = getUser
 		syllabus.updatedAt = Instant.now()
@@ -159,7 +171,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
-				attachment.key = "/" + reviseTask.semester.id.toString + "/" + sha
+				attachment.key = "/" + semester.id.toString + "/" + sha
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
 				syllabus.attachment = attachment
@@ -170,8 +182,8 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		//lecturePlan
 		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
 		val lecturePlan = if (lecturePlans.isEmpty) new LecturePlan else lecturePlans.head
-		lecturePlan.semester = reviseTask.semester
-		lecturePlan.course = reviseTask.course
+		lecturePlan.semester = semester
+		lecturePlan.course = course
 		lecturePlan.locale = Locale.CHINESE
 		lecturePlan.author = getUser
 		lecturePlan.updatedAt = Instant.now()
@@ -191,7 +203,7 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 
 				val attachment = new Attachment()
 				attachment.size = part.getSize.toInt
-				attachment.key = "/" + reviseTask.semester.id.toString + "/" + sha
+				attachment.key = "/" + semester.id.toString + "/" + sha
 				attachment.mimeType = "application/pdf"
 				attachment.name = part.getSubmittedFileName
 				lecturePlan.attachment = attachment
@@ -200,67 +212,46 @@ class TeacherAction extends AbstractAction[ReviseTask] {
 		entityDao.saveOrUpdate(lecturePlan)
 		entityDao.saveOrUpdate(courseBlog)
 
-		val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(reviseTask.course))
-		courseBlogMeta.foreach(meta => {
-			meta.count = newCourseBlogs.size
-			meta.updatedAt = Instant.now()
-			meta.author = getUser
-		})
-		entityDao.saveOrUpdate(courseBlogMeta)
-		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id, "info.save.success")
+		redirect("search", "&courseBlog.semester.id=" + semester.id, "info.save.success")
 	}
 
 	override def remove(): View = {
-		val reviseTask = entityDao.get(classOf[ReviseTask], longId("reviseTask"))
-		val courseBlogs = getCourseBlogs(reviseTask)
-		courseBlogs.foreach(courseBlog => {
-			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
-			syllabuses.foreach {
-				syllabus =>
-					val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
-					if (file.exists()) file.delete()
-			}
-			entityDao.remove(syllabuses)
+		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+		courseBlog.description = "--"
+		courseBlog.updatedAt = Instant.now()
+		courseBlog.enDescription = None
+		courseBlog.materials = None
+		courseBlog.website = None
+		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+		syllabuses.foreach {
+			syllabus =>
+				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
+				if (file.exists()) file.delete()
+		}
+		entityDao.remove(syllabuses)
 
-			val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
-			lecturePlans.foreach {
-				lecturePlan =>
-					val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
-					if (file.exists()) file.delete()
-			}
-			entityDao.remove(lecturePlans)
-		})
-		entityDao.remove(courseBlogs)
+		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
+		lecturePlans.foreach {
+			lecturePlan =>
+				val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
+				if (file.exists()) file.delete()
+		}
+		entityDao.remove(lecturePlans)
+		entityDao.saveOrUpdate(courseBlog)
 
-		val newCourseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(reviseTask.course))
-		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(reviseTask.course))
+		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
 		courseBlogMeta.foreach(meta => {
-			meta.count = newCourseBlogs.size
 			meta.updatedAt = Instant.now()
 			meta.author = getUser
 		})
 		entityDao.saveOrUpdate(courseBlogMeta)
-		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id, "info.delete.success")
-	}
-
-
-	def getCourseBlogs(reviseTask: ReviseTask): Seq[CourseBlog] = {
-		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.course=:course", reviseTask.course)
-		builder.where("courseBlog.semester=:semester", reviseTask.semester)
-		reviseTask.author.foreach(author => {
-			builder.where("courseBlog.author=:author", author)
-		})
-		entityDao.search(builder)
+		redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "info.delete.success")
 	}
 
 	def submit(): View = {
-		val reviseTask = entityDao.get(classOf[ReviseTask], longId("reviseTask"))
-		val courseBlogs = getCourseBlogs(reviseTask)
-		courseBlogs.foreach(courseBlog => {
-			courseBlog.status = BlogStatus.Submited
-		})
-		entityDao.saveOrUpdate(courseBlogs)
-		redirect("search", "&reviseTask.semester.id=" + reviseTask.semester.id, "info.save.success")
+		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+		courseBlog.status = BlogStatus.Submited
+		entityDao.saveOrUpdate(courseBlog)
+		redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "info.save.success")
 	}
 }

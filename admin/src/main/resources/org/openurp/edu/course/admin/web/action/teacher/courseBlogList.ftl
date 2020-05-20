@@ -1,6 +1,6 @@
 [#ftl]
 [@b.toolbar title='历史课程资料' /]
-[@b.grid  items=courseBlogs var="courseBlog" ]
+[@b.grid  items=blogs var="courseBlog" ]
   [@b.row]
     [@b.col width="15%" property="semester.code" title="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
     [@b.col width="15%" property="course.code" title="课程代码"/]

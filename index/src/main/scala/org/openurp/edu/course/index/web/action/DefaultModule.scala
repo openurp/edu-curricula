@@ -23,6 +23,5 @@ import org.beangle.cdi.bind.BindModule
 class DefaultModule extends BindModule {
 	override protected def binding(): Unit = {
 		bind(classOf[SyllabusAction],classOf[LecturePlanAction],classOf[IndexAction])
-		bind(classOf[CourseGroupSearchAction])
 	}
 }

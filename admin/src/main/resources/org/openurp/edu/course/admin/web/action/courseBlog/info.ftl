@@ -15,7 +15,7 @@
     <td class="title" width="15%">任课教师:</td>
     <td class="content">[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
     <td class="title" width="15%">负责人:</td>
-    <td class="content">${courseBlog.author.name!}</td>
+    <td class="content">${(courseBlog.author.name)!}</td>
   </tr>
   <tr>
     <td class="title" width="15%">中文简介:</td>

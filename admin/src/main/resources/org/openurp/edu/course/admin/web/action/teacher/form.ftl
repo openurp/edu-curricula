@@ -3,13 +3,13 @@
 <script language="JavaScript" type="text/JavaScript" src="${base}/static/js/ajax-chosen.js"></script>
 ${b.css("kindeditor","themes/default/default.css")}
 ${b.script("kindeditor","kindeditor-all-min.js")}
-${b.script("kindeditor","lang/zh-CN.js")}
+[#--${b.script("kindeditor","lang/zh-CN.js")}--]
 [@b.toolbar title="课程资料维护"]bar.addBack();[/@]
-  [#assign sa][#if reviseTask.persisted]!update?id=${reviseTask.id}[#else]!save[/#if][/#assign]
+  [#assign sa][#if courseBlog.persisted]!update?id=${courseBlog.id}[#else]!save[/#if][/#assign]
     [@b.form action=sa theme="list" enctype="multipart/form-data"  onsubmit="syncEditor"]
-      [@b.field label="学年学期"]${reviseTask.semester.schoolYear}学年${reviseTask.semester.name}学期[/@]
-      [@b.field label="课程"]${reviseTask.course.name}(${reviseTask.course.code})[/@]
-      [@b.select name="" label="课程分组"]
+      [@b.field label="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
+      [@b.field label="课程"]${courseBlog.course.name}(${courseBlog.course.code})[/@]
+      [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组"]
         <option value="">...</option>
         [#list courseGroups as courseGroup]
           <option value="${courseGroup.id}" [#if meta.courseGroup?? && meta.courseGroup == courseGroup]selected[/#if]>
@@ -20,7 +20,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           </option>
         [/#list]
       [/@]
-      [@b.textarea label="中文简介" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="20" required="true" maxlength="10000"/]
+      [@b.textarea label="中文简介(必填)" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="20"  maxlength="10000"/]
       [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="20" maxlength="10000"/]
       [@b.textfield label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! style="width:250px"/]
       [@b.textfield label="课程网站" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]

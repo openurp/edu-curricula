@@ -45,8 +45,8 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 		})
 		put("courseGroups", courseGroups)
 		val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
-		courseBlogBuilder.where("courseBlog.semester=:semester", getCurrentSemester)
-		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
+//		courseBlogBuilder.where("courseBlog.semester=:semester", getCurrentSemester)
+//		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
 		courseBlogBuilder.select("distinct courseBlog.department")
 		val departments = entityDao.search(courseBlogBuilder)
 		put("departments", departments)
@@ -66,8 +66,8 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 
 	override def search(): View = {
 		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.semester=:semester", getCurrentSemester)
-		builder.where("courseBlog.status =:status", BlogStatus.Published)
+//		builder.where("courseBlog.semester=:semester", getCurrentSemester)
+//		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		get("nameOrCode").foreach(nameOrCode => {
 			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", '%' + nameOrCode + '%', '%' + nameOrCode + '%')
 		})
@@ -95,6 +95,11 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 	def getCourseGroups(id: Int): Set[CourseGroup] = {
 		val courseGroup = entityDao.get(classOf[CourseGroup], id)
 		Hierarchicals.getFamily(courseGroup)
+	}
+
+	override def info(id:String): View = {
+		put("BlogStatus", BlogStatus)
+		super.info(id)
 	}
 
 	def detail(@param("id") id: String): View = {

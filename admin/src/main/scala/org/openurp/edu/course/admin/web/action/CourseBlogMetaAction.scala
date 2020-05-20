@@ -30,10 +30,14 @@ import org.openurp.edu.course.model.{CourseBlogMeta, CourseGroup}
 class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 
 	override def indexSetting(): Unit = {
-		put("courseTypes", getCodes(classOf[CourseType]))
-		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		//		put("courseTypes", getCodes(classOf[CourseType]))
+		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta].getName, "meta")
+		metaBuilder.select("distinct meta.course.courseType")
+		val courseTypes = entityDao.search(metaBuilder)
+		put("courseTypes", courseTypes)
+		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
 		builder.orderBy("courseGroup.indexno")
-		put("courseGroups",entityDao.search(builder))
+		put("courseGroups", entityDao.search(builder))
 		super.indexSetting()
 	}
 
@@ -55,9 +59,9 @@ class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 
 	def editGroup(): View = {
 		put("metaIds", get("courseBlogMeta.id"))
-		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
 		builder.orderBy("courseGroup.indexno")
-		put("courseGroups",entityDao.search(builder))
+		put("courseGroups", entityDao.search(builder))
 		forward()
 	}
 

@@ -52,7 +52,7 @@ class CourseBlog extends LongId with Updated {
 	var department: Department = _
 
 	/** 作者 */
-	var author: User = _
+	var author: Option[User] = _
 
 	/** 教材和辅助资料 */
 	var materials: Option[String] = None
