@@ -1,5 +1,5 @@
 <ul class="nav nav-pills">
-	[#if choosedCourseGroup?? || choosedDepartment ??]
+	[#if choosedCourseGroup?? || departmentId ??]
 		<li role="presentation">
 	[#else ]
 		<li role="presentation" class="active">
@@ -25,7 +25,7 @@
 			</ul>
 		</li>
 	[/#list]
-	[#if choosedDepartment??]
+	[#if departmentId??]
 		<li role="presentation" class="dropdown active">
 	[#else]
 		<li role="presentation" class="dropdown">
@@ -34,11 +34,14 @@
         院系 <span class="caret active"></span>
 		</a>
 		<ul class="dropdown-menu">
-        [#list departments as department]
-					<li>
-						[@b.a href="!index?courseBlog.department.id="+department.id]${department.name}[/@b.a]
-					</li>
-        [/#list]
+			[#list departments as department]
+				<li>
+					[@b.a href="!courseBlogMap?id="+department.id]${department.name}[/@b.a]
+				</li>
+			[/#list]
+			<li>
+          [@b.a href="!courseBlogMap?id=else"]其他[/@b.a]
+			</li>
 		</ul>
 	</li>
 </ul>

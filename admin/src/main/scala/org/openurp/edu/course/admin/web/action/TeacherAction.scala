@@ -136,13 +136,13 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		//		courseBlog.materials = get("courseBlog.materials")
 		//		courseBlog.website = get("courseBlog.website")
 
-		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
-		courseBlogMeta.foreach(meta => {
-			courseBlog.meta = Option(meta)
-			meta.updatedAt = Instant.now()
-			meta.author = getUser
-		})
-		entityDao.saveOrUpdate(courseBlogMeta)
+//		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
+//		courseBlogMeta.foreach(meta => {
+//			courseBlog.meta = Option(meta)
+//			meta.updatedAt = Instant.now()
+//			meta.author = getUser
+//		})
+//		entityDao.saveOrUpdate(courseBlogMeta)
 
 		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		Dirs.on(path).mkdirs()

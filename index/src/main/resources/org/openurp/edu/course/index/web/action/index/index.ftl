@@ -15,7 +15,13 @@
 					<td><input type="text" name="nameOrCode" style="width:118px;"/></td>
 					<td align="right">开课院系:</td>
 					<td>
-						[@b.select style="width:120px" name="courseBlog.department.id" empty="..." items=departments value="${(courseBlog.department.id)!}"/]
+						<select name="courseBlog.department.id" style="width:120px;" >
+							<option value="">...</option>
+							[#list departments as department]
+								<option value="${(department.id)!}" [#if (courseBlog.department.id)?? && (courseBlog.department.id==department.id)]selected[/#if]>${(department.name)!}</option>
+							[/#list]
+							<option value="else">其他</option>
+						</select>
 					</td>
 					<td align="right">课程类别:</td>
 					<td>

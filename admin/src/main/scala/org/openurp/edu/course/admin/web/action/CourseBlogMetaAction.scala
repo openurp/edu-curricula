@@ -25,7 +25,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.code.model.CourseType
-import org.openurp.edu.course.model.{CourseBlogMeta, CourseGroup}
+import org.openurp.edu.course.model.{CourseBlog, CourseBlogMeta, CourseGroup}
 
 class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 
@@ -90,6 +90,13 @@ class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 					entityDao.saveOrUpdate(courseGroupMetas)
 				})
 			}
+			courseGroupMetas.foreach(courseGroupMeta => {
+				val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseGroupMeta.course))
+				courseBlogs.foreach(courseBlog => {
+					courseBlog.meta = Option(courseGroupMeta)
+				})
+				entityDao.saveOrUpdate(courseBlogs)
+			})
 			redirect("search", "info.save.success")
 		}
 	}

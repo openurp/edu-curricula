@@ -80,7 +80,7 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 		val builder = OqlBuilder.from(clazz, "aa")
 		builder.where("aa.course=:course", courseBlog.course)
 		builder.where("aa.semester=:semester", courseBlog.semester)
-		builder.where("aa.author=:author", courseBlog.author)
+//		builder.where("aa.author=:author", courseBlog.author)
 		entityDao.search(builder)
 	}
 

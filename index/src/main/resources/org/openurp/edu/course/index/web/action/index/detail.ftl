@@ -2,14 +2,19 @@
 <div class="container">
 [@b.head/]
 [@b.toolbar title="课程详细资料"/]
+[#if courseBlog.status = BlogStatus.Published]
 <table class="table" style="width:70%" align="center">
+  <tr>
+    <td class="title" width="20%" bgcolor="#e1ecff">学年学期:</td>
+    <td class="content" >${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
+  </tr>
   <tr>
     <td class="title" width="100px" bgcolor="#e1ecff">课程代码:</td>
     <td class="content">${(courseBlog.course.code)!}</td>
   </tr>
   <tr>
     <td class="title" width="20%" bgcolor="#e1ecff">课程名称:</td>
-    <td class="content">[@b.a href="!courseBlogList?id=${courseBlog.id!}" title="点击历史课程资料" target="_blank"]${(courseBlog.course.name)!}[/@]</td>
+    <td class="content">${(courseBlog.course.name)!}</td>
   </tr>
   <tr>
     <td class="title" width="20%" bgcolor="#e1ecff">课程类别:</td>
@@ -18,10 +23,6 @@
   <tr>
     <td class="title" width="20%" bgcolor="#e1ecff">开课院系:</td>
     <td class="content">${(courseBlog.department.name)!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">学年学期:</td>
-    <td class="content" >${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
   </tr>
   <tr>
     <td class="title" width="20%" bgcolor="#e1ecff">任课教师:</td>
@@ -74,5 +75,10 @@
     <td class="content">${courseBlog.website!}</td>
   </tr>
 </table>
+
+<br><br><br><br>
+[#include "courseBlogList.ftl" /]
+[#else ]该课程资料未发布，暂时不能查看
+[/#if]
 </div>
 [@b.foot/]

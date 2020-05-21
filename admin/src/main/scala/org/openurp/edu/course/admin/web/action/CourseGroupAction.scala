@@ -18,12 +18,14 @@
  */
 package org.openurp.edu.course.admin.web.action
 
+import java.time.Instant
+
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.edu.course.model.CourseGroup
+import org.openurp.edu.course.model.{CourseBlogMeta, CourseGroup}
 
 class CourseGroupAction extends RestfulAction[CourseGroup] {
 
@@ -42,16 +44,22 @@ class CourseGroupAction extends RestfulAction[CourseGroup] {
 		put("parents", folders)
 	}
 
-	protected override def removeAndRedirect(entities: Seq[CourseGroup]): View = {
+	protected override def removeAndRedirect(courseGroups: Seq[CourseGroup]): View = {
 		val parents = Collections.newBuffer[CourseGroup]
-		for (courseGroup <- entities) {
+		courseGroups.foreach(courseGroup => {
 			courseGroup.parent foreach { p =>
 				p.children -= courseGroup
 				parents += p
 			}
-		}
+		})
 		entityDao.saveOrUpdate(parents)
-		super.removeAndRedirect(entities)
+		val courseBlogMetas = entityDao.findBy(classOf[CourseBlogMeta], "courseGroup", courseGroups)
+		courseBlogMetas.foreach(courseBlogMeta => {
+			courseBlogMeta.courseGroup = None
+			courseBlogMeta.updatedAt = Instant.now()
+		})
+		entityDao.saveOrUpdate(courseBlogMetas)
+		super.removeAndRedirect(courseGroups)
 	}
 
 
