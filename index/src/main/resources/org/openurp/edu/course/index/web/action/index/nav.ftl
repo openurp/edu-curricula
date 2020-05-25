@@ -1,3 +1,4 @@
+<div style="margin-top: 10px;margin-bottom: 10px;">
 <ul class="nav nav-pills">
 	[#if choosedCourseGroup?? || departmentId ??]
 		<li role="presentation">
@@ -45,4 +46,5 @@
 		</ul>
 	</li>
 </ul>
+</div>
 [@b.div id="nav"/]

@@ -1,6 +1,7 @@
 [#ftl]
-[@b.toolbar title='历史课程资料' /]
-[@b.grid  items=courseBlogs var="courseBlog" ]
+<div>历史课程资料</div>
+<div style="background-color: #e0eaf3; height: 1px;margin-top: 10px;margin-bottom: 10px;"></div>
+[@b.grid items=courseBlogs var="courseBlog" sortable="false" style="width:70%;margin:auto;"]
   [@b.row]
     [@b.col width="15%" property="semester.code" title="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
     [@b.col width="15%" property="course.code" title="课程代码"/]

@@ -1,29 +1,29 @@
 [#ftl/]
 [@b.head/]
 [#if courseBlog.status = BlogStatus.Published]
-<table class="infoTable" width="60%" align="center">
+<table class="table" style="width:600px" align="center">
   <tr>
-    <td class="title" width="30%" >课程代码:</td>
-    <td class="content">${courseBlog.course.code!}</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">课程代码:</td>
+    <td class="content" width="80%" >${courseBlog.course.code!}</td>
   </tr>
   <tr>
-    <td class="title" width="30%" >课程名称:</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">课程名称:</td>
     <td class="content">${courseBlog.course.name!}</td>
   </tr>
   <tr>
-    <td class="title" width="30%" >中文简介:</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">中文简介:</td>
     <td class="content">${courseBlog.description!}</td>
   </tr>
   <tr>
-    <td class="title" width="30%" >英文简介:</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">英文简介:</td>
     <td class="content">${courseBlog.enDescription!}</td>
   </tr>
   <tr>
-    <td class="title" width="30%" >总学分:</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">总学分:</td>
     <td class="content">${(courseBlog.course.credits)!}</td>
   </tr>
   <tr>
-    <td class="title" width="30%" >总学时:</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">总学时:</td>
     <td class="content">${(courseBlog.course.creditHours)!}</td>
   </tr>
 </table>

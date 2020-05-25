@@ -1,15 +1,17 @@
 [#ftl/]
-<div class="container">
+<div class="container" style="width: 1200px">
+[#include "head.ftl"/]
 [@b.head/]
-[@b.toolbar title="课程详细资料"/]
+  <div>${(courseBlog.course.name)!}</div>
+  <div style="background-color: #e0eaf3; height: 1px;margin-top: 10px;margin-bottom: 10px;"></div>
 [#if courseBlog.status = BlogStatus.Published]
-<table class="table" style="width:70%" align="center">
+<table class="table" style="width:70%" align="center" border="1">
   <tr>
     <td class="title" width="20%" bgcolor="#e1ecff">学年学期:</td>
     <td class="content" >${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
   </tr>
   <tr>
-    <td class="title" width="100px" bgcolor="#e1ecff">课程代码:</td>
+    <td class="title" width="20%" bgcolor="#e1ecff">课程代码:</td>
     <td class="content">${(courseBlog.course.code)!}</td>
   </tr>
   <tr>
