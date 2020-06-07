@@ -118,6 +118,9 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 				courseBlog.description = "--"
 				courseBlog.department = clazz.course.department
 				courseBlog.updatedAt = Instant.now()
+				if (!metas.isEmpty) {
+					courseBlog.meta = Option(metas.head)
+				}
 				entityDao.saveOrUpdate(courseBlog)
 			}
 		})

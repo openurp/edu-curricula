@@ -28,5 +28,7 @@ class DefaultModule extends BindModule {
 		bind(classOf[CourseOrUserSearchAction])
 		bind(classOf[TeacherAction],classOf[TeacherBlogAction])
 		bind(classOf[CourseGroupAction],classOf[CourseBlogMetaAction])
+
+		bind(classOf[AwardLabelTypeAction],classOf[AwardLabelAction])
 	}
 }

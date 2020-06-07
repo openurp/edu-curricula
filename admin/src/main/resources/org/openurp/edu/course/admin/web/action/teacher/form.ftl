@@ -6,7 +6,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
 [#--${b.script("kindeditor","lang/zh-CN.js")}--]
 [@b.toolbar title="课程资料维护"]bar.addBack();[/@]
   [#assign sa][#if courseBlog.persisted]!update?id=${courseBlog.id}[#else]!save[/#if][/#assign]
-    [@b.form action=sa theme="list" enctype="multipart/form-data"  onsubmit="syncEditor"]
+    [@b.form action=sa theme="list" enctype="multipart/form-data"  onsubmit="syncEditor" name="blogForm"]
       [@b.field label="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
       [@b.field label="课程"]${courseBlog.course.name}(${courseBlog.course.code})[/@]
       [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组"]
@@ -20,8 +20,9 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           </option>
         [/#list]
       [/@]
-      [@b.textarea label="中文简介(必填)" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="20"  maxlength="10000"/]
-      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="20" maxlength="10000"/]
+      [@b.textarea label="中文简介(必填)" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="15"  maxlength="10000"/]
+      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="15" maxlength="10000"/]
+      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:700px"/]
       [@b.textfield label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! style="width:250px"/]
       [@b.textfield label="课程网站" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
       [@b.field label="教学大纲附件" required="true"]
@@ -50,6 +51,32 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [/#list]
         [/#if]
       [/@]
+      [@b.field label="获奖情况"]
+        [#list labelTypes!?sort_by("code") as awardLabelType]
+          <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
+        [/#list]
+      [/@]
+      [#assign years=['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021']]
+      [#list labelTypes!?sort_by("code") as awardLabelType]
+        [#assign aa]
+          [#if choosedType?? && choosedType?seq_contains(awardLabelType)]
+            display:block
+          [#else]
+            display:none
+          [/#if]
+        [/#assign]
+        [@b.field label="${awardLabelType.name}" name="${awardLabelType.id}" style=aa]
+          <select name="${awardLabelType.id}_year" style="width:80px">
+            <option value="">...</option>
+            [#list years as year]
+              <option value="${year}" [#if yearMap?? && yearMap.get(awardLabelType)?? && yearMap.get(awardLabelType)==year]selected[/#if]>${year}</option>
+            [/#list]
+          </select>
+          [#list awardMap.get(awardLabelType)!?sort_by("code") as awardLabel]
+            <input type="checkBox" name="${awardLabelType.id}_awardLabelId" value="${awardLabel.id}" [#if choosedLabel?? && choosedLabel?seq_contains(awardLabel)]checked[/#if]>${awardLabel.name}&nbsp;
+          [/#list]
+        [/@]
+      [/#list]
       [@b.formfoot]
         [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
       [/@]
@@ -77,5 +104,19 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
     $('#enDescription').val(enDescriptionEditor.html());
     return true;
   }
+
+  var formObj = $("form[name=blogForm]");
+  formObj.find("input[name='awardLabelTypeId']").click(function () {
+
+    var item = formObj.find("li[name="+this.value+"]");
+
+    if (item.css("display") == "none")
+      item.css("display", "block");
+    else {
+      item.css("display", "none");
+      item.children().val("");
+      item.children().prop("checked", false);
+    }
+  })
 </script>
 [@b.foot/]

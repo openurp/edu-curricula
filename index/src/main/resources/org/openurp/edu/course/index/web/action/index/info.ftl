@@ -1,35 +1,37 @@
 [#ftl/]
 [@b.head/]
 [#if courseBlog.status = BlogStatus.Published]
-<table class="table" style="width:600px" align="center">
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">课程代码:</td>
-    <td class="content" width="80%" >${courseBlog.course.code!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">课程名称:</td>
-    <td class="content">${courseBlog.course.name!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">中文简介:</td>
-    <td class="content">${courseBlog.description!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">英文简介:</td>
-    <td class="content">${courseBlog.enDescription!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">总学分:</td>
-    <td class="content">${(courseBlog.course.credits)!}</td>
-  </tr>
-  <tr>
-    <td class="title" width="20%" bgcolor="#e1ecff">总学时:</td>
-    <td class="content">${(courseBlog.course.creditHours)!}</td>
-  </tr>
-</table>
-<div style="text-align:center">
-  [@b.a href="index!detail?id=${courseBlog.id!}" target="_blank"]进入课程[/@]
-</div>
+    <div class="tk_title">标题内容标题内容标题内容标题内容 <a href="javascript:;"><span class="iconfont icon-guanbi"></span></a></div>
+    <div class="tk_con">
+      <table class="tk_table">
+        <tr>
+          <td style="width:100px;"><span class="tk_table_title">课程代码：</span></td>
+          <td>${courseBlog.course.code!}</td>
+        </tr>
+        <tr>
+          <td><span class="tk_table_title">课程名称：</span></td>
+          <td>${courseBlog.course.name!}</td>
+        </tr>
+        <tr>
+          <td><span class="tk_table_title">中文简介：</span></td>
+          <td>${courseBlog.description!}</td>
+        </tr><tr>
+          <td><span class="tk_table_title">英文简介：</span></td>
+          <td>${courseBlog.enDescription!}</td>
+        </tr>
+        <tr>
+          <td><span class="tk_table_title">总学分：</span></td>
+          <td>${(courseBlog.course.credits)!}</td>
+        </tr>
+        <tr>
+          <td><span class="tk_table_title">总学时：</span></td>
+          <td>${(courseBlog.course.creditHours)!}</td>
+        </tr>
+      </table>
+      <div class="text_center">
+        <a class="jrkc" href="${b.url('!detail?id='+courseBlog.id!)}" style="box-sizing: content-box;" target="_blank">进入课程</a>
+      </div>
+    </div>
 [#else ]该课程资料未发布，暂时不能查看
 [/#if]
 [@b.foot/]

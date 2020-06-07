@@ -22,17 +22,36 @@ import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
+import org.beangle.security.realm.cas.CasConfig
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.model.Department
+import org.openurp.edu.base.model.Semester
 import org.openurp.edu.base.web.ProjectSupport
 import org.openurp.edu.course.model._
 
 
 class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 
+	var casConfig: CasConfig = _
+
+	def nav(): Unit = {
+		val departBuilder = OqlBuilder.from(classOf[Department], "department")
+		departBuilder.where("department.school=:school", getProject.school)
+		departBuilder.where("department.endOn is null")
+		departBuilder.where("department.teaching is true")
+		departBuilder.orderBy("department.code")
+		val departments = entityDao.search(departBuilder)
+		put("departments", departments)
+		put("firstDepartment", departments.head)
+		put("awardLabelTypes", getCodes(classOf[AwardLabelType]))
+	}
+
 	override def indexSetting(): Unit = {
+		nav()
+
+		put("casConfig", casConfig)
 		// 没有父类的分组
 		var courseGroups = Collections.newBuffer[CourseGroup]
 		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
@@ -44,29 +63,26 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 			}
 		})
 		put("courseGroups", courseGroups)
-		val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
-		courseBlogBuilder.where("courseBlog.semester=:semester", getCurrentSemester)
-		//		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
-		courseBlogBuilder.select("distinct courseBlog.department")
-		courseBlogBuilder.where("courseBlog.department.teaching is true")
-		val departments = entityDao.search(courseBlogBuilder)
-		put("departments", departments)
-		getInt("courseGroup_child").foreach(childId => {
-			val courseGroup_child = entityDao.get(classOf[CourseGroup], childId)
-			put("courseGroup_children", courseGroup_child.parent.get.children)
-			put("courseGroup_child_children", courseGroup_child.children)
-			put("choosedCourseGroup", courseGroup_child.parent)
-			//			put("choosedCourseGroup_child", courseGroup_child)
-		})
-		getInt("id").foreach(departmentId => {
-			put("departmentId", departmentId)
-		})
+
+		val builder = OqlBuilder.from(classOf[Semester], "semester")
+			.where("semester.calendar in(:calendars)", getProject.calendars)
+		builder.orderBy("semester.code desc")
+		put("semesters", entityDao.search(builder))
+		put("currentSemester", getCurrentSemester)
+
 		super.indexSetting()
 	}
 
 	override def search(): View = {
+		val courseblogs = entityDao.search(getQueryBuilder)
+		put("courseBlogs", courseblogs)
+		put("BlogStatus", BlogStatus)
+		forward()
+	}
+
+	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
 		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.semester=:semester", getCurrentSemester)
+		builder.where("courseBlog.semester=:semester", getSemester)
 		//		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		get("nameOrCode").foreach(nameOrCode => {
 			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", '%' + nameOrCode + '%', '%' + nameOrCode + '%')
@@ -92,11 +108,15 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 				case _ => builder.where("courseBlog.department.id=:id", depart.toInt)
 			}
 		})
-		builder.orderBy(get(Order.OrderStr).orNull)
-		val courseblogs = entityDao.search(builder)
-		put("courseBlogs", courseblogs)
-		put("BlogStatus", BlogStatus)
-		forward()
+		builder.limit(getPageLimit)
+		builder.orderBy("courseBlog.status desc")
+		builder.orderBy("courseBlog.course.code")
+	}
+
+
+	def getSemester: Semester = {
+		val semesterString = get("courseBlog.semester.id").orNull
+		if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
 	}
 
 	def getCourseGroups(id: Int): Set[CourseGroup] = {
@@ -110,6 +130,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 	}
 
 	def detail(@param("id") id: String): View = {
+		nav()
 		val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
 		put("courseBlog", courseBlog)
 		val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
@@ -126,30 +147,15 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 		forward()
 	}
 
-	def courseBlogMap(@param("id") id: String): View = {
-		// 没有子节点的分组
-		var courseGroups = Collections.newBuffer[CourseGroup]
-		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
-		folderBuilder.orderBy("courseGroup.indexno")
-		val rs = entityDao.search(folderBuilder)
-		rs.foreach(courseGroup => {
-			if (courseGroup.parent.isEmpty) {
-				courseGroups += courseGroup
-			}
-		})
-		put("courseGroups", courseGroups)
-		val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
-		courseBlogBuilder.where("courseBlog.semester=:semester", getCurrentSemester)
-		//		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
-		courseBlogBuilder.select("distinct courseBlog.department")
-		courseBlogBuilder.where("courseBlog.department.teaching is true")
-		val departments = entityDao.search(courseBlogBuilder)
-		put("departments", departments)
-		put("departmentId", id)
-		if (id != "else") {
-			put("department", entityDao.get(classOf[Department], id.toInt))
-		}
+	/*
+	院系页
+	 */
+	def courseBlogForDepart(@param("id") id: String): View = {
+		nav()
 
+		if (id != "else") {
+			put("choosedDepartment", entityDao.get(classOf[Department], id.toInt))
+		}
 		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
 		builder.where("courseBlog.semester=:semester", getCurrentSemester)
 		//		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
@@ -162,6 +168,73 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 		val courseBlogs = entityDao.search(builder).toBuffer
 		val courseBlogMap = courseBlogs.groupBy { x => x.meta.get.courseGroup.get }
 		put("courseBlogMap", courseBlogMap)
+		put("BlogStatus", BlogStatus)
+		forward()
+	}
+
+	def courseBlogForType(): View = {
+		nav()
+		// 没有父类的分组
+		var courseGroups = Collections.newBuffer[CourseGroup]
+		val folderBuilder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		folderBuilder.orderBy("courseGroup.indexno")
+		val rs = entityDao.search(folderBuilder)
+		rs.foreach(courseGroup => {
+			if (courseGroup.parent.isEmpty) {
+				courseGroups += courseGroup
+			}
+		})
+		put("courseGroups", courseGroups)
+
+		val builder = OqlBuilder.from(classOf[Semester], "semester")
+			.where("semester.calendar in(:calendars)", getProject.calendars)
+		builder.orderBy("semester.code desc")
+		put("semesters", entityDao.search(builder))
+		put("currentSemester", getCurrentSemester)
+		forward()
+	}
+
+	/*
+	获奖分类页
+	 */
+	def awardLabel(): View = {
+		nav()
+		val builder = getQueryBuilder
+		get("labelTypeId").foreach(labelTypeId => {
+			builder.where("exists(from courseBlog.awards a where a.awardLabel.labelType.id=:labelTypeId)", labelTypeId.toInt)
+			put("labelTypeId", labelTypeId)
+			put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
+			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
+			put("awardLabels", awardLabels)
+		})
+		get("labelId").foreach(labelId => {
+			val choosedAwardLabel = entityDao.get(classOf[AwardLabel], labelId.toInt)
+			put("choosedAwardLabel", choosedAwardLabel)
+			builder.where("exists(from courseBlog.awards a where a.awardLabel.id=:labelId)", labelId.toInt)
+			val labelTypeId = choosedAwardLabel.labelType.id
+			put("labelTypeId", labelTypeId)
+			put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
+			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
+			put("awardLabels", awardLabels)
+		})
+
+		val courseblogs = entityDao.search(builder)
+		put("courseBlogs", courseblogs)
+		put("BlogStatus", BlogStatus)
+		forward()
+	}
+
+
+	def awardLabelMap(): View = {
+		nav()
+		val labelTypeMap = Collections.newMap[AwardLabelType, Seq[CourseBlog]]
+		val builder = getQueryBuilder
+		val awardLabelTypes = getCodes(classOf[AwardLabelType])
+		awardLabelTypes.foreach(labelType => {
+			builder.where("exists(from courseBlog.awards a where a.awardLabel.labelType=:labelType)", labelType)
+			labelTypeMap.put(labelType, entityDao.search(builder))
+		})
+		put("labelTypeMap", labelTypeMap)
 		put("BlogStatus", BlogStatus)
 		forward()
 	}

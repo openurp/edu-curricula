@@ -71,4 +71,12 @@ class CourseBlog extends LongId with Updated {
 
 	/** 元信息 */
 	var meta: Option[CourseBlogMeta] = None
+
+	/** 课程 */
+	var preCourse: Option[String] = _
+
+	/**
+	 * 获奖情况
+	 */
+	var awards: mutable.Buffer[Award] = Collections.newBuffer[Award]
 }

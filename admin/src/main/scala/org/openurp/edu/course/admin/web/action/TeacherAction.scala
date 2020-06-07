@@ -35,7 +35,7 @@ import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.course.admin.Constants
 import org.openurp.edu.course.app.model.{ReviseSetting, ReviseTask}
-import org.openurp.edu.course.model.{Attachment, BlogStatus, CourseBlog, CourseBlogMeta, CourseGroup, LecturePlan, Syllabus}
+import org.openurp.edu.course.model.{Attachment, Award, AwardLabel, AwardLabelType, BlogStatus, CourseBlog, CourseBlogMeta, CourseGroup, LecturePlan, Syllabus}
 
 class TeacherAction extends AbstractAction[CourseBlog] {
 
@@ -105,6 +105,18 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
 		put("meta", metas.head)
+
+		val awardMap = Collections.newMap[AwardLabelType, Seq[AwardLabel]]
+		val labelTypes = getCodes(classOf[AwardLabelType])
+		put("labelTypes", labelTypes)
+		labelTypes.foreach(labelType => {
+			awardMap.put(labelType, entityDao.findBy(classOf[AwardLabel], "labelType", List(labelType)))
+		})
+		put("awardMap", awardMap)
+		put("yearMap", courseBlog.awards.map(e => (e.awardLabel.labelType, e.year)).toMap)
+
+		put("choosedType", courseBlog.awards.map(_.awardLabel.labelType))
+		put("choosedLabel", courseBlog.awards.map(_.awardLabel))
 		super.editSetting(courseBlog)
 	}
 
@@ -129,20 +141,41 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 				}
 			})
 		})
-		//		get("courseBlog.description").foreach(description => {
-		//			courseBlog.description = description
-		//		})
-		//		courseBlog.enDescription = get("courseBlog.enDescription")
-		//		courseBlog.materials = get("courseBlog.materials")
-		//		courseBlog.website = get("courseBlog.website")
 
-//		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
-//		courseBlogMeta.foreach(meta => {
-//			courseBlog.meta = Option(meta)
-//			meta.updatedAt = Instant.now()
-//			meta.author = getUser
-//		})
-//		entityDao.saveOrUpdate(courseBlogMeta)
+		//		courseBlog.awards.clear()
+		var labelIds = Collections.newBuffer[Int]
+		val labelTypes = getCodes(classOf[AwardLabelType])
+		labelTypes.foreach(labelType => {
+			get(labelType.id.toString + "_year").foreach(year => {
+				getAll(labelType.id.toString + "_awardLabelId", classOf[Int]).foreach(labelId => {
+					labelIds += labelId
+					val awardLabel = entityDao.get(classOf[AwardLabel], labelId)
+					courseBlog.awards.find { award => award.awardLabel == awardLabel } match {
+						case Some(award) => award.year = year
+						case None => {
+							val newAward = new Award
+							newAward.year = year
+							newAward.awardLabel = awardLabel
+							newAward.courseBlog = courseBlog
+							entityDao.saveOrUpdate(newAward)
+							courseBlog.awards += newAward
+						}
+					}
+				})
+			})
+		})
+
+		var deleteAwards = Collections.newBuffer[Award]
+		val awardBuilder = OqlBuilder.from(classOf[Award], "award")
+		awardBuilder.where("award.courseBlog=:courseBlog", courseBlog)
+		awardBuilder.where("award.awardLabel.id in(:awardLabelIds)", labelIds)
+		val chooseAwards = entityDao.search(awardBuilder)
+		courseBlog.awards.foreach(award => {
+			if (!chooseAwards.contains(award)) {
+				deleteAwards += award
+			}
+		})
+		courseBlog.awards --= deleteAwards
 
 		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		Dirs.on(path).mkdirs()
@@ -253,5 +286,30 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		courseBlog.status = BlogStatus.Submited
 		entityDao.saveOrUpdate(courseBlog)
 		redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "info.save.success")
+	}
+
+	def copy(): View = {
+		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+		builder.where("courseBlog.course=:course", courseBlog.course)
+		//		builder.where("courseBlog.status =:status", BlogStatus.Published)
+		builder.orderBy("courseBlog.semester desc")
+		val hisBlogs = entityDao.search(builder)
+		if (!hisBlogs.isEmpty) {
+			val hisBlog = hisBlogs.head
+			courseBlog.description = hisBlog.description
+			courseBlog.enDescription = hisBlog.enDescription
+			courseBlog.author = Option(getUser)
+			courseBlog.materials = hisBlog.materials
+			courseBlog.website = hisBlog.website
+			courseBlog.preCourse = hisBlog.preCourse
+			courseBlog.awards = hisBlog.awards
+			courseBlog.updatedAt = Instant.now()
+			courseBlog.meta = hisBlog.meta
+			entityDao.saveOrUpdate(courseBlog)
+			redirect("edit", "&id=" + courseBlog.id, "")
+		} else {
+			redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "不存在历史课程资料")
+		}
 	}
 }

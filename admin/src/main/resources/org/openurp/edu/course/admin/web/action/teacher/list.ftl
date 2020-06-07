@@ -16,7 +16,7 @@
             [@b.a href="!submit?id=${courseBlog.id!}"]提交审核[/@]
             [@b.a href="!remove?id=${courseBlog.id!}"]删除[/@]
           [#else ]
-            [@b.a href="!edit?id=${courseBlog.id!}"]新增[/@]
+            [@b.a href="!copy?id=${courseBlog.id!}"]复制历史资料[/@]
           [/#if]
         [#else ]
           [@b.a href="course-blog!info?id=${courseBlog.id!}" target="_blank"]查看[/@]

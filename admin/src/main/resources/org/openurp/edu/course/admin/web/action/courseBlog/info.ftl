@@ -26,12 +26,24 @@
     <td class="content" colspan="5">${courseBlog.enDescription!}</td>
   </tr>
   <tr>
+    <td class="title" width="15%">预修课程:</td>
+    <td class="content" colspan="5">${courseBlog.preCourse!}</td>
+  </tr>
+  <tr>
     <td class="title" width="15%">教材和辅助资料:</td>
     <td class="content">${courseBlog.materials!}</td>
     <td class="title" width="15%">课程网站:</td>
     <td class="content">${courseBlog.website!}</td>
     <td class="title" width="15%">最近维护时间:</td>
     <td class="content">${courseBlog.updatedAt?string("yyyy-MM-dd HH:mm")!}</td>
+  </tr>
+  <tr>
+    <td class="title" width="15%">获奖情况:</td>
+    <td class="content" colspan="5">
+      [#list courseBlog.awards! as award]
+        ${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
+      [/#list]
+    </td>
   </tr>
   [#if syllabuses ?? && syllabuses?size>0]
     <tr>

@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改获奖课程类别分组"]bar.addBack();[/@]
+[@b.tabs]
+  [#assign sa][#if awardLabelType.persisted]!update?id=${awardLabelType.id!}[#else]!save[/#if][/#assign]
+  [@b.form action=sa theme="list"]
+    [@b.textfield name="awardLabelType.code" label="代码" value="${awardLabelType.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="awardLabelType.name" label="名称" value="${awardLabelType.name!}" required="true" maxlength="20"/]
+    [@b.startend label="有效期限"
+      name="awardLabelType.beginOn,awardLabelType.endOn" required="true,false"
+      start=awardLabelType.beginOn end=awardLabelType.endOn format="date"/]
+    [@b.textfield name="awardLabelType.remark" label="备注" value="${awardLabelType.remark!}" maxlength="3"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

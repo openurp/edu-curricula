@@ -30,6 +30,7 @@ class DefaultMapping extends MappingModule {
 		bind[CourseBlog] declare { e =>
 			e.description is length(40000)
 			e.enDescription is length(40000)
+			e.awards is depends("courseBlog")
 		}
 
 		bind[LecturePlan]
@@ -47,5 +48,11 @@ class DefaultMapping extends MappingModule {
 		}
 
 		bind[CourseBlogMeta]
+
+		bind[Award]
+
+		bind[AwardLabel]
+
+		bind[AwardLabelType]
 	}
 }

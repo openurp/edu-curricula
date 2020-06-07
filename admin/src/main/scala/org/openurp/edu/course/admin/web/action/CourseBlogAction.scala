@@ -81,7 +81,22 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		}
 		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
 		builder.orderBy("courseGroup.indexno")
-		put("courseGroups",entityDao.search(builder))
+		put("courseGroups", entityDao.search(builder))
+
+//		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
+//		put("meta", metas.head)
+
+		val awardMap = Collections.newMap[AwardLabelType, Seq[AwardLabel]]
+		val labelTypes = getCodes(classOf[AwardLabelType])
+		put("labelTypes", labelTypes)
+		labelTypes.foreach(labelType => {
+			awardMap.put(labelType, entityDao.findBy(classOf[AwardLabel], "labelType", List(labelType)))
+		})
+		put("awardMap", awardMap)
+		put("yearMap", courseBlog.awards.map(e => (e.awardLabel.labelType, e.year)).toMap)
+
+		put("choosedType", courseBlog.awards.map(_.awardLabel.labelType))
+		put("choosedLabel", courseBlog.awards.map(_.awardLabel))
 		super.editSetting(courseBlog)
 	}
 
@@ -98,16 +113,43 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlog.course = course
 		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
-//
-//		val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(course))
-//		courseBlogMeta.foreach(meta => {
-//			courseBlog.meta = Option(meta)
-//			meta.updatedAt = Instant.now()
-//			meta.author = getUser
-//		})
-//		entityDao.saveOrUpdate(courseBlogMeta)
 
-		val path = Constants.AttachmentBase + "/" + semester.id.toString
+		//		courseBlog.awards.clear()
+		var labelIds = Collections.newBuffer[Int]
+		val labelTypes = getCodes(classOf[AwardLabelType])
+		labelTypes.foreach(labelType => {
+			get(labelType.id.toString + "_year").foreach(year => {
+				getAll(labelType.id.toString + "_awardLabelId", classOf[Int]).foreach(labelId => {
+					labelIds += labelId
+					val awardLabel = entityDao.get(classOf[AwardLabel], labelId)
+					courseBlog.awards.find { award => award.awardLabel == awardLabel } match {
+						case Some(award) => award.year = year
+						case None => {
+							val newAward = new Award
+							newAward.year = year
+							newAward.awardLabel = awardLabel
+							newAward.courseBlog = courseBlog
+							entityDao.saveOrUpdate(newAward)
+							courseBlog.awards += newAward
+						}
+					}
+				})
+			})
+		})
+
+		var deleteAwards = Collections.newBuffer[Award]
+		val awardBuilder = OqlBuilder.from(classOf[Award], "award")
+		awardBuilder.where("award.courseBlog=:courseBlog", courseBlog)
+		awardBuilder.where("award.awardLabel.id in(:awardLabelIds)", labelIds)
+		val chooseAwards = entityDao.search(awardBuilder)
+		courseBlog.awards.foreach(award => {
+			if (!chooseAwards.contains(award)) {
+				deleteAwards += award
+			}
+		})
+		courseBlog.awards --= deleteAwards
+
+		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		Dirs.on(path).mkdirs()
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
