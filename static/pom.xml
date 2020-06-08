@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.openurp.edu.course</groupId>
+    <artifactId>openurp-edu-course-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openurp.edu.course</groupId>
+  <artifactId>openurp-edu-course-static</artifactId>
+  <packaging>jar</packaging>
+  <name>OpenURP Edu course Static</name>
+
+  <properties>
+    <bundle.symbolicName>org.openurp.edu.course.static</bundle.symbolicName>
+    <bundle.namespace>org.openurp.edu.course</bundle.namespace>
+    <bundle.code>openurp-edu-course</bundle.code>
+  </properties>
+  
+    <build>
+    <outputDirectory>${project.build.directory}/classes/META-INF/resources/${bundle.code}/${project.version}</outputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${mvn.jar.version}</version>
+        <configuration>
+          <classesDirectory>${project.build.directory}/classes</classesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <profiles>
+    <profile>
+      <id>beangle-bundles-release</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${mvn.javadoc.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

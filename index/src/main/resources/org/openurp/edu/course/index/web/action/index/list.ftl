@@ -16,12 +16,12 @@
   [#list courseBlogs as courseBlog]
     <tr>
       <td width="10%" >${(courseBlog.course.code)!}</td>
-      <td width="17%" >[#if courseBlog.status = BlogStatus.Published]<a onclick="openLayer(${courseBlog.id})">${(courseBlog.course.name)!}</a>[#else]${(courseBlog.course.name)!}[/#if]</td>
-      <td width="22%" >${(courseBlog.department.name)!}</td>
+      <td width="15%" >[#if courseBlog.status = BlogStatus.Published]<a onclick="openLayer(${courseBlog.id})">${(courseBlog.course.name)!}</a>[#else]${(courseBlog.course.name)!}[/#if]</td>
+      <td width="15%" >${(courseBlog.department.name)!}</td>
       <td width="5%" >${(courseBlog.course.credits)!}</td>
       <td width="5%" >${(courseBlog.course.creditHours)!}</td>
-      <td width="13%" >${(courseBlog.meta.courseGroup.name)!}</td>
-      <td width="28%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
+      <td width="15%" >${(courseBlog.meta.courseGroup.name)!}</td>
+      <td width="35%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
     </tr>
   [/#list]
   </tbody>
@@ -58,7 +58,7 @@
           <li>
             [@b.a href="!search?pageIndex=${pageIndex+1}&pageSize=15"+param  target="courseBloglist"]
               <span aria-hidden="true">下一页</span>
-             [/@]
+            [/@]
           </li>
         [/#if]
       </ul>
@@ -73,9 +73,9 @@
     var tkH = $(".tk_box").height();
     $('.tk_box').load(newUrl,null,function () {
       $(".tk_box").css("display","block");
-      $(".tk_box").animate({marginTop:tkH/2},"slow");
+      $(".tk_box").animate({marginTop:-tkH/2},"slow");
       $(".tk_box .tk_title a").click(function(){
-        $(".tk_box").css({"top":"0px","margin-top":"0px"});
+        $(".tk_box").css({"top":"50%","margin-top":"0px"});
         $(this).parents(".tk_box").css("display","none");
       });
     })

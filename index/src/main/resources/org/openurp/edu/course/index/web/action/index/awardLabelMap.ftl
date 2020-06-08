@@ -14,7 +14,7 @@
                     <div class="jkc_con m_t_20">
                       [#list labelTypeMap?keys?sort_by("code") as labelType]
                         <div class="jkc_list">
-                            <div class="jkc_title"><img alt="${labelType.name}" src="${base}/static/images/jpzy_${labelType.code}_t.png"></div>
+                            <div class="jkc_title"><img alt="${labelType.name}" src="${b.static_url('openurp-edu-course','images/jpzy_${labelType.code}_t.png')}"></div>
                             <ul class="jkc_item clearfix">
                               [#list labelTypeMap.get(labelType) as blog]
                                 [#if blog_index<16]

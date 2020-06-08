@@ -6,14 +6,14 @@
 	<div class="wrapper">
 
     [#include "nav.ftl"/]
-    <div class="con_area"><img src="${base}/static/images/banner.jpg" alt="banner"></div>
+    <div class="con_area"><img src="${b.static_url('openurp-edu-course','images/banner.jpg')}" alt="banner"></div>
 
     <div class="con_area m_t_20">
       <div class="clearfix">
           <div class="index_l fl">
               <div class="clearfix">
                   <div class="kctj fl">
-                      <div class="module_title"><img src="${base}/static/images/tiao.png"><span>课程统计</span><img src="${base}/static/images/tiao.png"></div>
+                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>课程统计</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>
                         <div class="kctj_con">
                           <ul>
                               <li><span class="iconfont icon-kechengbao"></span>课程总数：<span class="kctj_num">1200</span></li>
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="tzgg fr">
-                      <div class="module_title"><img src="${base}/static/images/tiao.png"><span>通知公告</span><img src="${base}/static/images/tiao.png"><a class="gd" href="#">+MORE</a></div>
+                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>通知公告</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="#">+MORE</a></div>
                       <div class="tzgg_con">
                           <ul>
                               <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示年上海市大学生创新创业训练</a><span class="gg_time">2020-05-31</span></li>
@@ -85,6 +85,7 @@
             <div class="index_r fr">
 
               [@b.form name="loginForm" action="${casConfig.loginUrl}" target="_blank" method="post"]
+                <input type="hidden" name="sid_name" value="URP_SID">
                 <input type="hidden" name="isService" value="1">
 								<div class="login">
 									<div class="login_title">课程负责人和管理员入口：</div>
@@ -101,7 +102,7 @@
 							[/@]
 
                 <div class="yxlb m_t_20">
-                  <div class="module_title"><img src="${base}/static/images/tiao.png"><span>院系列表</span><img src="${base}/static/images/tiao.png"><a class="gd" href="${b.url('!courseBlogForDepart?id='+firstDepartment.id)}">+MORE</a></div>
+                  <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>院系列表</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="${b.url('!courseBlogForDepart?id='+firstDepartment.id)}">+MORE</a></div>
                     <div class="yxlb_con">
                       <ul class="clearfix">
                         [#list departments as department]
@@ -112,7 +113,7 @@
                 </div>
 
                 <div class="jpkc m_t_20">
-                  <div class="module_title"><img src="${base}/static/images/tiao.png"><span>精品资源</span><img src="${base}/static/images/tiao.png"></div>
+                  <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>精品资源</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>
                     <div class="jpkc_con">
                       <ul class="clearfix">
                         [#list awardLabelTypes as type]
@@ -125,7 +126,7 @@
                 </div>
 
                 <div class="kstd m_t_20">
-                  <div class="module_title"><img src="${base}/static/images/tiao.png"><span>快速通道</span><img src="${base}/static/images/tiao.png"></div>
+                  <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>快速通道</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>
                     <div class="kstd_con">
                       <ul>
                           <li><a href="#">网络教育平台</a></li>
@@ -136,7 +137,7 @@
                 </div>
 
                 <div class="cyxz m_t_20">
-                  <div class="module_title"><img src="${base}/static/images/tiao.png"><span>常用下载</span><img src="${base}/static/images/tiao.png"><a class="gd" href="#">+MORE</a></div>
+                  <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>常用下载</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="#">+MORE</a></div>
                     <div class="cyxz_con">
                       <ul>
                           <li><span class="xz"></span><a href="#">网络教育平台</a></li>

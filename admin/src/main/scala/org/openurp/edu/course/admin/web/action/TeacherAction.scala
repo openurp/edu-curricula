@@ -164,18 +164,19 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 				})
 			})
 		})
-
-		var deleteAwards = Collections.newBuffer[Award]
-		val awardBuilder = OqlBuilder.from(classOf[Award], "award")
-		awardBuilder.where("award.courseBlog=:courseBlog", courseBlog)
-		awardBuilder.where("award.awardLabel.id in(:awardLabelIds)", labelIds)
-		val chooseAwards = entityDao.search(awardBuilder)
-		courseBlog.awards.foreach(award => {
-			if (!chooseAwards.contains(award)) {
-				deleteAwards += award
-			}
-		})
-		courseBlog.awards --= deleteAwards
+		if (!labelIds.isEmpty) {
+			var deleteAwards = Collections.newBuffer[Award]
+			val awardBuilder = OqlBuilder.from(classOf[Award], "award")
+			awardBuilder.where("award.courseBlog=:courseBlog", courseBlog)
+			awardBuilder.where("award.awardLabel.id in(:awardLabelIds)", labelIds)
+			val chooseAwards = entityDao.search(awardBuilder)
+			courseBlog.awards.foreach(award => {
+				if (!chooseAwards.contains(award)) {
+					deleteAwards += award
+				}
+			})
+			courseBlog.awards --= deleteAwards
+		}
 
 		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		Dirs.on(path).mkdirs()

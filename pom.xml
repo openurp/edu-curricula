@@ -16,6 +16,7 @@
     <module>admin</module>
     <module>core</module>
     <module>index</module>
+    <module>static</module>
   </modules>
 
   <properties>

@@ -9,5 +9,6 @@
   <static>
     <bundle name="qrcodejs" version="1c78ccd"/>
     <bundle name="pdfjs" version="1.9.426"/>
+    <bundle name="openurp-edu-course" version="0.0.1-SNAPSHOT"/>
   </static>
 </mvc>
