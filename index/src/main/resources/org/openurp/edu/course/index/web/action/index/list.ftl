@@ -70,9 +70,9 @@
   function openLayer(id){
     var url = "${b.url('index!info?id=aaa')}";
     var newUrl = url.replace("aaa",id);
-    var tkH = $(".tk_box").height();
     $('.tk_box').load(newUrl,null,function () {
       $(".tk_box").css("display","block");
+      var tkH = $(".tk_box").height();
       $(".tk_box").animate({marginTop:-tkH/2},"slow");
       $(".tk_box .tk_title a").click(function(){
         $(".tk_box").css({"top":"50%","margin-top":"0px"});

@@ -14,10 +14,19 @@
         </tr>
         <tr>
           <td><span class="tk_table_title">中文简介：</span></td>
-          <td>${courseBlog.description!}</td>
-        </tr><tr>
+          <td id="description">
+            <div [#if courseBlog.description??]style="width:490px;height:90px;overflow: hidden;"[/#if]>
+              ${(courseBlog.description)!}
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td><span class="tk_table_title">英文简介：</span></td>
-          <td>${courseBlog.enDescription!}</td>
+          <td id="enDescription">
+            <div [#if courseBlog.enDescription??]style="width:490px;height:90px;overflow: hidden;"[/#if]>
+              ${courseBlog.enDescription!}
+            </div>
+          </td>
         </tr>
         <tr>
           <td><span class="tk_table_title">总学分：</span></td>
