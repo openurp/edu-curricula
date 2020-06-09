@@ -38,6 +38,11 @@
       <version>${openurp.edu.web.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.openurp.app</groupId>
+      <artifactId>openurp-app-api</artifactId>
+      <version>${openurp.app.version}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
     </dependency>

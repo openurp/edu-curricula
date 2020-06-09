@@ -18,36 +18,29 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.io.File
-
+import org.beangle.webmvc.api.action.ServletSupport
 import org.beangle.webmvc.api.annotation.param
-import org.beangle.webmvc.api.view.{Status, Stream, View}
+import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.edu.course.admin.Constants
+import org.openurp.app.UrpApp
 import org.openurp.edu.course.model.LecturePlan
 
-class LecturePlanAction extends RestfulAction[LecturePlan] {
+class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 
 	def attachment(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
-		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
-			if (file.exists) {
-				Stream(file, lecturePlan.attachment.name)
-			} else {
-				Status(404)
-			}
-		} else {
-			Status(404)
-		}
+		val path = UrpApp.getBlobRepository(true).url(lecturePlan.attachment.key)
+		response.sendRedirect(path.get.toString)
+		null
 	}
 
 
 	def view(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
-			if (file.exists) put("lecturePlan", lecturePlan)
+			val path = UrpApp.getBlobRepository(true).url(lecturePlan.attachment.key)
+			put("lecturePlan", lecturePlan)
+			put("url",path.get.toString)
 		}
 		forward()
 	}

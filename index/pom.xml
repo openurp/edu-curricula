@@ -28,6 +28,11 @@
       <version>${openurp.edu.base.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.openurp.app</groupId>
+      <artifactId>openurp-app-api</artifactId>
+      <version>${openurp.app.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.openurp.edu.base</groupId>
       <artifactId>openurp-edu-base-tag</artifactId>
       <version>${openurp.edu.web.version}</version>

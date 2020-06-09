@@ -18,24 +18,18 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.io.{File, FileOutputStream}
 import java.time.Instant
 import java.util.Locale
 
 import javax.servlet.http.Part
-import org.beangle.commons.codec.digest.Digests
-import org.beangle.commons.collection.{Collections, Order}
-import org.beangle.commons.conversion.impl.NoneConverter
-import org.beangle.commons.file.digest.Sha1
-import org.beangle.commons.io.{Dirs, IOs}
-import org.beangle.commons.lang.Strings
+import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
+import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.course.admin.Constants
 import org.openurp.edu.course.app.model.{ReviseSetting, ReviseTask}
-import org.openurp.edu.course.model.{Attachment, Award, AwardLabel, AwardLabelType, BlogStatus, CourseBlog, CourseBlogMeta, CourseGroup, LecturePlan, Syllabus}
+import org.openurp.edu.course.model._
 
 class TeacherAction extends AbstractAction[CourseBlog] {
 
@@ -178,8 +172,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			courseBlog.awards --= deleteAwards
 		}
 
-		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
-		Dirs.on(path).mkdirs()
+		//		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
+		//		Dirs.on(path).mkdirs()
 
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
@@ -189,25 +183,19 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		syllabus.locale = Locale.CHINESE
 		syllabus.author = getUser
 		syllabus.updatedAt = Instant.now()
+		val blob = UrpApp.getBlobRepository(true)
 		if (!getAll("syllabus.attachment").exists(_ == "")) {
 			if (null != syllabus.attachment && null != syllabus.attachment.key) {
-				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
-				if (file.exists()) file.delete()
+				blob.remove(syllabus.attachment.key)
 			}
 			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
-				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				val syllabusFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
-				IOs.copy(part.getInputStream, new FileOutputStream(syllabusFile))
-				val sha = Sha1.digest(syllabusFile) + (if (Strings.isEmpty(ext)) "" else "." + ext)
-				val target = new File(path + "/" + sha)
-				syllabusFile.renameTo(target)
-
+				val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 				val attachment = new Attachment()
-				attachment.size = part.getSize.toInt
-				attachment.key = "/" + semester.id.toString + "/" + sha
+				attachment.size = meta.size
+				attachment.key = meta.path
 				attachment.mimeType = "application/pdf"
-				attachment.name = part.getSubmittedFileName
+				attachment.name = meta.name
 				syllabus.attachment = attachment
 			}
 		}
@@ -223,24 +211,17 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		lecturePlan.updatedAt = Instant.now()
 		if (!getAll("lecturePlan.attachment").exists(_ == "")) {
 			if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-				val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
-				if (file.exists()) file.delete()
+				blob.remove(lecturePlan.attachment.key)
 			}
 			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]
 			for (part <- parts) {
-				val ext = Strings.substringAfterLast(part.getSubmittedFileName, ".")
-				val lecturePlanFile = new File(Constants.AttachmentBase + "/" + Instant.now().toString)
-				IOs.copy(part.getInputStream, new FileOutputStream(lecturePlanFile))
-				val sha = Sha1.digest(lecturePlanFile) + (if (Strings.isEmpty(ext)) "" else "." + ext)
-				val target = new File(path + "/" + sha)
-				lecturePlanFile.renameTo(target)
-
+				val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 				val attachment = new Attachment()
-				attachment.size = part.getSize.toInt
-				attachment.key = "/" + semester.id.toString + "/" + sha
+				attachment.size = meta.size
+				attachment.key = meta.path
 				attachment.mimeType = "application/pdf"
-				attachment.name = part.getSubmittedFileName
-				lecturePlan.attachment = attachment
+				attachment.name = meta.name
+				syllabus.attachment = attachment
 			}
 		}
 		entityDao.saveOrUpdate(lecturePlan)
@@ -256,20 +237,27 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		courseBlog.enDescription = None
 		courseBlog.materials = None
 		courseBlog.website = None
+		val blob = UrpApp.getBlobRepository(true)
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
-		syllabuses.foreach {
-			syllabus =>
-				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
-				if (file.exists()) file.delete()
-		}
+		syllabuses.foreach(
+			syllabus => {
+
+				if (null != syllabus.attachment && null != syllabus.attachment.key) {
+					blob.remove(syllabus.attachment.key)
+				}
+			}
+			//				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
+			//				if (file.exists()) file.delete()
+		)
 		entityDao.remove(syllabuses)
 
 		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
-		lecturePlans.foreach {
-			lecturePlan =>
-				val file = new File(Constants.AttachmentBase + lecturePlan.attachment.key)
-				if (file.exists()) file.delete()
-		}
+		lecturePlans.foreach(
+			lecturePlan => {
+				if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
+					blob.remove(lecturePlan.attachment.key)
+				}
+			})
 		entityDao.remove(lecturePlans)
 		entityDao.saveOrUpdate(courseBlog)
 
