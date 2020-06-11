@@ -23,6 +23,7 @@ import java.time.Instant
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.data.model.util.Hierarchicals
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.code.model.CourseType
 import org.openurp.edu.course.model.{CourseBlog, CourseBlogMeta, CourseGroup}
@@ -47,6 +48,13 @@ class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 			case "0" => builder.where("courseBlogMeta.courseGroup is not null")
 			case "1" => builder.where("courseBlogMeta.courseGroup is null")
 			case _ =>
+		})
+		get("courseGroup.id").foreach(groupId => {
+			if (groupId != "") {
+				val courseGroup = entityDao.get(classOf[CourseGroup], groupId.toInt)
+				val groups = Hierarchicals.getFamily(courseGroup)
+				builder.where("courseBlogMeta.courseGroup in :groups", groups)
+			}
 		})
 
 		populateConditions(builder)

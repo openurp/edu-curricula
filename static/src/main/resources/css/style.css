@@ -68,7 +68,7 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */  font-size:14px; color
 .kclb_cx_tj{}
 .kclb_cx_tjk{ width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px; background: #fff; border-radius: 0; padding-left:10px;}
 .kclb_cx_tjk .opn{ color:#333; padding:10px; padding:10px; font-size:14px; color:#c00; background:#fff; margin-bottom:10px;}
-.kclb_list{ border:1px dashed #eee; background:#f7f9fb; padding:20px; margin-top:15px;}
+.kclb_list{ border:1px dashed #eee; padding:20px; margin-top:15px;}
 .select_item{ width:255px; float:left;}
 .select_item + .select_item{ margin-left:20px;}
 .select_title{ height:29px; line-height:29px; border:1px solid #d5e1e9; color:#333; border-bottom:none; background:#fff; padding-left:5px;}

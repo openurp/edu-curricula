@@ -29,8 +29,8 @@ class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 
 	def attachment(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
-		val path = UrpApp.getBlobRepository(true).url(lecturePlan.attachment.key)
-		response.sendRedirect(path.get.toString)
+		val path = UrpApp.getBlobRepository(true).path(lecturePlan.attachment.key)
+		response.sendRedirect(path.get)
 		null
 	}
 
@@ -38,9 +38,9 @@ class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 	def view(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val path = UrpApp.getBlobRepository(true).url(lecturePlan.attachment.key)
+			val path = UrpApp.getBlobRepository(true).path(lecturePlan.attachment.key)
 			put("lecturePlan", lecturePlan)
-			put("url",path.get.toString)
+			put("url",path.get)
 		}
 		forward()
 	}

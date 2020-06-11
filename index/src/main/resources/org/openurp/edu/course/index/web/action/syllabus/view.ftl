@@ -18,7 +18,9 @@
 
 <script>
   PDFJS.workerSrc="${b.static_url('pdfjs','build/pdf.worker.js')}"
-  var url = 'attachment?id=${syllabus.id}';
+  PDFJS.disableStream = true;
+  PDFJS.disableAutoFetch = true;
+  var url = "${url}";
 
   var loadingTask = PDFJS.getDocument(url);
   loadingTask.promise.then(function(pdf) {

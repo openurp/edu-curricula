@@ -29,18 +29,18 @@
                         <option value="else">其他</option>
                       [/@]
                     </div>
-                    <div class="kclb_list clearfix">
+                    <div class="aaa clearfix">
                       <div class="select_item">
-                        <div class="select_title">一级选项标题</div>
+                        <div class="select_title">请选择</div>
                         <select class="select_zk" size="6" name="courseGroup" id="courseGroupId" style="height:200px;">
-                          <option value="">请选择</option>
+                          <option value="">全部</option>
                           [#list courseGroups as courseGroup]
                             <option value="${courseGroup.id}">${courseGroup.name}</option>
                           [/#list]
                         </select>
                       </div>
                       <div class="select_item">
-                        <div class="select_title">二级选项标题</div>
+                        <div class="select_title">请选择</div>
                         <select class="select_zk" size="6" name="courseGroup_child"  style="height:200px;">
                         </select>
                       </div>
@@ -55,14 +55,16 @@
             [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?nameOrCode=${Parameters['nameOrCode']!}"/]
             </div>
         </div>
-    <div class="tk_box"/>
 
     [#include "foot.ftl"/]
         
     </div>
+
+  <div class="tk_box"/>
 </body>
 [@b.foot/]
 <script>
+  $(".aaa").css({ "padding":"20px", "margin-top":"15px"})
   function setSearchParams(form) {
     jQuery('input[name=params]', form).remove();
     var params = jQuery(form).serialize();
@@ -120,7 +122,7 @@
         "async": false,
         "success": function (data) {
 
-          secondObj.append("<option value=''>请选择</option>");
+          secondObj.append("<option value=''>全部</option>");
           for (var i = 0; i < data.courseGroups.length; i++) {
             var optionObj = $("<option>");
             optionObj.val(data.courseGroups[i].id);
@@ -141,7 +143,7 @@
                 "async": false,
                 "success": function (data) {
 
-                  thirdObj.append("<option value=''>请选择</option>");
+                  thirdObj.append("<option value=''>全部</option>");
                   for (var i = 0; i < data.courseGroups.length; i++) {
                     var optionObj = $("<option>");
                     optionObj.val(data.courseGroups[i].id);

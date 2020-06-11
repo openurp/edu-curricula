@@ -23,6 +23,7 @@ import java.util.Locale
 
 import javax.servlet.http.Part
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
@@ -183,21 +184,22 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		syllabus.locale = Locale.CHINESE
 		syllabus.author = getUser
 		syllabus.updatedAt = Instant.now()
-		val blob = UrpApp.getBlobRepository(true)
-		if (!getAll("syllabus.attachment").exists(_ == "")) {
-			if (null != syllabus.attachment && null != syllabus.attachment.key) {
+
+		val parts = getAll("syllabus.attachment", classOf[Part])
+		if (parts.nonEmpty && parts.head.getSize > 0) {
+			val blob = UrpApp.getBlobRepository(true)
+			val part = parts.head
+			if (Strings.isNotEmpty(syllabus.attachment.key)) {
 				blob.remove(syllabus.attachment.key)
 			}
-			val parts = Params.getAll("syllabus.attachment").asInstanceOf[List[Part]]
-			for (part <- parts) {
-				val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
-				val attachment = new Attachment()
-				attachment.size = meta.size
-				attachment.key = meta.path
-				attachment.mimeType = "application/pdf"
-				attachment.name = meta.name
-				syllabus.attachment = attachment
-			}
+			val meta = blob.upload("/" + semester.id.toString,
+				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
+			val attachment = new Attachment()
+			attachment.size = meta.size
+			attachment.key = meta.path
+			attachment.mimeType = meta.mediaType
+			attachment.name = meta.name
+			syllabus.attachment = attachment
 		}
 		entityDao.saveOrUpdate(syllabus)
 
@@ -209,20 +211,21 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		lecturePlan.locale = Locale.CHINESE
 		lecturePlan.author = getUser
 		lecturePlan.updatedAt = Instant.now()
-		if (!getAll("lecturePlan.attachment").exists(_ == "")) {
-			if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
+
+		val LParts = getAll("lecturePlan.attachment", classOf[Part])
+		if (parts.nonEmpty && parts.head.getSize > 0) {
+			val blob = UrpApp.getBlobRepository(true)
+			val part = LParts.head
+			if (Strings.isNotEmpty(lecturePlan.attachment.key)) {
 				blob.remove(lecturePlan.attachment.key)
 			}
-			val parts = Params.getAll("lecturePlan.attachment").asInstanceOf[List[Part]]
-			for (part <- parts) {
-				val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
-				val attachment = new Attachment()
-				attachment.size = meta.size
-				attachment.key = meta.path
-				attachment.mimeType = "application/pdf"
-				attachment.name = meta.name
-				syllabus.attachment = attachment
-			}
+			val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
+			val attachment = new Attachment()
+			attachment.size = meta.size
+			attachment.key = meta.path
+			attachment.mimeType = meta.mediaType
+			attachment.name = meta.name
+			lecturePlan.attachment = attachment
 		}
 		entityDao.saveOrUpdate(lecturePlan)
 		entityDao.saveOrUpdate(courseBlog)

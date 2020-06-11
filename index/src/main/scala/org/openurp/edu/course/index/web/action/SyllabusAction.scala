@@ -30,7 +30,7 @@ class SyllabusAction extends RestfulAction[Syllabus]  with ServletSupport{
 
 	def attachment(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
-		val path = UrpApp.getBlobRepository(true).url(syllabus.attachment.key)
+		val path = UrpApp.getBlobRepository(true).path(syllabus.attachment.key)
 		response.sendRedirect(path.get.toString)
 		null
 	}
@@ -38,7 +38,7 @@ class SyllabusAction extends RestfulAction[Syllabus]  with ServletSupport{
 	def view(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val path = UrpApp.getBlobRepository(true).url(syllabus.attachment.key)
+			val path = UrpApp.getBlobRepository(true).path(syllabus.attachment.key)
 			put("syllabus", syllabus)
 			put("url",path.get.toString)
 		}

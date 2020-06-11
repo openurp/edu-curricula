@@ -18,7 +18,9 @@
  */
 package org.openurp.edu.course.index.web.action
 
-import org.beangle.commons.collection.{Collections, Order}
+import java.time.LocalDate
+
+import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
@@ -27,12 +29,12 @@ import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.model.Department
-import org.openurp.edu.base.model.Semester
-import org.openurp.edu.base.web.ProjectSupport
+import org.openurp.code.Code
+import org.openurp.edu.base.model.{Project, Semester}
 import org.openurp.edu.course.model._
 
 
-class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
+class IndexAction extends RestfulAction[CourseBlog] {
 
 	var casConfig: CasConfig = _
 
@@ -257,4 +259,41 @@ class IndexAction extends RestfulAction[CourseBlog] with ProjectSupport {
 		forward("childrenJSON")
 	}
 
+	def getCurrentSemester: Semester = {
+		val builder = OqlBuilder.from(classOf[Semester], "semester")
+			.where("semester.calendar in(:calendars)", getProject.calendars)
+		builder.where(":date between semester.beginOn and  semester.endOn", LocalDate.now)
+		builder.cacheable()
+		val rs = entityDao.search(builder)
+		if (rs.isEmpty) { //如果没有正在其中的学期，则查找一个距离最近的
+			val builder2 = OqlBuilder.from(classOf[Semester], "semester")
+				.where("semester.calendar in(:calendars)", getProject.calendars)
+			builder2.orderBy("abs(semester.beginOn - current_date() + semester.endOn - current_date())")
+			builder2.cacheable()
+			builder2.limit(1, 1)
+			entityDao.search(builder2).headOption.orNull
+		} else {
+			rs.head
+		}
+	}
+
+	def getProject: Project = {
+		val builder = OqlBuilder.from(classOf[Project], "project")
+		builder.where("project.endOn is not null")
+		val projects = entityDao.search(builder)
+		if (projects.isEmpty) {
+			null
+		} else {
+			projects.head
+		}
+	}
+
+	def getCodes[T](clazz: Class[T]): Seq[T] = {
+		val query = OqlBuilder.from(clazz, "c")
+		if (classOf[Code].isAssignableFrom(clazz)) {
+			query.where("c.endOn is null or :now between c.beginOn and c.endOn", LocalDate.now)
+		}
+		query.cacheable()
+		entityDao.search(query)
+	}
 }

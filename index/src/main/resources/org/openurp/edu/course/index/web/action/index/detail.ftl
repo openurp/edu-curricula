@@ -13,7 +13,7 @@
         	<div class="bg_img p_lr_30 p_t_5 p_b_25">
                 <div class="title_con"><span class="title_text"><i class="quan"></i>${(courseBlog.course.name)!}</span></div>
                 <div class="xq_list m_t_20">       
-                    <table>
+                    <table style="background: none">
                     	<tr>
                         	<td style="width:160px;">学年学期：</td>
                             <td>${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
@@ -78,7 +78,7 @@
 												</tr>
                         [/#if]
 												<tr>
-													<td>预授课程：</td>
+													<td>预修课程：</td>
 													<td>${courseBlog.preCourse!}</td>
 												</tr>
                         <tr>

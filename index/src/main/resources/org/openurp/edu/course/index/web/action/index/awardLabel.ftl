@@ -78,9 +78,13 @@
                   [#else]
                       [#assign end = totalPages]
                   [/#if]
-								<div class="text-right">
-									<nav aria-label="Page navigation">
-										<ul class="pagination">
+								<div class="page">
+										<ul class="clearfix">
+											<li>
+                          [@b.a href="!awardLabel?pageIndex=1&pageSize=20"+param ]
+														<span aria-hidden="true">首页</span>
+                          [/@]
+											</li>
                         [#if pageIndex>1]
 													<li>
                               [@b.a href="!awardLabel?pageIndex=${pageIndex-1}&pageSize=20"+param ]
@@ -98,8 +102,12 @@
                               [/@]
 													</li>
                         [/#if]
+											<li>
+                          [@b.a href="!awardLabel?pageIndex=${totalPages}&pageSize=20"+param ]
+														<span aria-hidden="true">尾页</span>
+                          [/@]
+											</li>
 										</ul>
-									</nav>
 								</div>
               [/#if]
 					</div>

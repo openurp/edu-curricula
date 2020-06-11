@@ -27,7 +27,7 @@
   </tbody>
 </table>
 [#if courseBlogs?size>0]
-  [#assign param = "&courseGroup=${Parameters['courseGroup']!}&courseGroup_child=${Parameters['courseGroup_child']!}&courseGroup_child_child=${Parameters['courseGroup_child_child']!}&courseBlog.department.id=${Parameters['courseBlog.department.id']!}"]
+  [#assign param = "&courseGroup=${Parameters['courseGroup']!}&courseGroup_child=${Parameters['courseGroup_child']!}&courseGroup_child_child=${Parameters['courseGroup_child_child']!}&courseBlog.department.id=${Parameters['courseBlog.department.id']!}&courseBlog.semester.id=${Parameters['courseBlog.semester.id']!}"]
   [#assign pageIndex = courseBlogs.pageIndex]
   [#assign totalPages = courseBlogs.totalPages]
   [#if pageIndex-2>0]
@@ -44,23 +44,33 @@
   <div class="text_center m_t_20">
     <div class="page">
       <ul class="clearfix">
+        <li>
+          [@b.a href="!search?pageIndex=1&pageSize=10"+param target="courseBloglist"]
+            <span aria-hidden="true">首页</span>
+          [/@]
+        </li>
         [#if pageIndex>1]
           <li>
-            [@b.a href="!search?pageIndex=${pageIndex-1}&pageSize=15"+param target="courseBloglist"]
+            [@b.a href="!search?pageIndex=${pageIndex-1}&pageSize=10"+param target="courseBloglist"]
               <span aria-hidden="true">上一页</span>
             [/@]
           </li>
         [/#if]
         [#list start..end as i]
-          <li>[@b.a href="!search?pageIndex=${i}&pageSize=15"+param  target="courseBloglist"]${i}[/@]</li>
+          <li>[@b.a href="!search?pageIndex=${i}&pageSize=10"+param  target="courseBloglist"]${i}[/@]</li>
         [/#list]
         [#if pageIndex!=totalPages]
           <li>
-            [@b.a href="!search?pageIndex=${pageIndex+1}&pageSize=15"+param  target="courseBloglist"]
+            [@b.a href="!search?pageIndex=${pageIndex+1}&pageSize=10"+param  target="courseBloglist"]
               <span aria-hidden="true">下一页</span>
             [/@]
           </li>
         [/#if]
+        <li>
+          [@b.a href="!search?pageIndex=${totalPages}&pageSize=10"+param target="courseBloglist"]
+            <span aria-hidden="true">尾页</span>
+          [/@]
+        </li>
       </ul>
     </div>
   </div>

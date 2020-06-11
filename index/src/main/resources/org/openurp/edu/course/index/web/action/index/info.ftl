@@ -1,7 +1,7 @@
 [#ftl/]
 [@b.head/]
 [#if courseBlog.status = BlogStatus.Published]
-    <div class="tk_title">标题内容标题内容标题内容标题内容 <a href="javascript:;"><span class="iconfont icon-guanbi"></span></a></div>
+    <div class="tk_title">${courseBlog.course.name!} <a href="javascript:;"><span class="iconfont icon-guanbi"></span></a></div>
     <div class="tk_con">
       <table class="tk_table">
         <tr>

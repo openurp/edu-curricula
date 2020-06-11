@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="module_bg kclb m_t_20">
-                  [@b.form name="courseBlogSearchForm"  action="!search" target="courseBloglist" title="ui.searchForm" theme="html" ]
+                  [@b.form name="courseBlogSearchForm"  action="!search?pageSize=10" target="courseBloglist" title="ui.searchForm" theme="html" ]
                      <div class="kclb_cx_tj">
                       <span>请选择课程类别：</span>
                        [@b.select  name="courseBlog.semester.id" style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;"]
@@ -58,16 +58,16 @@
                      </div>
                      <div class="kclb_list clearfix">
                       <div class="select_item">
-                          <div class="select_title">一级选项标题</div>
+                          <div class="select_title">请选择</div>
                             <select class="select_zk" size="6" name="courseGroup" id="courseGroupId" style="height:200px;">
-                              <option value="">请选择</option>
+                              <option value="">全部</option>
                               [#list courseGroups as courseGroup]
                                 <option value="${courseGroup.id}">${courseGroup.name}</option>
                               [/#list]
                             </select>
                         </div>
                         <div class="select_item">
-                          <div class="select_title">二级选项标题</div>
+                          <div class="select_title">请选择</div>
                             <select class="select_zk" size="6" name="courseGroup_child"  style="height:200px;">
                             </select>
                         </div>
@@ -79,7 +79,7 @@
                      </div>
                   [/@]
                 </div>
-                [@b.div id="courseBloglist" style="margin-top:20px;" href="!search"/]
+                [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?pageSize=10"/]
 
             </div>
             <div class="index_r fr">
@@ -129,9 +129,9 @@
                   <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>快速通道</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>
                     <div class="kstd_con">
                       <ul>
-                          <li><a href="#">网络教育平台</a></li>
-                            <li><a href="#">教务管理系统</a></li>
-                            <li><a href="#">教务处</a></li>
+                          <li><a href="https://xxb.lixin.edu.cn/yhgg/88988.htm" target="_blank">网络教学平台</a></li>
+                            <li><a href="http://newjw.lixin.edu.cn/sso/login?local=1" target="_blank">教务管理系统</a></li>
+                            <li><a href="https://jwc.lixin.edu.cn/" target="_blank">教务处</a></li>
                         </ul>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                   <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>常用下载</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="#">+MORE</a></div>
                     <div class="cyxz_con">
                       <ul>
-                          <li><span class="xz"></span><a href="#">网络教育平台</a></li>
+                          <li><span class="xz"></span><a href="#">网络教学平台</a></li>
                             <li><span class="xz"></span><a href="#">教务管理系统</a></li>
                             <li><span class="xz"></span><a href="#">教务处</a></li>
                         </ul>
@@ -151,11 +151,11 @@
         </div>
     </div>
 
-    <div class="tk_box"/>
 
     [#include "foot.ftl"/]
   </div>
 
+  <div class="tk_box"/>
 </body>
 [@b.foot/]
 
@@ -231,7 +231,7 @@
         "async": false,
         "success": function (data) {
 
-          secondObj.append("<option value=''>请选择</option>");
+          secondObj.append("<option value=''>全部</option>");
           for (var i = 0; i < data.courseGroups.length; i++) {
             var optionObj = $("<option>");
             optionObj.val(data.courseGroups[i].id);
@@ -252,7 +252,7 @@
                 "async": false,
                 "success": function (data) {
 
-                  thirdObj.append("<option value=''>请选择</option>");
+                  thirdObj.append("<option value=''>全部</option>");
                   for (var i = 0; i < data.courseGroups.length; i++) {
                     var optionObj = $("<option>");
                     optionObj.val(data.courseGroups[i].id);
