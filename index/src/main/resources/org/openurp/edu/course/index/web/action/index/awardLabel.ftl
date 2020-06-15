@@ -36,6 +36,7 @@
 							<th>学分</th>
 							<th>学时</th>
 							<th>课程类别</th>
+							<th>负责人</th>
 							<th>授课老师</th>
 						</tr>
 						</thead>
@@ -55,6 +56,7 @@
 								<td>${(courseBlog.course.credits)!}</td>
 								<td>${(courseBlog.course.creditHours)!}</td>
 								<td>${(courseBlog.meta.courseGroup.name)!}</td>
+								<td>${(courseBlog.author.name)!}</td>
 								<td>[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
 							</tr>
             [/#list]

@@ -1,7 +1,8 @@
 [#ftl]
 [@b.head/]
 [#if user ??]
-[@b.grid  items=courseBlogs var="courseBlog"]
+  [#if courseBlogs ?? && courseBlogs?size>0]
+    [@b.grid  items=courseBlogs var="courseBlog"]
   [@b.row]
     [@b.col width="20%" property="course.code" title="课程代码"/]
     [@b.col width="20%" property="course.name" title="课程名称"/]
@@ -33,6 +34,8 @@
     [@b.col width="15%" property="status.name" title="状态"/]
   [/@]
 [/@]
+  [#else ]该学期没有需要维护的课程
+  [/#if]
 <br><br><br><br>
 [#include "courseBlogList.ftl" /]
 [#else ]请管理员添加此登录用户的人员信息

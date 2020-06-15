@@ -75,5 +75,9 @@
       </td>
     </tr>
   [/#if]
+  <tr>
+    <td class="title" width="15%">备注:</td>
+    <td class="content" colspan="5">${courseBlog.remark!}</td>
+  </tr>
 </table>
 [@b.foot/]

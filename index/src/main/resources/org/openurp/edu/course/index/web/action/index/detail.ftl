@@ -34,6 +34,10 @@
                         	<td>开课院系：</td>
                             <td>${(courseBlog.department.name)!}</td>
                         </tr>
+												<tr>
+													<td>负责人：</td>
+													<td>${(courseBlog.author.name)!}</td>
+												</tr>
                         <tr>
                         	<td>授课老师：</td>
                             <td>[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
@@ -95,6 +99,10 @@
 																${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
 														[/#list]
 													</td>
+												</tr>
+												<tr>
+													<td>备注：</td>
+													<td>${courseBlog.remark!}</td>
 												</tr>
                     </table>
                 </div>

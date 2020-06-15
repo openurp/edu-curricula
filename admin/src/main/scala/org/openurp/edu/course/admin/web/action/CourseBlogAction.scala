@@ -107,7 +107,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				return redirect("search", "该课程资料存在,请修改课程资料")
 			}
 		}
-		courseBlog.author = Option(user)
+//		courseBlog.author = Option(user)
 		courseBlog.course = course
 		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited

@@ -9,6 +9,7 @@
     <th>学分</th>
     <th>学时</th>
     <th>课程类别</th>
+    <th>负责人</th>
     <th>授课教师</th>
   </tr>
   </thead>
@@ -21,7 +22,8 @@
       <td width="5%" >${(courseBlog.course.credits)!}</td>
       <td width="5%" >${(courseBlog.course.creditHours)!}</td>
       <td width="15%" >${(courseBlog.meta.courseGroup.name)!}</td>
-      <td width="35%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
+      <td width="10%" >${(courseBlog.author.name)!}</td>
+      <td width="25%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
     </tr>
   [/#list]
   </tbody>

@@ -298,6 +298,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			courseBlog.awards = hisBlog.awards
 			courseBlog.updatedAt = Instant.now()
 			courseBlog.meta = hisBlog.meta
+			courseBlog.remark = hisBlog.remark
 			entityDao.saveOrUpdate(courseBlog)
 			redirect("edit", "&id=" + courseBlog.id, "")
 		} else {
