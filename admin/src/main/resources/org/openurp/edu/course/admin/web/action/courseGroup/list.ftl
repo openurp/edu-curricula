@@ -12,7 +12,10 @@
     [@b.col width="20%" property="name" title="名称"/]
     [@b.col width="15%" property="parent.name" title="上级课程类别"/]
     [@b.col width="15%" property="beginOn" title="生效时间"/]
-    [@b.col width="15%" property="endOn" title="失效时间"/]
+    [@b.col width="15%" title="页面显示颜色"]<span class="sk" style="background: ${courseGroup.color!}"></span>[/@]
   [/@]
 [/@]
+<style>
+  .sk{ height:8px ; width:8px; display:inline-block; margin-right:5px; vertical-align:middle;}
+  </style>
 [@b.foot/]

@@ -64,6 +64,7 @@ class CourseGroupAction extends RestfulAction[CourseGroup] {
 
 
 	protected override def saveAndRedirect(courseGroup: CourseGroup): View = {
+//		val a =get("courseGroup.color")
 		val newParentId = getInt("parent.id")
 		val indexno = getInt("indexno", 0)
 		var parent: CourseGroup = null

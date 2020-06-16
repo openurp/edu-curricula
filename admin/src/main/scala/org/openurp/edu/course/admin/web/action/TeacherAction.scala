@@ -18,7 +18,7 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.time.Instant
+import java.time.{Instant, LocalDate}
 import java.util.Locale
 
 import javax.servlet.http.Part
@@ -112,6 +112,11 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 		put("choosedType", courseBlog.awards.map(_.awardLabel.labelType))
 		put("choosedLabel", courseBlog.awards.map(_.awardLabel))
+		val years = Collections.newBuffer[String]
+		for (a <- 0 to 9) {
+			years.+=:(LocalDate.now().minusYears(a).getYear.toString)
+		}
+		put("years", years)
 		super.editSetting(courseBlog)
 	}
 

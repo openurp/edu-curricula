@@ -169,9 +169,20 @@ class IndexAction extends RestfulAction[CourseBlog] {
 		}
 		val courseBlogs = entityDao.search(builder).toBuffer
 		val courseBlogMap = courseBlogs.groupBy { x => x.meta.get.courseGroup.get }
+		val courseGroups = getCodes(classOf[CourseGroup])
+		val rootMap = courseGroups.map(x => (x, getRoot(x))).toMap
+		val roots = courseGroups.filter(a => a.parent.isEmpty)
+		put("roots", roots)
+		put("rootMap", rootMap)
 		put("courseBlogMap", courseBlogMap)
 		put("BlogStatus", BlogStatus)
 		forward()
+	}
+
+	def getRoot(courseGroup: CourseGroup): CourseGroup = {
+		if (courseGroup.parent.nonEmpty) {
+			getRoot(courseGroup.parent.get)
+		} else courseGroup
 	}
 
 	def courseBlogForType(): View = {

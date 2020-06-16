@@ -18,8 +18,9 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.time.Instant
-import java.util.Locale
+import java.text.SimpleDateFormat
+import java.time.{Instant, LocalDate}
+import java.util.{Calendar, Date, Locale}
 
 import javax.servlet.http.Part
 import org.beangle.commons.collection.{Collections, Order}
@@ -77,12 +78,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				put("lecturePlans", lecturePlans)
 			}
 		}
-		val builder=OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
 		builder.orderBy("courseGroup.indexno")
 		put("courseGroups", entityDao.search(builder))
 
-//		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
-//		put("meta", metas.head)
+		//		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
+		//		put("meta", metas.head)
 
 		val awardMap = Collections.newMap[AwardLabelType, Seq[AwardLabel]]
 		val labelTypes = getCodes(classOf[AwardLabelType])
@@ -95,6 +96,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 		put("choosedType", courseBlog.awards.map(_.awardLabel.labelType))
 		put("choosedLabel", courseBlog.awards.map(_.awardLabel))
+		val years = Collections.newBuffer[String]
+		for (a <- 0 to 9) {
+			years.+=:(LocalDate.now().minusYears(a).getYear.toString)
+		}
+		put("years", years)
+
 		super.editSetting(courseBlog)
 	}
 
@@ -107,7 +114,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				return redirect("search", "该课程资料存在,请修改课程资料")
 			}
 		}
-//		courseBlog.author = Option(user)
+		//		courseBlog.author = Option(user)
 		courseBlog.course = course
 		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
@@ -148,8 +155,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			})
 			courseBlog.awards --= deleteAwards
 		}
-//		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
-//		Dirs.on(path).mkdirs()
+		//		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
+		//		Dirs.on(path).mkdirs()
 		//保存syllabus
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
@@ -270,15 +277,15 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			)
 			entityDao.remove(syllabuses)
 
-		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
-		lecturePlans.foreach(
-			lecturePlan => {
-				if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-					blob.remove(lecturePlan.attachment.key)
-				}
-			})
-		entityDao.remove(lecturePlans)
-		entityDao.saveOrUpdate(courseBlog)
+			val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
+			lecturePlans.foreach(
+				lecturePlan => {
+					if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
+						blob.remove(lecturePlan.attachment.key)
+					}
+				})
+			entityDao.remove(lecturePlans)
+			entityDao.saveOrUpdate(courseBlog)
 
 			val courseBlogMeta = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
 			courseBlogMeta.foreach(meta => {

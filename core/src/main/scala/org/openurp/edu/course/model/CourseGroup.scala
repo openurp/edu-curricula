@@ -21,6 +21,8 @@ package org.openurp.edu.course.model
 import org.beangle.data.model.pojo.Hierarchical
 import org.openurp.code.CodeBean
 
-class CourseGroup extends CodeBean with Hierarchical[CourseGroup]{
+class CourseGroup extends CodeBean with Hierarchical[CourseGroup] {
+
+	var color: Option[String] = None
 
 }

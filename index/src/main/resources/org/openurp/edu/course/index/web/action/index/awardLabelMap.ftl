@@ -27,8 +27,8 @@
                                 [/#if]
                                 </li>
                                 [/#if]
-                                <li>[@b.a class="more" href="!awardLabel?labelTypeId="+labelType.id]更多<span class="iconfont icon-gengduo1"></span>[/@]</li>
                               [/#list]
+                              <li>[@b.a class="more" href="!awardLabel?labelTypeId="+labelType.id]更多<span class="iconfont icon-gengduo1"></span>[/@]</li>
                             </ul>
                         </div>
                       [/#list]

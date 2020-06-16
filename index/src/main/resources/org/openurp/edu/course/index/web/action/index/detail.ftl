@@ -120,4 +120,7 @@
 	</div>
 
 </body>
+<style>
+	.xq_list table tr td{ padding:15px; color:#826d4c; line-height:24px; word-break: break-all}
+</style>
 [@b.foot/]

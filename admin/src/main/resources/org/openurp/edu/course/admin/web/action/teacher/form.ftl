@@ -56,7 +56,6 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
         [/#list]
       [/@]
-      [#assign years=['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021']]
       [#list labelTypes!?sort_by("code") as awardLabelType]
         [#assign aa]
           [#if choosedType?? && choosedType?seq_contains(awardLabelType)]
@@ -68,7 +67,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
         [@b.field label="${awardLabelType.name}" name="${awardLabelType.id}" style=aa]
           <select name="${awardLabelType.id}_year" style="width:80px">
             <option value="">...</option>
-            [#list years as year]
+            [#list years?reverse as year]
               <option value="${year}" [#if yearMap?? && yearMap.get(awardLabelType)?? && yearMap.get(awardLabelType)==year]selected[/#if]>${year}</option>
             [/#list]
           </select>

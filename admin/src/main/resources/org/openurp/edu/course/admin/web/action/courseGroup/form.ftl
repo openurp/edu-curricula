@@ -12,6 +12,9 @@
       name="courseGroup.beginOn,courseGroup.endOn" required="true,false"
       start=courseGroup.beginOn end=courseGroup.endOn format="date"/]
     [@b.textfield name="courseGroup.remark" label="备注" value="${courseGroup.remark!}" maxlength="3"/]
+    [@b.field label="前台显示颜色" name="courseGroup.color"]
+      <input type="color" name="courseGroup.color" id="myColor" value="${courseGroup.color!}"/>
+    [/@]
     [@b.formfoot]
       [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
     [/@]
