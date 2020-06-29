@@ -28,7 +28,9 @@
                                 </li>
                                 [/#if]
                               [/#list]
+                              [#if labelTypeMap.get(labelType)?? && labelTypeMap.get(labelType)?size>0]
                               <li>[@b.a class="more" href="!awardLabel?labelTypeId="+labelType.id]更多<span class="iconfont icon-gengduo1"></span>[/@]</li>
+                              [/#if]
                             </ul>
                         </div>
                       [/#list]

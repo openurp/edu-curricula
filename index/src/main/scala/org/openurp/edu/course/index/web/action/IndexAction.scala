@@ -207,6 +207,15 @@ class IndexAction extends RestfulAction[CourseBlog] {
 		forward()
 	}
 
+	def courseBlogForName(): View = {
+		nav()
+		val courseblogs = entityDao.search(getQueryBuilder)
+		put("courseBlogs", courseblogs)
+		put("BlogStatus", BlogStatus)
+		forward()
+	}
+
+
 	/*
 	获奖分类页
 	 */

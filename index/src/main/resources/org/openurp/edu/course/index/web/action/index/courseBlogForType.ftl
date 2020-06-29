@@ -6,12 +6,12 @@
 	<div class="wrapper">
 
     [#include "nav.ftl"/]
-        
+
         <div class="con_area m_t_30">
         	<div class="bg_img border p_lr_30 p_t_5 p_b_25">
                 <div class="title_con"><span class="title_text"><i class="quan"></i>课程类别</span></div>
                 <div class="m_t_30">
-                  [@b.form name="courseBlogSearchForm"  action="!search" target="courseBloglist" title="ui.searchForm" theme="html" ]
+                  [@b.form name="courseBlogSearchForm"  action="!search?pageSize=10" target="courseBloglist" title="ui.searchForm" theme="html" ]
                     <div class="kclb_cx_tj">
                       <span>请选择课程类别：</span>
                       [@b.select  name="courseBlog.semester.id" style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;"]
@@ -31,16 +31,16 @@
                     </div>
                     <div class="aaa clearfix">
                       <div class="select_item">
-                        <div class="select_title">请选择</div>
+                        <div class="select_title">一级选项标题</div>
                         <select class="select_zk" size="6" name="courseGroup" id="courseGroupId" style="height:200px;">
-                          <option value="">全部</option>
+                          <option value="">请选择</option>
                           [#list courseGroups as courseGroup]
                             <option value="${courseGroup.id}">${courseGroup.name}</option>
                           [/#list]
                         </select>
                       </div>
                       <div class="select_item">
-                        <div class="select_title">请选择</div>
+                        <div class="select_title">二级选项标题</div>
                         <select class="select_zk" size="6" name="courseGroup_child"  style="height:200px;">
                         </select>
                       </div>
@@ -52,19 +52,19 @@
                     </div>
                   [/@]
                 </div>
-            [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?nameOrCode=${Parameters['nameOrCode']!}"/]
+            [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?nameOrCode=${Parameters['nameOrCode']!}&pageSize=10"/]
             </div>
         </div>
+    <div class="tk_box"/>
 
     [#include "foot.ftl"/]
-        
-    </div>
 
-  <div class="tk_box"/>
+    </div>
 </body>
 [@b.foot/]
 <script>
-  $(".aaa").css({ "padding":"20px", "margin-top":"15px"})
+
+  $(".aaa").css({"padding":"20px", "margin-top":"15px"})
   function setSearchParams(form) {
     jQuery('input[name=params]', form).remove();
     var params = jQuery(form).serialize();
@@ -122,7 +122,7 @@
         "async": false,
         "success": function (data) {
 
-          secondObj.append("<option value=''>全部</option>");
+          secondObj.append("<option value=''>请选择</option>");
           for (var i = 0; i < data.courseGroups.length; i++) {
             var optionObj = $("<option>");
             optionObj.val(data.courseGroups[i].id);
@@ -143,7 +143,7 @@
                 "async": false,
                 "success": function (data) {
 
-                  thirdObj.append("<option value=''>全部</option>");
+                  thirdObj.append("<option value=''>请选择</option>");
                   for (var i = 0; i < data.courseGroups.length; i++) {
                     var optionObj = $("<option>");
                     optionObj.val(data.courseGroups[i].id);

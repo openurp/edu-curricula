@@ -5,7 +5,7 @@
     <div class="tk_con">
       <table class="tk_table">
         <tr>
-          <td style="width:100px;"><span class="tk_table_title">课程代码：</span></td>
+          <td style="width:120px;"><span class="tk_table_title">课程代码：</span></td>
           <td>${courseBlog.course.code!}</td>
         </tr>
         <tr>
@@ -15,7 +15,7 @@
         <tr>
           <td><span class="tk_table_title">中文简介：</span></td>
           <td id="description">
-            <div [#if courseBlog.description??]style="width:490px;height:90px;overflow: hidden;"[/#if]>
+            <div [#if courseBlog.description??]style="height:96px;overflow: hidden;"[/#if]>
               ${(courseBlog.description)!}
             </div>
           </td>
@@ -23,7 +23,7 @@
         <tr>
           <td><span class="tk_table_title">英文简介：</span></td>
           <td id="enDescription">
-            <div [#if courseBlog.enDescription??]style="width:490px;height:90px;overflow: hidden;"[/#if]>
+            <div [#if courseBlog.enDescription??]style="height:96px;overflow: hidden;"[/#if]>
               ${courseBlog.enDescription!}
             </div>
           </td>
@@ -43,4 +43,7 @@
     </div>
 [#else ]该课程资料未发布，暂时不能查看
 [/#if]
+<style>
+  .tk_table tr td{ word-break: break-all}
+</style>
 [@b.foot/]

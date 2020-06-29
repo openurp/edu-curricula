@@ -17,14 +17,21 @@
     <tbody>
     [#list courseBlogs as courseBlog]
       <tr>
-        <td>${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期</td>
-        <td>${(courseBlog.course.code)!}</td>
-        <td>[#if courseBlog.status = BlogStatus.Published][@b.a href="!detail?id=${courseBlog.id!}" target="_blank"]<span style="text-decoration:underline;">${(courseBlog.course.name)!}</span>[/@][#else]${(courseBlog.course.name)!}[/#if]</td>
-        <td>${(courseBlog.department.name)!}</td>
-        <td>${(courseBlog.course.credits)!}</td>
-        <td>${(courseBlog.course.creditHours)!}</td>
-        <td>${(courseBlog.meta.courseGroup.name)!}</td>
-        <td>[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
+        <td width="15%" >${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期</td>
+        <td width="10%" >${(courseBlog.course.code)!}</td>
+        <td width="15%" >
+          [#if courseBlog.status = BlogStatus.Published]
+            [@b.a href="index!detail?id=${courseBlog.id!}" target="_blank"]
+              ${courseBlog.course.name}
+            [/@]
+          [#else ]${courseBlog.course.name}
+          [/#if]
+        </td>
+        <td width="15%" >${(courseBlog.department.name)!}</td>
+        <td width="5%" >${(courseBlog.course.credits)!}</td>
+        <td width="5%" >${(courseBlog.course.creditHours)!}</td>
+        <td width="10%" >${(courseBlog.meta.courseGroup.name)!}</td>
+        <td width="25%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
       </tr>
     [/#list]
     </tbody>

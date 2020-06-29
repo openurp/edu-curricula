@@ -48,7 +48,7 @@
                   <li>
                     [#if blog.status = BlogStatus.Published]
                       [@b.a href="index!detail?id=${blog.id!}" target="_blank"]
-                        ${blog.course.name}
+                        <span style="color: #0b54b0">${blog.course.name}</span>
                       [/@]
                     [#else ]${blog.course.name}
                     [/#if]
@@ -67,6 +67,7 @@
 </div>
 </body>
 <style>
+  .yx_bt_kc{ width: 700px;}
   .color_sm{ background:#fdf9f8; padding:20px; margin-top:10px; font-size:14px;}
   .color_sm ul li{ float:right; position:relative; margin-left:50px; color:#666; cursor:pointer;}
   .color_sm ul li .sk{ height:8px ; width:8px; display:inline-block; margin-right:5px; vertical-align:middle;}
