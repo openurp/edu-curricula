@@ -2,9 +2,9 @@
 [@b.head/]
 [@b.form name="indexForm" action="" /]
 [@b.toolbar title='修订任务' ]
-  bar.addItem("从教学任务导入", function() {
+  bar.addItem("从教学任务导入课程", function() {
   var form = document.reviseTaskSearchForm;
-  bg.form.submit(form, "${b.url("!importFromClazz")}");
+  bg.form.submit(form, "${b.url("import!editNew")}");
   }, "action-new");
 [/@]
 <table  class="indexpanel">

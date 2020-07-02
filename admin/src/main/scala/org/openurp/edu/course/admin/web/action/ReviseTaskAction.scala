@@ -20,11 +20,13 @@ package org.openurp.edu.course.admin.web.action
 
 import java.time.Instant
 
-import org.beangle.commons.collection.Order
+import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.data.transfer.exporter.{DefaultPropertyExtractor, ExportSetting, PropertyExtractor}
+import org.beangle.webmvc.api.annotation.ignore
 import org.beangle.webmvc.api.view.View
 import org.openurp.base.model.User
-import org.openurp.edu.base.model.{Course, Semester}
+import org.openurp.edu.base.model.{Course, Semester, Teacher}
 import org.openurp.edu.clazz.model.Clazz
 import org.openurp.edu.course.app.model.ReviseTask
 import org.openurp.edu.course.model.{CourseBlog, CourseBlogMeta, Syllabus}
@@ -61,84 +63,14 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 	}
 
 
-	override def editSetting(entity: ReviseTask): Unit = {
-		super.editSetting(entity)
+	override def search(): View = {
+		put("departments", getDeparts)
+		put("semester", getSemester())
+		super.search()
 	}
 
-	def importFromClazz(): View = {
-		val semester = getSemester
-		val clazzBuilder = OqlBuilder.from(classOf[Clazz], "clazz")
-		clazzBuilder.where("clazz.semester=:semeter", semester)
-		val clazzes = entityDao.search(clazzBuilder)
-		clazzes.foreach(clazz => {
-			val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
-			reviseTaskBuilder.where("reviseTask.semester=:semester", semester)
-			reviseTaskBuilder.where("reviseTask.course=:course", clazz.course)
-			val reviseTasks = entityDao.search(reviseTaskBuilder)
-			if (reviseTasks.isEmpty) {
-				val reviseTask = new ReviseTask
-				reviseTask.semester = semester
-				reviseTask.course = clazz.course
-				reviseTask.teachers = clazz.teachers.map(_.user)
-				entityDao.saveOrUpdate(reviseTask)
-			} else {
-				reviseTasks.foreach(rt => {
-					if (!clazz.teachers.isEmpty) {
-						clazz.teachers.map(_.user).foreach(user => {
-							if (!rt.teachers.contains(user)) {
-								rt.teachers.addOne(user)
-								entityDao.saveOrUpdate(rt)
-							}
-						})
-					}
-				})
-			}
-
-			val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
-			if (metas.isEmpty) {
-				val meta = new CourseBlogMeta
-				meta.course = clazz.course
-				meta.author = getUser
-				meta.updatedAt = Instant.now()
-				entityDao.saveOrUpdate(meta)
-			}
-
-			val courseBlogs = getCourseBlogs(semester, clazz.course)
-			if (courseBlogs.isEmpty) {
-				val courseBlog = new CourseBlog
-				courseBlog.semester = semester
-				courseBlog.course = clazz.course
-				reviseTasks.foreach(reviseTask => {
-					reviseTask.teachers.foreach(teacher => {
-						if (!courseBlog.teachers.contains(teacher)) {
-							courseBlog.teachers += teacher
-						}
-					})
-				})
-				courseBlog.description = "--"
-				courseBlog.department = clazz.course.department
-				courseBlog.updatedAt = Instant.now()
-				if (!metas.isEmpty) {
-					courseBlog.meta = Option(metas.head)
-				}
-				entityDao.saveOrUpdate(courseBlog)
-			}
-		})
-
-		//删除不存在任务的courseBlog,reviseTask
-		entityDao.findBy(classOf[CourseBlog], "semester", List(getSemester)).foreach(blog => {
-			val hasSyllabus = duplicate(classOf[Syllabus].getName, null, Map("semester" -> semester, "course" -> blog.course))
-			val hasClazz = duplicate(classOf[Clazz].getName, null, Map("semester" -> semester, "course" -> blog.course))
-			if (!hasSyllabus && !hasClazz) {
-				entityDao.remove(blog)
-				val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
-				reviseTaskBuilder.where("reviseTask.semester=:semester", semester)
-				reviseTaskBuilder.where("reviseTask.course=:course", blog.course)
-				entityDao.remove(entityDao.search(reviseTaskBuilder))
-			}
-		})
-
-		redirect("search", "&reviseTask.semester.id=" + semester.id, null)
+	override def editSetting(entity: ReviseTask): Unit = {
+		super.editSetting(entity)
 	}
 
 
@@ -184,6 +116,12 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 		courseBlogBuilder.where("courseBlog.semester=:semester", semester)
 		courseBlogBuilder.where("courseBlog.course=:course", course)
 		entityDao.search(courseBlogBuilder)
+	}
+
+	@ignore
+	override def configExport(setting: ExportSetting): Unit = {
+		setting.context.extractor = new CoursePropertyExtractor()
+		super.configExport(setting)
 	}
 
 }

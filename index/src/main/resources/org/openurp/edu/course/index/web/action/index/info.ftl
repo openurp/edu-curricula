@@ -15,7 +15,7 @@
         <tr>
           <td><span class="tk_table_title">中文简介：</span></td>
           <td id="description">
-            <div [#if courseBlog.description??]style="height:96px;overflow: hidden;"[/#if]>
+            <div [#if courseBlog.description??]style="height:90px;overflow: hidden;"[/#if]>
               ${(courseBlog.description)!}
             </div>
           </td>
@@ -23,7 +23,7 @@
         <tr>
           <td><span class="tk_table_title">英文简介：</span></td>
           <td id="enDescription">
-            <div [#if courseBlog.enDescription??]style="height:96px;overflow: hidden;"[/#if]>
+            <div [#if courseBlog.enDescription??]style="height:90px;overflow: hidden;"[/#if]>
               ${courseBlog.enDescription!}
             </div>
           </td>

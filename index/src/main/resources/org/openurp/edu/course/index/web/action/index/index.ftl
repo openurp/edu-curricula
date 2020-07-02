@@ -16,23 +16,17 @@
                       <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>课程统计</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>
                         <div class="kctj_con">
                           <ul>
-                              <li><span class="iconfont icon-kechengbao"></span>课程总数：<span class="kctj_num">1200</span></li>
-                                <li><span class="iconfont icon-kecheng"></span>选修课数：<span class="kctj_num">1200</span></li>
-                                <li><span class="iconfont icon-zaixiankecheng-solid"></span>在线课程数：<span class="kctj_num">1200</span></li>
-                                <li><span class="iconfont icon-zhengshu-xiantiao"></span>校级金课数：<span class="kctj_num">1200</span></li>
+                              <li><span class="iconfont icon-kechengbao"></span>课程总数：<span class="kctj_num">--</span></li>
+                                <li><span class="iconfont icon-kecheng"></span>选修课数：<span class="kctj_num">--</span></li>
+                                <li><span class="iconfont icon-zaixiankecheng-solid"></span>在线课程数：<span class="kctj_num">--</span></li>
+                                <li><span class="iconfont icon-zhengshu-xiantiao"></span>校级金课数：<span class="kctj_num">--</span></li>
                             </ul>
                         </div>
                     </div>
-                    <div class="tzgg fr">
-                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>通知公告</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="#">+MORE</a></div>
+                    <div class="tzgg fr" style="height: 300px">
+                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>通知公告</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="${b.url('!notices')}" >+MORE</a></div>
                       <div class="tzgg_con">
-                          <ul>
-                              <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示年上海市大学生创新创业训练</a><span class="gg_time">2020-05-31</span></li>
-                              <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示</a><span class="gg_time">2020-05-31</span></li>
-                                <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示</a><span class="gg_time">2020-05-31</span></li>
-                                <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示</a><span class="gg_time">2020-05-31</span></li>
-                                <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示</a><span class="gg_time">2020-05-31</span></li>
-                                <li><span class="yuan"></span><a href="#">关于2020年上海市大学生创新创业训练计划项目拟立项名单的公示</a><span class="gg_time">2020-05-31</span></li>
+                          <ul id="tzgg">
                             </ul>
                         </div>
                     </div>
@@ -161,6 +155,26 @@
 
 <script>
 
+  $.ajax({
+    "type": "get",
+    "url": "${base}/api/platform/bulletin/notices/edu-course-indexapp/3.json",
+    "dataType": "json",
+    "async": false,
+    "success": function (data) {
+      data.forEach(function(item, index){
+        if (index > 5) return;
+        var date = new Date(item.createdAt);
+        var month = date.getMonth() + 1;
+        if (month < 10) month = "0" + month;
+        var day = date.getDate()
+        if (day < 10) day = "0" + day
+        var dateString = date.getFullYear() + "-" + month + "-" + day;
+        var url = "${base}/index/notice?id=" + item.id;
+        $("#tzgg").append("<li><span class=\"yuan\"></span><a href=\"" + url + "\">"+item.title+"</a><span class=\"gg_time\">"+dateString+"</span></li>");
+      })
+    }
+  });
+
 	function checkLogin(form) {
 		var form  = document.loginForm;
 		if (!form['username'].value) {
@@ -173,12 +187,13 @@
 		}
 		setSearchParams(form);
 		bg.form.submit(form);
-	}
+	};
+
   function setSearchParams(form) {
     jQuery('input[name=params]', form).remove();
     var params = jQuery(form).serialize();
     bg.form.addInput(form, 'params', params);
-  }
+  };
 
   beangle.load(["jquery-ui", "jquery-chosen", "jquery-colorbox"], function () {
     var formObj = $("form[name=courseBlogSearchForm]");
@@ -189,31 +204,31 @@
       var form = document.courseBlogSearchForm;
       setSearchParams(document.courseBlogSearchForm);
       bg.form.submit(form);
-    })
+    });
 
     formObj.find("select[name='courseBlog.semester.id']").change(function () {
       var form = document.courseBlogSearchForm;
       setSearchParams(document.courseBlogSearchForm);
       bg.form.submit(form);
-    })
+    });
 
     formObj.find("select[name='courseGroup']").change(function () {
       var form = document.courseBlogSearchForm;
       setSearchParams(document.courseBlogSearchForm);
       bg.form.submit(form);
-    })
+    });
 
     formObj.find("select[name='courseGroup_child']").change(function () {
       var form = document.courseBlogSearchForm;
       setSearchParams(document.courseBlogSearchForm);
       bg.form.submit(form);
-    })
+    });
 
     formObj.find("select[name='courseGroup_child_child']").change(function () {
       var form = document.courseBlogSearchForm;
       setSearchParams(document.courseBlogSearchForm);
       bg.form.submit(form);
-    })
+    });
 
     formObj.find("select[name='courseGroup']").children("option").click(function () {
       var secondObj = formObj.find("[name='courseGroup_child']");

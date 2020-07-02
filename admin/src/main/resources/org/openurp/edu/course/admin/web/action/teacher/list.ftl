@@ -15,7 +15,7 @@
           [#if syllabusMap.get(courseBlog) ??]
             [@b.a href="course-blog!info?id=${courseBlog.id!}" target="_blank"]查看[/@]
             [@b.a href="!submit?id=${courseBlog.id!}"]提交审核[/@]
-            [@b.a href="!remove?id=${courseBlog.id!}"]删除[/@]
+            [@b.a href="!remove?id=${courseBlog.id!}"]重置[/@]
           [#else ]
             [@b.a href="!copy?id=${courseBlog.id!}"]复制历史资料[/@]
           [/#if]

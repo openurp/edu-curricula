@@ -10,7 +10,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       [#if courseBlog.persisted]
         [@b.field label="学年学期"]${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期[/@]
         [@b.field label="课程"]${courseBlog.course.name}(${courseBlog.course.code})[/@]
-        [@b.select name="courseBlog.meta.courseGroup.id" label="课程分组" ]
+        [@b.select name="courseBlog.meta.courseGroup.id" label="课程分类" ]
           <option value="">...</option>
           [#list courseGroups as courseGroup]
             <option value="${courseGroup.id}" [#if courseBlog.meta?? && courseBlog.meta.courseGroup?? && courseBlog.meta.courseGroup == courseGroup]selected[/#if]>
@@ -29,12 +29,9 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           </select>
         [/@]
       [/#if]
-      [@b.textarea label="计划简介" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="20" required="true" maxlength="10000"/]
-      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="20" maxlength="10000"/]
-      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"/]
-      [@b.textfield label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! style="width:250px"/]
-      [@b.textfield label="课程网站" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
-      [@b.field label="教学大纲附件" required="true"]
+      [@b.textarea label="中文简介" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="10" required="true" maxlength="10000"/]
+      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="10" maxlength="10000"/]
+      [@b.field label="教学大纲" required="true"]
         <input name="syllabus.attachment" type="file" style="display:inline-block"/> <span style="color:red" >注：请上传pdf格式的文件</span>
         [#if courseBlog.persisted && syllabuses ?? && syllabuses?size>0]
           [#list syllabuses as syllabus]
@@ -47,7 +44,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/#if]
       [/@]
-      [@b.field label="授课计划附件" required="true"]
+      [@b.field label="授课计划" required="true"]
         <input name="lecturePlan.attachment" type="file" style="display:inline-block"/> <span style="color:red" >注：请上传pdf格式的文件</span>
         [#if courseBlog.persisted && lecturePlans?? && lecturePlans?size>0 ]
           [#list lecturePlans as lecturePlan]
@@ -60,6 +57,9 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/#if]
       [/@]
+      [@b.textarea label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! id="materials" cols="100" rows="10"  maxlength="10000"/]
+      [@b.textfield label="课程网站" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
+      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"/]
       [@b.field label="获奖情况"]
         [#list labelTypes!?sort_by("code") as awardLabelType]
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
@@ -117,6 +117,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
 
   var descriptionEditor;
   var enDescriptionEditor;
+  var materialsEditor;
   jQuery(document).ready(function (){
     descriptionEditor = KindEditor.create('textarea[name="courseBlog.description"]', {
       resizeType : 1,
@@ -130,11 +131,18 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       allowImageUpload : false,
       allowFileManager:false
     });
+    materialsEditor = KindEditor.create('textarea[name="courseBlog.materials"]', {
+      resizeType : 1,
+      allowPreviewEmoticons : false,
+      allowImageUpload : false,
+      allowFileManager:false
+    });
   });
 
   function syncEditor(){
     $('#description').val(descriptionEditor.html());
     $('#enDescription').val(enDescriptionEditor.html());
+    $('#materials').val(materialsEditor.html());
     return true;
   }
 

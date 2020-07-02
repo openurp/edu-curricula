@@ -30,5 +30,7 @@ class DefaultModule extends BindModule {
 		bind(classOf[CourseGroupAction],classOf[CourseBlogMetaAction])
 
 		bind(classOf[AwardLabelTypeAction],classOf[AwardLabelAction])
+
+		bind(classOf[ImportAction])
 	}
 }

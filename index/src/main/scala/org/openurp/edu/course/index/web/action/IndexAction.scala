@@ -316,4 +316,15 @@ class IndexAction extends RestfulAction[CourseBlog] {
 		query.cacheable()
 		entityDao.search(query)
 	}
+
+	def notice(@param("id") id: String): View = {
+		nav()
+		put("id",id)
+		forward()
+	}
+
+	def notices(): View = {
+		nav()
+		forward()
+	}
 }

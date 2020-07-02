@@ -89,7 +89,7 @@
                         	<td>教材和辅助资料：</td>
                             <td>${courseBlog.materials!}</td>
                         </tr><tr>
-                        	<td>课程网络：</td>
+                        	<td>课程网站：</td>
                             <td>${courseBlog.website!}</td>
                         </tr>
 												<tr>

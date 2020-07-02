@@ -275,7 +275,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			meta.author = getUser
 		})
 		entityDao.saveOrUpdate(courseBlogMeta)
-		redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "info.delete.success")
+		redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "重置成功")
 	}
 
 	def submit(): View = {
