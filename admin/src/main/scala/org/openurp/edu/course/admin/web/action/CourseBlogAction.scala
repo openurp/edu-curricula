@@ -68,6 +68,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	}
 
 	override def editSetting(courseBlog: CourseBlog): Unit = {
+		if (courseBlog.description == "--") {
+			courseBlog.description = ""
+		}
+		if (courseBlog.enDescription == "--") {
+			courseBlog.enDescription = ""
+		}
 		if (courseBlog.persisted) {
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 			if (!syllabuses.isEmpty) {
@@ -118,6 +124,14 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlog.course = course
 		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
+
+		get("courseBlog.website").foreach(a => {
+			val website = a.trim
+			if (website != "" && !website.startsWith("http://") && !website.startsWith("https://")) {
+				val newWebsite = "http://" + website
+				courseBlog.website = Option(newWebsite)
+			}
+		})
 
 		//		courseBlog.awards.clear()
 		var labelIds = Collections.newBuffer[Int]
@@ -264,6 +278,11 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	override def removeAndRedirect(courseBlogs: Seq[CourseBlog]): View = {
 		val blob = UrpApp.getBlobRepository(true)
 		courseBlogs.foreach(courseBlog => {
+			courseBlog.description = " --"
+			courseBlog.enDescription = " --"
+			courseBlog.updatedAt = Instant.now()
+			courseBlog.materials = None
+			courseBlog.website = None
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 			syllabuses.foreach(
 				syllabus => {
@@ -294,7 +313,6 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			})
 			entityDao.saveOrUpdate(courseBlogMeta)
 		})
-		remove(courseBlogs)
 		redirect("search", "info.remove.success")
 	}
 

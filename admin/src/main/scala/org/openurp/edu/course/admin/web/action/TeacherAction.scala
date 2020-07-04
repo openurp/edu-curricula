@@ -84,6 +84,12 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 	}
 
 	override def editSetting(courseBlog: CourseBlog): Unit = {
+		if (courseBlog.description == "--") {
+			courseBlog.description = ""
+		}
+		if (courseBlog.enDescription == "--") {
+			courseBlog.enDescription = ""
+		}
 		if (courseBlog.persisted) {
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 			if (!syllabuses.isEmpty) {
@@ -128,6 +134,13 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		courseBlog.department = course.department
 		courseBlog.author = Option(getUser)
 		courseBlog.updatedAt = Instant.now()
+		get("courseBlog.website").foreach(a => {
+			val website = a.trim
+			if (website != "" && !website.startsWith("http://") && !website.startsWith("https://")) {
+				val newWebsite = "http://" + website
+				courseBlog.website = Option(newWebsite)
+			}
+		})
 
 		val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
 		reviseTaskBuilder.where("reviseTask.semester=:semester", semester)
@@ -240,9 +253,9 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 	override def remove(): View = {
 		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
-		courseBlog.description = "--"
+		courseBlog.description = " --"
+		courseBlog.enDescription = " --"
 		courseBlog.updatedAt = Instant.now()
-		courseBlog.enDescription = None
 		courseBlog.materials = None
 		courseBlog.website = None
 		val blob = UrpApp.getBlobRepository(true)

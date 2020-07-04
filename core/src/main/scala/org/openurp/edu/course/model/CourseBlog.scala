@@ -46,7 +46,7 @@ class CourseBlog extends LongId with Updated {
 	var description: String = _
 
 	/** 英文简介 */
-	var enDescription: Option[String] = None
+	var enDescription: String = _
 
 	/** 开课院系 */
 	var department: Department = _
@@ -57,7 +57,7 @@ class CourseBlog extends LongId with Updated {
 	/** 教材和辅助资料 */
 	var materials: Option[String] = None
 
-	/** 课程网站 */
+	/** 课程网站地址 */
 	var website: Option[String] = None
 
 	/** 状态 */

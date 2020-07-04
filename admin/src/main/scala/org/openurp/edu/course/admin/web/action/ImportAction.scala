@@ -86,7 +86,8 @@ class ImportAction extends AbstractAction[ReviseTask] {
 						}
 					})
 				})
-				courseBlog.description = "--"
+				courseBlog.description = " --"
+				courseBlog.enDescription = " --"
 				courseBlog.department = clazz.course.department
 				courseBlog.updatedAt = Instant.now()
 				if (!metas.isEmpty) {

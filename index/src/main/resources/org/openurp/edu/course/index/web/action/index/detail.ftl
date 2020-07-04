@@ -89,8 +89,8 @@
                         	<td>教材和辅助资料：</td>
                             <td>${courseBlog.materials!}</td>
                         </tr><tr>
-                        	<td>课程网站：</td>
-                            <td>${courseBlog.website!}</td>
+                        	<td>课程网站地址：</td>
+													<td><a href="${courseBlog.website!}" target="_blank">${courseBlog.website!}</a></td>
                         </tr>
 												<tr>
 													<td>获奖情况：</td>

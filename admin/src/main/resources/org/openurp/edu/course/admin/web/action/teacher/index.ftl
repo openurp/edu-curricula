@@ -1,6 +1,5 @@
 [#ftl]
 [@b.head/]
-[@b.toolbar title='修订任务'/]
 [@edu_base.semester_bar name="courseBlog.semester.id" value=currentSemester/]
 [@b.form name="searchForm" action=""/]
 [@b.div id="listFrame"/]

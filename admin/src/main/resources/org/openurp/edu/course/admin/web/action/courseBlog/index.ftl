@@ -1,6 +1,5 @@
 [#ftl]
 [@b.head/]
-[@b.toolbar title='课程资料维护' /]
 <table  class="indexpanel" >
   <tr>
     <td class="index_view" style="width: 180px;">

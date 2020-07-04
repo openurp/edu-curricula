@@ -1,6 +1,5 @@
 [#ftl]
 [@b.head/]
-[@b.toolbar title='修订设置' /]
 [@b.form name="searchForm" action="" method="get"/]
 [@b.div id="listFrame"/]
 
