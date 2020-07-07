@@ -54,7 +54,10 @@ class CourseBlog extends LongId with Updated {
 	/** 作者 */
 	var author: Option[User] = _
 
-	/** 教材和辅助资料 */
+	/** 教材和参考书目 */
+	var books: String = _
+
+	/** 辅助资料 */
 	var materials: Option[String] = None
 
 	/** 课程网站地址 */
@@ -72,8 +75,8 @@ class CourseBlog extends LongId with Updated {
 	/** 元信息 */
 	var meta: Option[CourseBlogMeta] = None
 
-	/** 课程 */
-	var preCourse: Option[String] = _
+	/** 预修课程 */
+	var preCourse: String = _
 
 	/**
 	 * 获奖情况

@@ -18,16 +18,13 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.text.SimpleDateFormat
 import java.time.{Instant, LocalDate}
-import java.util.{Calendar, Date, Locale}
+import java.util.Locale
 
 import javax.servlet.http.Part
 import org.beangle.commons.collection.{Collections, Order}
-import org.beangle.commons.io.Dirs
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
@@ -73,6 +70,12 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		}
 		if (courseBlog.enDescription == "--") {
 			courseBlog.enDescription = ""
+		}
+		if (courseBlog.books == "--") {
+			courseBlog.books = ""
+		}
+		if (courseBlog.preCourse == "--") {
+			courseBlog.preCourse = ""
 		}
 		if (courseBlog.persisted) {
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
@@ -280,6 +283,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		courseBlogs.foreach(courseBlog => {
 			courseBlog.description = " --"
 			courseBlog.enDescription = " --"
+			courseBlog.preCourse = " --"
+			courseBlog.books = " --"
 			courseBlog.updatedAt = Instant.now()
 			courseBlog.materials = None
 			courseBlog.website = None

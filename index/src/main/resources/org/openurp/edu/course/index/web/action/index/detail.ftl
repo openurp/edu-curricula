@@ -43,11 +43,11 @@
                             <td>[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
                         </tr>
                         <tr>
-                        	<td>中文简介：</td>
-                            <td>${courseBlog.description!}</td>
-                        </tr><tr>
-                        	<td>英文简介：</td>
-                            <td>${courseBlog.enDescription!}</td>
+													<td>中文简介：</td>
+													<td>[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</td>
+												</tr><tr>
+												<td>英文简介：</td>
+												<td>[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</td>
                         </tr>
                         [#if syllabuses ?? && syllabuses?size>0]
                         <tr>
@@ -83,12 +83,16 @@
                         [/#if]
 												<tr>
 													<td>预修课程：</td>
-													<td>${courseBlog.preCourse!}</td>
+													<td>[#if courseBlog.preCourse!="--"]${courseBlog.preCourse!}[/#if]</td>
 												</tr>
-                        <tr>
-                        	<td>教材和辅助资料：</td>
-                            <td>${courseBlog.materials!}</td>
-                        </tr><tr>
+												<tr>
+													<td>教材和参考书目：</td>
+													<td>[#if courseBlog.books!="--"]${courseBlog.books!}[/#if]</td>
+												</tr>
+												<tr>
+													<td>辅助资料：</td>
+													<td>${courseBlog.materials!}</td>
+												</tr><tr>
                         	<td>课程网站地址：</td>
 													<td><a href="${courseBlog.website!}" target="_blank">${courseBlog.website!}</a></td>
                         </tr>

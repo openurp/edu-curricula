@@ -23,7 +23,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       [@b.textarea label="中文简介" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="10"  maxlength="10000" required="true" ][/@]
       [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="10" maxlength="10000" required="true" /]
       [@b.field label="教学大纲" required="true"]
-        <input name="syllabus.attachment" type="file" style="display:inline-block" id="syllabus"/> <label id="syllabusSpan" > </label> <span style="color:red" >注：请上传pdf格式的文件</span>
+        <input name="syllabus.attachment" type="file" style="display:inline-block" id="syllabus"/> <label id="syllabusSpan" > </label><span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
         [#if courseBlog?? && syllabuses ?? && syllabuses?size>0]
           [#list syllabuses as syllabus]
             [#if syllabus.attachment??]
@@ -36,7 +36,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
         [/#if]
       [/@]
       [@b.field label="授课计划" required="true"]
-        <input name="lecturePlan.attachment" type="file" style="display:inline-block" id="lecturePlan"/> <label id="lecturePlanSpan"> </label><span style="color:red" >注：请上传pdf格式的文件</span>
+        <input name="lecturePlan.attachment" type="file" style="display:inline-block" id="lecturePlan"/> <label id="lecturePlanSpan"> </label><span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
         [#if courseBlog?? && lecturePlans?? && lecturePlans?size>0 ]
           [#list lecturePlans as lecturePlan]
             [#if lecturePlan.attachment??]
@@ -48,9 +48,10 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [/#list]
         [/#if]
       [/@]
-      [@b.textarea label="教材和辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! id="materials" cols="100" rows="10"  maxlength="10000"/]
+      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" >注：没有预修课程请填“无”</span>' /]
+      [@b.textfield label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! style="width:600px"  required="true" /]
+      [@b.textarea label="辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! id="materials" cols="100" rows="10"  maxlength="10000"/]
       [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
-      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"/]
       [@b.field label="获奖情况"]
         [#list labelTypes!?sort_by("code") as awardLabelType]
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
@@ -115,12 +116,12 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
   });
 
   function syncEditor(){
-    if($('#syllabus').val()=="" && ${syllabuses?size}==0){
+    if($('#syllabus').val()=="" && ${syllabuses?exists?c}==false){
       $('#syllabusSpan').html("请上传教学大纲");
       $('#syllabusSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
     }
-    if($('#lecturePlan').val()=="" && ${lecturePlans?size}==0){
+    if($('#lecturePlan').val()=="" && ${lecturePlans?exists?c}==false){
       $('#lecturePlanSpan').html("请上传授课计划");
       $('#lecturePlanSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;

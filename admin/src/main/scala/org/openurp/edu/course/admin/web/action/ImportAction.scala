@@ -88,6 +88,8 @@ class ImportAction extends AbstractAction[ReviseTask] {
 				})
 				courseBlog.description = " --"
 				courseBlog.enDescription = " --"
+				courseBlog.books = " --"
+				courseBlog.preCourse = " --"
 				courseBlog.department = clazz.course.department
 				courseBlog.updatedAt = Instant.now()
 				if (!metas.isEmpty) {

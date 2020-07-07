@@ -15,16 +15,16 @@
         <tr>
           <td><span class="tk_table_title">中文简介：</span></td>
           <td id="description">
-            <div [#if courseBlog.description??]style="height:90px;overflow: hidden;"[/#if]>
-              ${(courseBlog.description)!}
+            <div [#if courseBlog.description?? && courseBlog.description!="--"]style="height:90px;overflow: hidden;"[/#if]>
+              [#if courseBlog.description!="--"]${courseBlog.description!}[/#if]
             </div>
           </td>
         </tr>
         <tr>
           <td><span class="tk_table_title">英文简介：</span></td>
           <td id="enDescription">
-            <div [#if courseBlog.enDescription??]style="height:90px;overflow: hidden;"[/#if]>
-              ${courseBlog.enDescription!}
+            <div [#if courseBlog.enDescription?? && courseBlog.enDescription!="--"]style="height:90px;overflow: hidden;"[/#if]>
+              [#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]
             </div>
           </td>
         </tr>

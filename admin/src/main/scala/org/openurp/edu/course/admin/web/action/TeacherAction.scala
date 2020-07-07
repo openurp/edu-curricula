@@ -25,7 +25,6 @@ import javax.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.webmvc.api.context.Params
 import org.beangle.webmvc.api.view.View
 import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
@@ -83,12 +82,31 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
 	}
 
+	override def info(id: String): View = {
+		val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
+		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+		if (!syllabuses.isEmpty) {
+			put("syllabuses", syllabuses)
+		}
+		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
+		if (!lecturePlans.isEmpty) {
+			put("lecturePlans", lecturePlans)
+		}
+		super.info(id)
+	}
+
 	override def editSetting(courseBlog: CourseBlog): Unit = {
 		if (courseBlog.description == "--") {
 			courseBlog.description = ""
 		}
 		if (courseBlog.enDescription == "--") {
 			courseBlog.enDescription = ""
+		}
+		if (courseBlog.books == "--") {
+			courseBlog.books = ""
+		}
+		if (courseBlog.preCourse == "--") {
+			courseBlog.preCourse = ""
 		}
 		if (courseBlog.persisted) {
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
@@ -255,6 +273,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
 		courseBlog.description = " --"
 		courseBlog.enDescription = " --"
+		courseBlog.books = " --"
+		courseBlog.preCourse = " --"
 		courseBlog.updatedAt = Instant.now()
 		courseBlog.materials = None
 		courseBlog.website = None
@@ -309,6 +329,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			val hisBlog = hisBlogs.head
 			courseBlog.description = hisBlog.description
 			courseBlog.enDescription = hisBlog.enDescription
+			courseBlog.books = hisBlog.books
 			courseBlog.author = Option(getUser)
 			courseBlog.materials = hisBlog.materials
 			courseBlog.website = hisBlog.website
