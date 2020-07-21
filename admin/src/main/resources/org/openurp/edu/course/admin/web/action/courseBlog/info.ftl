@@ -75,7 +75,7 @@
       <td>[#if courseBlog.books!="--"]${courseBlog.books!}[/#if]</td>
     </tr>
     <tr>
-      <td>辅助资料：</td>
+      <td>教学资料：</td>
       <td>${courseBlog.materials!}</td>
     </tr><tr>
       <td>课程网站地址：</td>

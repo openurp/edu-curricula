@@ -57,8 +57,11 @@ class CourseBlog extends LongId with Updated {
 	/** 教材和参考书目 */
 	var books: String = _
 
-	/** 辅助资料 */
+	/** 教学资料 */
 	var materials: Option[String] = None
+
+	/** 教学资料 附件	 */
+	var materialAttachment: Attachment = _
 
 	/** 课程网站地址 */
 	var website: Option[String] = None

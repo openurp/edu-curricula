@@ -28,6 +28,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
 import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
+import org.openurp.edu.course.app.model.ReviseTask
 import org.openurp.edu.course.model._
 
 
@@ -136,6 +137,23 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 		})
 
+		val materialParts = getAll("courseBlog.materialAttachment", classOf[Part])
+		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
+			val blob = UrpApp.getBlobRepository(true)
+			val part = materialParts.head
+			if (courseBlog.materialAttachment != null && courseBlog.materialAttachment.key.nonEmpty) {
+				blob.remove(courseBlog.materialAttachment.key.get)
+			}
+			val meta = blob.upload("/" + semester.id.toString,
+				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
+			val attachment = new Attachment()
+			attachment.size = Option(meta.size)
+			attachment.key = Option(meta.path)
+			attachment.mimeType = Option(meta.mediaType)
+			attachment.name = Option(meta.name)
+			courseBlog.materialAttachment = attachment
+		}
+
 		//		courseBlog.awards.clear()
 		var labelIds = Collections.newBuffer[Int]
 		val labelTypes = getCodes(classOf[AwardLabelType])
@@ -187,16 +205,16 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		if (parts.nonEmpty && parts.head.getSize > 0) {
 			val blob = UrpApp.getBlobRepository(true)
 			val part = parts.head
-			if (Strings.isNotEmpty(syllabus.attachment.key)) {
-				blob.remove(syllabus.attachment.key)
+			if (null != syllabus.attachment && syllabus.attachment.key.nonEmpty) {
+				blob.remove(syllabus.attachment.key.get)
 			}
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = meta.size
-			attachment.key = meta.path
-			attachment.mimeType = meta.mediaType
-			attachment.name = meta.name
+			attachment.size = Option(meta.size)
+			attachment.key = Option(meta.path)
+			attachment.mimeType = Option(meta.mediaType)
+			attachment.name = Option(meta.name)
 			syllabus.attachment = attachment
 		}
 		entityDao.saveOrUpdate(syllabus)
@@ -214,15 +232,15 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		if (parts.nonEmpty && parts.head.getSize > 0) {
 			val blob = UrpApp.getBlobRepository(true)
 			val part = LParts.head
-			if (Strings.isNotEmpty(lecturePlan.attachment.key)) {
-				blob.remove(lecturePlan.attachment.key)
+			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
+				blob.remove(lecturePlan.attachment.key.get)
 			}
 			val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = meta.size
-			attachment.key = meta.path
-			attachment.mimeType = meta.mediaType
-			attachment.name = meta.name
+			attachment.size = Option(meta.size)
+			attachment.key = Option(meta.path)
+			attachment.mimeType = Option(meta.mediaType)
+			attachment.name = Option(meta.name)
 			lecturePlan.attachment = attachment
 		}
 		entityDao.saveOrUpdate(lecturePlan)
@@ -293,7 +311,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				syllabus => {
 
 					if (null != syllabus.attachment && null != syllabus.attachment.key) {
-						blob.remove(syllabus.attachment.key)
+						blob.remove(syllabus.attachment.key.get)
 					}
 				}
 				//				val file = new File(Constants.AttachmentBase + syllabus.attachment.key)
@@ -305,7 +323,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			lecturePlans.foreach(
 				lecturePlan => {
 					if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-						blob.remove(lecturePlan.attachment.key)
+						blob.remove(lecturePlan.attachment.key.get)
 					}
 				})
 			entityDao.remove(lecturePlans)

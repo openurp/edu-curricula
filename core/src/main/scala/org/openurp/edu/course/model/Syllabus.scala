@@ -42,8 +42,9 @@ class Syllabus extends LongId with Updated {
   var passed: Boolean = _
 }
 
-class Attachment extends Component with Named {
-  var size: Int = _
-  var mimeType: String = _
-  var key: String = _
+class Attachment extends Component {
+  var name: Option[String] = None
+  var size: Option[Integer] = None
+  var mimeType: Option[String] = None
+  var key: Option[String] = None
 }

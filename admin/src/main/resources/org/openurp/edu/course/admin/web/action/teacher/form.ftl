@@ -20,8 +20,8 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           </option>
         [/#list]
       [/@]
-      [@b.textarea label="中文简介" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="10"  maxlength="10000" required="true" ][/@]
-      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="10" maxlength="10000" required="true" /]
+      [@b.textarea label="中文简介" name="courseBlog.description" value=(courseBlog.description)! id="description" maxlength="10000" required="true" ][/@]
+      [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" maxlength="10000" required="true" /]
       [@b.field label="教学大纲" required="true"]
         <input name="syllabus.attachment" type="file" style="display:inline-block" id="syllabus"/> <label id="syllabusSpan" > </label><span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
         [#if courseBlog?? && syllabuses ?? && syllabuses?size>0]
@@ -50,7 +50,14 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       [/@]
       [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" >注：没有预修课程请填“无”</span>' /]
       [@b.textfield label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! style="width:600px"  required="true" /]
-      [@b.textarea label="辅助资料" name="courseBlog.materials" value=(courseBlog.materials)! id="materials" cols="100" rows="10"  maxlength="10000"/]
+      [@b.field label="教学资料"]
+        <input name="courseBlog.materials" value="${courseBlog.materials!}" id="materials" maxlength="10000"/>
+        <label style="width: 100px;"></label>上传附件：<input name="courseBlog.materialAttachment" type="file" style="display:inline-block" id="syllabus"/>
+        [#if courseBlog.materialAttachment??]
+          [@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
+        [/#if]
+        <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传</span>
+      [/@]
       [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
       [@b.field label="获奖情况"]
         [#list labelTypes!?sort_by("code") as awardLabelType]
@@ -91,6 +98,14 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       allowPreviewEmoticons : false,
       allowImageUpload : false,
       allowFileManager:false,
+      items:[
+        'undo', 'redo', '|', 'preview','cut', 'copy', 'paste',
+        'plainpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+        'superscript', 'selectall', '|', 'fullscreen', '/',
+        'formatblock', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'table'
+      ],
       afterBlur:function () {
         $('#description').val(descriptionEditor.html());
       }
@@ -100,15 +115,31 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       allowPreviewEmoticons : false,
       allowImageUpload : false,
       allowFileManager:false,
+      items:[
+        'undo', 'redo', '|', 'preview','cut', 'copy', 'paste',
+        'plainpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+        'superscript', 'selectall', '|', 'fullscreen', '/',
+        'formatblock', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'table'
+      ],
       afterBlur:function () {
         $('#enDescription').val(enDescriptionEditor.html());
       }
     });
-    materialsEditor = KindEditor.create('textarea[name="courseBlog.materials"]', {
+    materialsEditor = KindEditor.create('input[name="courseBlog.materials"]', {
       resizeType : 1,
       allowPreviewEmoticons : false,
       allowImageUpload : false,
       allowFileManager:false,
+      items:[
+        'undo', 'redo', '|', 'preview','cut', 'copy', 'paste',
+        'plainpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+        'superscript', 'selectall', '|', 'fullscreen', '/',
+        'formatblock', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'table'
+      ],
       afterBlur:function () {
         $('#materials').val(materialsEditor.html());
       }

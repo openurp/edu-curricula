@@ -15,6 +15,7 @@
 				<div id="title" class="tit"></div>
 				<div id="createdAt" class="futit"></div>
 				<div id="content" class="rong"></div>
+				<div id="docs" class="rong"></div>
 			</div>
 		</div>
 	</div>
@@ -45,10 +46,17 @@
 				$("#title").text(data.title);
 				$("#createdAt").text("发布日期：" + dateString);
 				$("#content").html(data.content);
+				data.docs.forEach(function (doc,index) {
+					var no = index+1
+					$("#docs").append("<a class=\"doc\" href=\"" + doc.url + "\">附件"+no+":"+doc.name+"</a><br>")
+				})
 		}
 	});
 </script>
 <style>
+	.doc{
+		color: #0b54b0;
+	}
 	.tit {
 		text-align: center;
 		font-family: 微软雅黑;
