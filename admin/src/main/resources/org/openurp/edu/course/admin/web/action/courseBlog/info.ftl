@@ -76,7 +76,13 @@
     </tr>
     <tr>
       <td>教学资料：</td>
-      <td>${courseBlog.materials!}</td>
+      <td>
+        [#if courseBlog.materialAttachment??]
+          <div>${(courseBlog.materialAttachment.name)!}
+            <a class="m_l_30 xiazai" target="_blank" href="${b.url('teacher!attachment?id='+courseBlog.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
+          </div>
+        [/#if]
+      </td>
     </tr><tr>
       <td>课程网站地址：</td>
       <td><a href="${courseBlog.website!}" target="_blank">${courseBlog.website!}</a></td>

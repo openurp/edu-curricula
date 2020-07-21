@@ -87,5 +87,5 @@ class CourseBlog extends LongId with Updated {
 	var awards: mutable.Buffer[Award] = Collections.newBuffer[Award]
 
 	/** 备注 */
-	var remark: Option[String] = _
+	var remark: Option[String] = None
 }

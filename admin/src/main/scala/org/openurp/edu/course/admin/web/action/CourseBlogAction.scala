@@ -137,7 +137,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 		})
 
-		val materialParts = getAll("courseBlog.materialAttachment", classOf[Part])
+		val materialParts = getAll("materialAttachment", classOf[Part])
 		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
 			val blob = UrpApp.getBlobRepository(true)
 			val part = materialParts.head
@@ -229,7 +229,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		lecturePlan.updatedAt = Instant.now()
 
 		val LParts = getAll("lecturePlan.attachment", classOf[Part])
-		if (parts.nonEmpty && parts.head.getSize > 0) {
+		if (LParts.nonEmpty && LParts.head.getSize > 0) {
 			val blob = UrpApp.getBlobRepository(true)
 			val part = LParts.head
 			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
@@ -299,13 +299,14 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	override def removeAndRedirect(courseBlogs: Seq[CourseBlog]): View = {
 		val blob = UrpApp.getBlobRepository(true)
 		courseBlogs.foreach(courseBlog => {
-			courseBlog.description = " --"
-			courseBlog.enDescription = " --"
-			courseBlog.preCourse = " --"
-			courseBlog.books = " --"
+			courseBlog.description = "--"
+			courseBlog.enDescription = "--"
+			courseBlog.preCourse = "--"
+			courseBlog.books = "--"
 			courseBlog.updatedAt = Instant.now()
 			courseBlog.materials = None
 			courseBlog.website = None
+			courseBlog.remark = None
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 			syllabuses.foreach(
 				syllabus => {

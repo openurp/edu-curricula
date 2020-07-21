@@ -58,14 +58,13 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         [/#if]
       [/@]
       [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" >注：没有预修课程请填“无”</span>' /]
-      [@b.textfield label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! style="width:600px"  required="true" /]
+      [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
       [@b.field label="教学资料"]
-        <input name="courseBlog.materials" value="${courseBlog.materials!}" id="materials" maxlength="10000"/>
-        <label style="width: 100px;"></label>上传附件：<input name="courseBlog.materialAttachment" type="file" style="display:inline-block" id="syllabus"/>
-        [#if courseBlog.materialAttachment??]
-          [@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
-        [/#if]
+        <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
         <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传</span>
+        [#if courseBlog.materialAttachment??]
+          <br>已有附件：[@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
+        [/#if]
       [/@]
       [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
       [@b.field label="获奖情况"]
@@ -92,10 +91,11 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/@]
       [/#list]
-      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px"/]
+      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" comment='<span style="color:red" >注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</span>' /]
       [@b.formfoot]
         [#if courseBlog.persisted]<input type="hidden" name="courseBlog.id" value="${courseBlog.id!}" />[/#if]
-        [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+        [@b.submit value="action.submit"/]
+        <span style="color:red;font-weight: 700" >注：如果点击提交后无反应，可能是有文件尚未上传完毕，请不要关闭浏览器，稍作等待。</span>
       [/@]
     [/@]
 
@@ -125,7 +125,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
 
   var descriptionEditor;
   var enDescriptionEditor;
-  var materialsEditor;
+  var booksEditor;
   jQuery(document).ready(function (){
     descriptionEditor = KindEditor.create('textarea[name="courseBlog.description"]', {
       resizeType : 1,
@@ -161,7 +161,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         $('#enDescription').val(enDescriptionEditor.html());
       }
     });
-    materialsEditor = KindEditor.create('input[name="courseBlog.materials"]', {
+    booksEditor = KindEditor.create('textarea[name="courseBlog.books"]', {
       resizeType : 1,
       allowPreviewEmoticons : false,
       allowImageUpload : false,
@@ -175,7 +175,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'table'
       ],
       afterBlur:function () {
-      $('#materials').val(materialsEditor.html());
+      $('#books').val(booksEditor.html());
     }
     });
   });

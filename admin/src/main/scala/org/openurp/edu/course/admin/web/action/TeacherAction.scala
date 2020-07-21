@@ -24,8 +24,10 @@ import java.util.Locale
 import javax.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.webmvc.api.annotation.param
+import org.beangle.data.model.pojo.Updated
+import org.beangle.webmvc.api.annotation.{mapping, param}
 import org.beangle.webmvc.api.view.View
+import org.beangle.webmvc.execution.Handler
 import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.course.app.model.{ReviseSetting, ReviseTask}
@@ -144,6 +146,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		super.editSetting(courseBlog)
 	}
 
+
 	override def saveAndRedirect(courseBlog: CourseBlog): View = {
 		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
 		val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
@@ -160,7 +163,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			}
 		})
 
-		val materialParts = getAll("courseBlog.materialAttachment", classOf[Part])
+		val materialParts = getAll("materialAttachment", classOf[Part])
 		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
 			val blob = UrpApp.getBlobRepository(true)
 			val part = materialParts.head
@@ -198,7 +201,9 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 				getAll(labelType.id.toString + "_awardLabelId", classOf[Int]).foreach(labelId => {
 					labelIds += labelId
 					val awardLabel = entityDao.get(classOf[AwardLabel], labelId)
-					courseBlog.awards.find { award => award.awardLabel == awardLabel } match {
+					courseBlog.awards.find {
+						award => award.awardLabel == awardLabel
+					} match {
 						case Some(award) => award.year = year
 						case None => {
 							val newAward = new Award
@@ -266,7 +271,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		lecturePlan.updatedAt = Instant.now()
 
 		val LParts = getAll("lecturePlan.attachment", classOf[Part])
-		if (parts.nonEmpty && parts.head.getSize > 0) {
+		if (LParts.nonEmpty && LParts.head.getSize > 0) {
 			val blob = UrpApp.getBlobRepository(true)
 			val part = LParts.head
 			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
@@ -288,13 +293,14 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 	override def remove(): View = {
 		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
-		courseBlog.description = " --"
-		courseBlog.enDescription = " --"
-		courseBlog.books = " --"
-		courseBlog.preCourse = " --"
+		courseBlog.description = "--"
+		courseBlog.enDescription = "--"
+		courseBlog.books = "--"
+		courseBlog.preCourse = "--"
 		courseBlog.updatedAt = Instant.now()
 		courseBlog.materials = None
 		courseBlog.website = None
+		courseBlog.remark = None
 		val blob = UrpApp.getBlobRepository(true)
 		if (null != courseBlog.materialAttachment && null != courseBlog.materialAttachment.key) {
 			blob.remove(courseBlog.materialAttachment.key.get)

@@ -91,9 +91,9 @@
 												</tr>
 												<tr>
 													<td>教学资料：</td>
-													<td>${courseBlog.materials!}
+													<td>
                               [#if courseBlog.materialAttachment??]
-																<div>附件：${(courseBlog.materialAttachment.name)!}
+																<div>${(courseBlog.materialAttachment.name)!}
 																	<a class="m_l_30 xiazai" target="_blank" href="${b.url('index!attachment?id='+courseBlog.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
 																</div>
                               [/#if]
