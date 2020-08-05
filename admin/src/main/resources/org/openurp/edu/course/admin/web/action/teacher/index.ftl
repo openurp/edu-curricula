@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-[@edu_base.semester_bar name="courseBlog.semester.id" value=currentSemester/]
+[@edu.semester_bar name="courseBlog.semester.id" value=currentSemester/]
 [@b.form name="searchForm" action=""/]
 [@b.div id="listFrame"/]
 <script>

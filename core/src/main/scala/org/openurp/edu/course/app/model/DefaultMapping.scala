@@ -23,12 +23,11 @@ import org.beangle.data.orm.{IdGenerator, MappingModule}
 class DefaultMapping extends MappingModule {
 
   def binding(): Unit = {
-    defaultIdGenerator("auto_increment")
     defaultCache("openurp.app.course", "read-write")
 
-    bind[ReviseSetting]
+    bind[ReviseSetting].generator("auto_increment")
 
-    bind[ReviseTask]
+    bind[ReviseTask].generator("auto_increment")
 
   }
 }

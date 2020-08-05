@@ -24,7 +24,7 @@ import org.beangle.security.Securities
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.model.User
 import org.openurp.edu.base.model.Semester
-import org.openurp.edu.base.web.ProjectSupport
+import org.openurp.edu.web.ProjectSupport
 import org.openurp.edu.course.model.CourseBlog
 
 class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSupport {

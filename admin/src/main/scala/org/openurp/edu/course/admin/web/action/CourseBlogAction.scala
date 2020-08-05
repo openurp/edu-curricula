@@ -23,12 +23,10 @@ import java.util.Locale
 
 import javax.servlet.http.Part
 import org.beangle.commons.collection.{Collections, Order}
-import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
+import org.beangle.ems.app.EmsApp
 import org.beangle.webmvc.api.view.View
-import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.course.app.model.ReviseTask
 import org.openurp.edu.course.model._
 
 
@@ -139,7 +137,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 		val materialParts = getAll("materialAttachment", classOf[Part])
 		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
-			val blob = UrpApp.getBlobRepository(true)
+			val blob = EmsApp.getBlobRepository(true)
 			val part = materialParts.head
 			if (courseBlog.materialAttachment != null && courseBlog.materialAttachment.key.nonEmpty) {
 				blob.remove(courseBlog.materialAttachment.key.get)
@@ -203,7 +201,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 		val parts = getAll("syllabus.attachment", classOf[Part])
 		if (parts.nonEmpty && parts.head.getSize > 0) {
-			val blob = UrpApp.getBlobRepository(true)
+			val blob = EmsApp.getBlobRepository(true)
 			val part = parts.head
 			if (null != syllabus.attachment && syllabus.attachment.key.nonEmpty) {
 				blob.remove(syllabus.attachment.key.get)
@@ -230,7 +228,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 		val LParts = getAll("lecturePlan.attachment", classOf[Part])
 		if (LParts.nonEmpty && LParts.head.getSize > 0) {
-			val blob = UrpApp.getBlobRepository(true)
+			val blob = EmsApp.getBlobRepository(true)
 			val part = LParts.head
 			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
 				blob.remove(lecturePlan.attachment.key.get)
@@ -297,7 +295,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	}
 
 	override def removeAndRedirect(courseBlogs: Seq[CourseBlog]): View = {
-		val blob = UrpApp.getBlobRepository(true)
+		val blob = EmsApp.getBlobRepository(true)
 		courseBlogs.foreach(courseBlog => {
 			courseBlog.description = "--"
 			courseBlog.enDescription = "--"

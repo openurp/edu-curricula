@@ -1,8 +1,7 @@
 [#ftl]
 [@b.head/]
-<table  class="indexpanel">
-  <tr>
-    <td class="index_view" style="width: 200px;">
+<div class="search-container">
+    <div class="search-panel"  style="width: 200px">
     [@b.form name="courseBlogMetaSearchForm"  action="!search" target="courseBlogMetalist" title="ui.searchForm" theme="search"]
       [@b.textfield name="courseBlogMeta.course.code" label="课程代码"/]
       [@b.textfield name="courseBlogMeta.course.name" label="课程名称"/]
@@ -27,8 +26,12 @@
       [/@]
       <input type="hidden" name="orderBy" value="courseBlogMeta.course.code"/>
     [/@]
-    </td>
-    <td class="index_content">[@b.div id="courseBlogMetalist" href="!search?orderBy=courseBlogMeta.course.code" /]</td>
-  </tr>
-</table>
+    </div>
+    <div class="search-list">[@b.div id="courseBlogMetalist" href="!search?orderBy=courseBlogMeta.course.code" /]
+    </div>
+</div>
 [@b.foot/]
+<style>
+  .search-item{
+    width:190px;
+  }

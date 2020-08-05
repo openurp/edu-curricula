@@ -7,7 +7,7 @@
     [#if reviseSetting.persisted]
       [@b.field label="学年学期"]${reviseSetting.semester.schoolYear}学年${reviseSetting.semester.name}学期[/@]
     [#else]
-      [@edu_base.semester name="reviseSetting.semester.id" label="学年学期"  value=currentSemester required="true"/]
+      [@edu.semester name="reviseSetting.semester.id" label="学年学期"  value=currentSemester required="true"/]
     [/#if]
     [@b.startend label="有效期限"
       name="reviseSetting.beginAt,reviseSetting.endAt" required="true,false"

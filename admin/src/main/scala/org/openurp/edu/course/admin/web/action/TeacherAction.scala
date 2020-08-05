@@ -24,11 +24,9 @@ import java.util.Locale
 import javax.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.data.model.pojo.Updated
-import org.beangle.webmvc.api.annotation.{mapping, param}
+import org.beangle.ems.app.EmsApp
+import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
-import org.beangle.webmvc.execution.Handler
-import org.openurp.app.UrpApp
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.course.app.model.{ReviseSetting, ReviseTask}
 import org.openurp.edu.course.model._
@@ -165,7 +163,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 		val materialParts = getAll("materialAttachment", classOf[Part])
 		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
-			val blob = UrpApp.getBlobRepository(true)
+			val blob = EmsApp.getBlobRepository(true)
 			val part = materialParts.head
 			if (courseBlog.materialAttachment != null && courseBlog.materialAttachment.key.nonEmpty) {
 				blob.remove(courseBlog.materialAttachment.key.get)
@@ -245,7 +243,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 		val parts = getAll("syllabus.attachment", classOf[Part])
 		if (parts.nonEmpty && parts.head.getSize > 0) {
-			val blob = UrpApp.getBlobRepository(true)
+			val blob = EmsApp.getBlobRepository(true)
 			val part = parts.head
 			if (null != syllabus.attachment && syllabus.attachment.key.nonEmpty) {
 				blob.remove(syllabus.attachment.key.get)
@@ -272,7 +270,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 		val LParts = getAll("lecturePlan.attachment", classOf[Part])
 		if (LParts.nonEmpty && LParts.head.getSize > 0) {
-			val blob = UrpApp.getBlobRepository(true)
+			val blob = EmsApp.getBlobRepository(true)
 			val part = LParts.head
 			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
 				blob.remove(lecturePlan.attachment.key.get)
@@ -301,7 +299,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		courseBlog.materials = None
 		courseBlog.website = None
 		courseBlog.remark = None
-		val blob = UrpApp.getBlobRepository(true)
+		val blob = EmsApp.getBlobRepository(true)
 		if (null != courseBlog.materialAttachment && null != courseBlog.materialAttachment.key) {
 			blob.remove(courseBlog.materialAttachment.key.get)
 		}
@@ -373,7 +371,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 	def attachment(@param("id") id: Long): View = {
 		val courseBlog = entityDao.get(classOf[CourseBlog], id)
-		val path = UrpApp.getBlobRepository(true).path(courseBlog.materialAttachment.key.get)
+		val path = EmsApp.getBlobRepository(true).path(courseBlog.materialAttachment.key.get)
 		response.sendRedirect(path.get)
 		null
 	}

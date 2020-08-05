@@ -19,7 +19,7 @@
 package org.openurp.edu.course.admin.web.action
 
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.edu.base.web.ProjectSupport
+import org.openurp.edu.web.ProjectSupport
 import org.openurp.edu.course.model.{AwardLabel, AwardLabelType}
 
 class AwardLabelAction extends RestfulAction[AwardLabel] with ProjectSupport{

@@ -7,11 +7,10 @@
   bg.form.submit(form, "${b.url("import!editNew")}");
   }, "action-new");
 [/@]
-<table  class="indexpanel">
-  <tr>
-    <td class="index_view" style="width: 200px;">
+<div class="search-container">
+    <div class="search-panel" style="width: 200px">
     [@b.form name="reviseTaskSearchForm"  action="!search" target="reviseTasklist" title="ui.searchForm" theme="search"]
-      [@edu_base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
+      [@edu.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.textfield name="reviseTask.course.code" label="课程代码"/]
       [@b.textfield name="reviseTask.course.name" label="课程名称"/]
       [@b.select name="reviseTask.course.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
@@ -24,8 +23,13 @@
       [@b.textfield name="reviseTask.author.name" label="负责人"/]
       <input type="hidden" name="orderBy" value="reviseTask.course.code"/>
     [/@]
-    </td>
-    <td class="index_content">[@b.div id="reviseTasklist" href="!search?orderBy=reviseTask.course.code & semester.id="+currentSemester.id /]</td>
-  </tr>
-</table>
+    </div>
+    <div class="search-list">[@b.div id="reviseTasklist" href="!search?orderBy=reviseTask.course.code & semester.id="+currentSemester.id /]
+    </div>
+</div>
 [@b.foot/]
+<style>
+  .search-item{
+    width:190px;
+  }
+</style>

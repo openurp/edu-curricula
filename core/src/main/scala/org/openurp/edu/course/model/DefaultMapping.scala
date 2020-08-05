@@ -24,7 +24,6 @@ import org.beangle.data.orm.MappingModule
 class DefaultMapping extends MappingModule {
 
 	def binding(): Unit = {
-		defaultIdGenerator("auto_increment")
 		defaultCache("openurp.edu.course", "read-write")
 
 		bind[CourseBlog] declare { e =>
@@ -33,9 +32,9 @@ class DefaultMapping extends MappingModule {
 			e.awards is depends("courseBlog")
 		}
 
-		bind[LecturePlan]
+		bind[LecturePlan].generator("auto_increment")
 
-		bind[Syllabus]
+		bind[Syllabus].generator("auto_increment")
 
 		bind[TeacherBlog] declare{e=>
 			e.intro is length(40000)
@@ -47,12 +46,12 @@ class DefaultMapping extends MappingModule {
 			e.children is(depends("parent"), orderby("indexno"))
 		}
 
-		bind[CourseBlogMeta]
+		bind[CourseBlogMeta].generator("auto_increment")
 
-		bind[Award]
+		bind[Award].generator("auto_increment")
 
-		bind[AwardLabel]
+		bind[AwardLabel].generator("auto_increment")
 
-		bind[AwardLabelType]
+		bind[AwardLabelType].generator("auto_increment")
 	}
 }

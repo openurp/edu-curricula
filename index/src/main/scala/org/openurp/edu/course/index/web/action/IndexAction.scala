@@ -24,12 +24,12 @@ import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
+import org.beangle.ems.app.EmsApp
 import org.beangle.security.realm.cas.CasConfig
 import org.beangle.webmvc.api.action.ServletSupport
-import org.beangle.webmvc.api.annotation.{param, response}
+import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.app.UrpApp
 import org.openurp.base.model.Department
 import org.openurp.code.Code
 import org.openurp.edu.base.model.{Project, Semester}
@@ -332,7 +332,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	def attachment(@param("id") id: Long): View = {
 		val courseBlog = entityDao.get(classOf[CourseBlog], id)
-		val path = UrpApp.getBlobRepository(true).path(courseBlog.materialAttachment.key.get)
+		val path = EmsApp.getBlobRepository(true).path(courseBlog.materialAttachment.key.get)
 		response.sendRedirect(path.get)
 		null
 	}

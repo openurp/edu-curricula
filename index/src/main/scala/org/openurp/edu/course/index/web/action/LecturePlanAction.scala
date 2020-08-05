@@ -18,18 +18,18 @@
  */
 package org.openurp.edu.course.index.web.action
 
+import org.beangle.ems.app.EmsApp
 import org.beangle.webmvc.api.action.ServletSupport
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.app.UrpApp
 import org.openurp.edu.course.model.LecturePlan
 
 class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 
 	def attachment(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
-		val path = UrpApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
+		val path = EmsApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
 		response.sendRedirect(path.get)
 		null
 	}
@@ -38,7 +38,7 @@ class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 	def view(@param("id") id: Long): View = {
 		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
 		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val path = UrpApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
+			val path = EmsApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
 			put("lecturePlan", lecturePlan)
 			put("url",path.get)
 		}

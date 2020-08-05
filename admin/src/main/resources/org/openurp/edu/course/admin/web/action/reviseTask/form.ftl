@@ -8,7 +8,7 @@
         [@b.field label="学年学期"]${reviseTask.semester.schoolYear}学年${reviseTask.semester.name}学期[/@]
         [@b.field label="课程"]${reviseTask.course.name}(${reviseTask.course.code})[/@]
       [#else ]
-        [@edu_base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
+        [@edu.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
         [@b.field label="选择课程" required='true']
           <select id="courses" name="reviseTask.course" style="width:200px;" >
             <option value="${(reviseTask.course.code)!}" selected>${(reviseTask.course.name)!}${(reviseTask.course.code)!}</option>
