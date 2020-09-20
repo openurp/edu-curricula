@@ -24,7 +24,7 @@ import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
-import org.beangle.ems.app.EmsApp
+import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.realm.cas.CasConfig
 import org.beangle.webmvc.api.action.ServletSupport
 import org.beangle.webmvc.api.annotation.param
@@ -54,7 +54,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	override def indexSetting(): Unit = {
 		nav()
-
+		put("portal",Ems.portal)
 		put("casConfig", casConfig)
 		// 没有父类的分组
 		var courseGroups = Collections.newBuffer[CourseGroup]

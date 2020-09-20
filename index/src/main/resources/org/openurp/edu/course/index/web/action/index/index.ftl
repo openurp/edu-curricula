@@ -81,6 +81,7 @@
               [@b.form name="loginForm" action="${casConfig.loginUrl}" target="_blank" method="post"]
                 <input type="hidden" name="sid_name" value="URP_SID">
                 <input type="hidden" name="isService" value="1">
+                <input type="hidden" name="service" value="${portal}">
 								<div class="login">
 									<div class="login_title">课程负责人和管理员入口：</div>
 									<div class="login_con">
