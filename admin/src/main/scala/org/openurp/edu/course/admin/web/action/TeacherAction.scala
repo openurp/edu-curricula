@@ -21,7 +21,7 @@ package org.openurp.edu.course.admin.web.action
 import java.time.{Instant, LocalDate}
 import java.util.Locale
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
@@ -171,8 +171,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = Option(meta.size)
-			attachment.key = Option(meta.path)
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			courseBlog.materialAttachment = attachment
@@ -250,9 +250,10 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			}
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
+			println("--------------------"+meta.filePath)
 			val attachment = new Attachment()
-			attachment.size = Option(meta.size)
-			attachment.key = Option(meta.path)
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			syllabus.attachment = attachment
@@ -275,10 +276,11 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
 				blob.remove(lecturePlan.attachment.key.get)
 			}
+
 			val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = Option(meta.size)
-			attachment.key = Option(meta.path)
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			lecturePlan.attachment = attachment
@@ -288,6 +290,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 		redirect("search", "&courseBlog.semester.id=" + semester.id, "info.save.success")
 	}
+
 
 	override def remove(): View = {
 		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))

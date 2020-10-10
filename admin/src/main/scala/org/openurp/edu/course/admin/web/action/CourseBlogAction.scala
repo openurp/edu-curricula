@@ -21,7 +21,7 @@ package org.openurp.edu.course.admin.web.action
 import java.time.{Instant, LocalDate}
 import java.util.Locale
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
@@ -145,8 +145,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = Option(meta.size)
-			attachment.key = Option(meta.path)
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			courseBlog.materialAttachment = attachment
@@ -209,8 +209,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = Option(meta.size)
-			attachment.key = Option(meta.path)
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			syllabus.attachment = attachment
@@ -235,8 +235,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 			val meta = blob.upload("/" + semester.id.toString, part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
 			val attachment = new Attachment()
-			attachment.size = Option(meta.size)
-			attachment.key = Option(meta.path)
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			lecturePlan.attachment = attachment
