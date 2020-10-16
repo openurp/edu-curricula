@@ -14,14 +14,14 @@
                   [@b.form name="courseBlogSearchForm"  action="!search?pageSize=10" target="courseBloglist" title="ui.searchForm" theme="html" ]
                     <div class="kclb_cx_tj">
                       <span>请选择课程类别：</span>
-                      [@b.select  name="courseBlog.semester.id" style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;"]
+                      [@b.select  name="courseBlog.semester.id"  label="" style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;"]
                         <option value="">请选择学年学期</option>
                         [#list semesters as semester]
                           <option value="${(semester.id)!}" [#if semester==currentSemester]selected[/#if]>${semester.schoolYear}学年${semester.name}学期</option>
                         [/#list]
                         <option value="else">其他</option>
                       [/@]
-                      [@b.select  name="courseBlog.department.id" style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;"]
+                      [@b.select  name="courseBlog.department.id"  label="" style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;"]
                         <option value="">请选择开课院系</option>
                         [#list departments as department]
                           <option value="${(department.id)!}" [#if (courseBlog.department.id)?? && (courseBlog.department.id==department.id)]selected[/#if]>${(department.name)!}</option>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="aaa clearfix">
                       <div class="select_item">
-                        <div class="select_title">一级选项标题</div>
+                        <div class="select_title">请选择</div>
                         <select class="select_zk" size="6" name="courseGroup" id="courseGroupId" style="height:200px;">
                           <option value="">请选择</option>
                           [#list courseGroups as courseGroup]
@@ -40,7 +40,7 @@
                         </select>
                       </div>
                       <div class="select_item">
-                        <div class="select_title">二级选项标题</div>
+                        <div class="select_title">请选择</div>
                         <select class="select_zk" size="6" name="courseGroup_child"  style="height:200px;">
                         </select>
                       </div>

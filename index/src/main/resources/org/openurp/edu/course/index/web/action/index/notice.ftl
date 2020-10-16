@@ -45,7 +45,7 @@
 				var dateString = date.getFullYear() + "-" + month + "-" + day;
 				$("#title").text(data.title);
 				$("#createdAt").text("发布日期：" + dateString);
-				$("#content").html(data.content);
+				$("#content").html(data.contents);
 				data.docs.forEach(function (doc,index) {
 					var no = index+1
 					$("#docs").append("<a class=\"doc\" href=\"" + doc.url + "\">附件"+no+":"+doc.name+"</a><br>")
