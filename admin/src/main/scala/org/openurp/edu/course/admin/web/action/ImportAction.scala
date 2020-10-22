@@ -41,6 +41,16 @@ class ImportAction extends AbstractAction[ReviseTask] {
 		val clazzes = entityDao.search(clazzBuilder)
 		var value = 0
 		clazzes.foreach(clazz => {
+			val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
+			if (metas.isEmpty) {
+				val meta = new CourseBlogMeta
+				meta.course = clazz.course
+				meta.author = getUser
+				meta.updatedAt = Instant.now()
+				entityDao.saveOrUpdate(meta)
+			}
+
+			val courseBlogs = getCourseBlogs(semester, clazz.course)
 			val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
 			reviseTaskBuilder.where("reviseTask.semester=:semester", semester)
 			reviseTaskBuilder.where("reviseTask.course=:course", clazz.course)
@@ -51,6 +61,27 @@ class ImportAction extends AbstractAction[ReviseTask] {
 				reviseTask.course = clazz.course
 				reviseTask.teachers = clazz.teachers.map(_.user)
 				entityDao.saveOrUpdate(reviseTask)
+
+				if (courseBlogs.isEmpty) {
+					val courseBlog = new CourseBlog
+					courseBlog.semester = semester
+					courseBlog.course = clazz.course
+					reviseTask.teachers.foreach(teacher => {
+						if (!courseBlog.teachers.contains(teacher)) {
+							courseBlog.teachers += teacher
+						}
+					})
+					courseBlog.description = "--"
+					courseBlog.enDescription = "--"
+					courseBlog.books = "--"
+					courseBlog.preCourse = "--"
+					courseBlog.department = clazz.course.department
+					courseBlog.updatedAt = Instant.now()
+					if (!metas.isEmpty) {
+						courseBlog.meta = Option(metas.head)
+					}
+					entityDao.saveOrUpdate(courseBlog)
+				}
 				value += 1
 			} else {
 				reviseTasks.foreach(rt => {
@@ -63,40 +94,20 @@ class ImportAction extends AbstractAction[ReviseTask] {
 						})
 					}
 				})
-			}
-			put("value", value)
-			val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
-			if (metas.isEmpty) {
-				val meta = new CourseBlogMeta
-				meta.course = clazz.course
-				meta.author = getUser
-				meta.updatedAt = Instant.now()
-				entityDao.saveOrUpdate(meta)
-			}
-
-			val courseBlogs = getCourseBlogs(semester, clazz.course)
-			if (courseBlogs.isEmpty) {
-				val courseBlog = new CourseBlog
-				courseBlog.semester = semester
-				courseBlog.course = clazz.course
-				reviseTasks.foreach(reviseTask => {
-					reviseTask.teachers.foreach(teacher => {
-						if (!courseBlog.teachers.contains(teacher)) {
-							courseBlog.teachers += teacher
-						}
+				courseBlogs.foreach(cb => {
+					reviseTasks.foreach(reviseTask => {
+						reviseTask.teachers.foreach(teacher => {
+							if (!cb.teachers.contains(teacher)) {
+								cb.teachers += teacher
+								entityDao.saveOrUpdate(cb)
+							}
+						})
 					})
 				})
-				courseBlog.description = "--"
-				courseBlog.enDescription = "--"
-				courseBlog.books = "--"
-				courseBlog.preCourse = "--"
-				courseBlog.department = clazz.course.department
-				courseBlog.updatedAt = Instant.now()
-				if (!metas.isEmpty) {
-					courseBlog.meta = Option(metas.head)
-				}
-				entityDao.saveOrUpdate(courseBlog)
 			}
+			put("value", value)
+
+
 		})
 
 		//删除不存在任务的courseBlog,reviseTask
