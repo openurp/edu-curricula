@@ -6,7 +6,7 @@
   [@b.row]
     [@b.col width="20%" property="course.code" title="课程代码"/]
     [@b.col width="20%" property="course.name" title="课程名称"/]
-    [@b.col width="20%" property="course.department.name" title="开课院系"/]
+    [@b.col width="20%" property="department.name" title="开课院系"/]
     [@b.col width="25%"  title="课程资料"]
 
       [#if reviseSetting??]

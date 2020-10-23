@@ -50,7 +50,6 @@ class ImportAction extends AbstractAction[ReviseTask] {
 				entityDao.saveOrUpdate(meta)
 			}
 
-			val courseBlogs = getCourseBlogs(semester, clazz.course)
 			val reviseTaskBuilder = OqlBuilder.from(classOf[ReviseTask], "reviseTask")
 			reviseTaskBuilder.where("reviseTask.semester=:semester", semester)
 			reviseTaskBuilder.where("reviseTask.course=:course", clazz.course)
@@ -60,49 +59,58 @@ class ImportAction extends AbstractAction[ReviseTask] {
 				reviseTask.semester = semester
 				reviseTask.course = clazz.course
 				reviseTask.teachers = clazz.teachers.map(_.user)
+				reviseTask.department = clazz.teachDepart
 				entityDao.saveOrUpdate(reviseTask)
 
-				if (courseBlogs.isEmpty) {
-					val courseBlog = new CourseBlog
-					courseBlog.semester = semester
-					courseBlog.course = clazz.course
+				value += 1
+			} else {
+				reviseTasks.foreach(rt => {
+					rt.department = clazz.teachDepart
+					if (!clazz.teachers.isEmpty) {
+						clazz.teachers.map(_.user).foreach(user => {
+							if (!rt.teachers.contains(user)) {
+								rt.teachers.addOne(user)
+							}
+						})
+					}
+					entityDao.saveOrUpdate(rt)
+					entityDao.saveOrUpdate(reviseTasks)
+				})
+			}
+
+			val courseBlogs = getCourseBlogs(semester, clazz.course)
+			if (courseBlogs.isEmpty) {
+				val courseBlog = new CourseBlog
+				courseBlog.semester = semester
+				courseBlog.course = clazz.course
+				reviseTasks.foreach(reviseTask => {
 					reviseTask.teachers.foreach(teacher => {
 						if (!courseBlog.teachers.contains(teacher)) {
 							courseBlog.teachers += teacher
 						}
 					})
-					courseBlog.description = "--"
-					courseBlog.enDescription = "--"
-					courseBlog.books = "--"
-					courseBlog.preCourse = "--"
-					courseBlog.department = clazz.course.department
-					courseBlog.updatedAt = Instant.now()
-					if (!metas.isEmpty) {
-						courseBlog.meta = Option(metas.head)
-					}
-					entityDao.saveOrUpdate(courseBlog)
-				}
-				value += 1
-			} else {
-				reviseTasks.foreach(rt => {
-					if (!clazz.teachers.isEmpty) {
-						clazz.teachers.map(_.user).foreach(user => {
-							if (!rt.teachers.contains(user)) {
-								rt.teachers.addOne(user)
-								entityDao.saveOrUpdate(rt)
-							}
-						})
-					}
 				})
+				courseBlog.description = "--"
+				courseBlog.enDescription = "--"
+				courseBlog.books = "--"
+				courseBlog.preCourse = "--"
+				courseBlog.department = clazz.teachDepart
+				courseBlog.updatedAt = Instant.now()
+				if (!metas.isEmpty) {
+					courseBlog.meta = Option(metas.head)
+				}
+				entityDao.saveOrUpdate(courseBlog)
+			} else {
 				courseBlogs.foreach(cb => {
+					cb.department = clazz.teachDepart
 					reviseTasks.foreach(reviseTask => {
 						reviseTask.teachers.foreach(teacher => {
 							if (!cb.teachers.contains(teacher)) {
 								cb.teachers += teacher
-								entityDao.saveOrUpdate(cb)
 							}
 						})
 					})
+					entityDao.saveOrUpdate(cb)
 				})
 			}
 			put("value", value)

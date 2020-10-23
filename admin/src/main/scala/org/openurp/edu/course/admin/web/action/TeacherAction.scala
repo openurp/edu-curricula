@@ -149,8 +149,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
 		val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
 		courseBlog.semester = semester
-		courseBlog.course = course
-		courseBlog.department = course.department
+//		courseBlog.course = course
+//		courseBlog.department = course.department
 		courseBlog.author = Option(getUser)
 		courseBlog.updatedAt = Instant.now()
 		get("courseBlog.website").foreach(a => {

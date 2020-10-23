@@ -123,8 +123,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 		}
 		//		courseBlog.author = Option(user)
-		courseBlog.course = course
-		courseBlog.department = course.department
+//		courseBlog.course = course
+//		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
 
 		get("courseBlog.website").foreach(a => {

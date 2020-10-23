@@ -13,7 +13,7 @@
       [@edu.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.textfield name="reviseTask.course.code" label="课程代码"/]
       [@b.textfield name="reviseTask.course.name" label="课程名称"/]
-      [@b.select name="reviseTask.course.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
+      [@b.select name="reviseTask.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
       [@b.select name="teachers" label="是否多人授课"]
         <option value="">...</option>
         <option value="1">是</option>

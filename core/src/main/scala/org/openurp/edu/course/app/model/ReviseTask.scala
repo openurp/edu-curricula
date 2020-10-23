@@ -20,7 +20,7 @@ package org.openurp.edu.course.app.model
 
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
-import org.openurp.base.model.User
+import org.openurp.base.model.{Department, User}
 import org.openurp.edu.base.model.{Course, Semester}
 
 import scala.collection.mutable
@@ -37,4 +37,7 @@ class ReviseTask extends LongId {
 	var author: Option[User] = _
 
 	var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
+
+	/** 开课院系 */
+	var department: Department = _
 }
