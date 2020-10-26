@@ -48,7 +48,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [/#list]
         [/#if]
       [/@]
-      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" >注：没有预修课程请填“无”</span>' /]
+      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
@@ -57,7 +57,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           <br>已有附件：[@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
         [/#if]
       [/@]
-      [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px" comment='<span style="color:red" >注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</span>' /]
+      [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px" comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>' /]
       [@b.field label="获奖情况"]
         [#list labelTypes!?sort_by("code") as awardLabelType]
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;

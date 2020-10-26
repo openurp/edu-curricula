@@ -35,7 +35,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 	override def indexSetting(): Unit = {
 		put("currentSemester", getSemester)
-		put("project", getProject)
+		put("project", getMyProject)
 		forward()
 	}
 
@@ -57,10 +57,6 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			}
 			put("BlogStatus", BlogStatus)
 
-			val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-			courseBlogBuilder.where("courseBlog.author=:author", getUser)
-			put("blogs", entityDao.search(courseBlogBuilder))
-
 			val syllabusMap = Collections.newMap[CourseBlog, Syllabus]
 			val courseBlogs = entityDao.search(getQueryBuilder)
 			courseBlogs.foreach(courseBlog => {
@@ -71,6 +67,11 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			})
 			put("syllabusMap", syllabusMap)
 
+			val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+			courseBlogBuilder.where("courseBlog.author=:author", getUser)
+			courseBlogBuilder.where("courseBlog.description <> :description","--")
+			val hisBlogs = entityDao.search(courseBlogBuilder)
+			put("hisBlogs", hisBlogs)
 		}
 		put("user", getUser)
 
@@ -149,8 +150,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
 		val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
 		courseBlog.semester = semester
-//		courseBlog.course = course
-//		courseBlog.department = course.department
+		//		courseBlog.course = course
+		//		courseBlog.department = course.department
 		courseBlog.author = Option(getUser)
 		courseBlog.updatedAt = Instant.now()
 		get("courseBlog.website").foreach(a => {
@@ -250,7 +251,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			}
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
-			println("--------------------"+meta.filePath)
+			println("--------------------" + meta.filePath)
 			val attachment = new Attachment()
 			attachment.size = Option(meta.fileSize)
 			attachment.key = Option(meta.filePath)

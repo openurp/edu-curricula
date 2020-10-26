@@ -51,7 +51,7 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 		})
 		val teacherName = get("teacherName").orNull
 		if (teacherName != null && teacherName != "") {
-			builder.where("exists(from reviseTask.teachers t where t.name like :name)", '%' + teacherName + '%')
+			builder.where("exists(from reviseTask.teachers t where t.name like :name)", s"$teacherName")
 		}
 		populateConditions(builder)
 		builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)

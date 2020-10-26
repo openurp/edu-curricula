@@ -18,12 +18,14 @@
  */
 package org.openurp.edu.course.admin.web.action
 
+import java.time.LocalDate
+
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.security.Securities
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.model.User
-import org.openurp.edu.base.model.Semester
+import org.openurp.edu.base.model.{Project, Semester}
 import org.openurp.edu.web.ProjectSupport
 import org.openurp.edu.course.model.CourseBlog
 
@@ -31,17 +33,17 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 
 	override def indexSetting(): Unit = {
 		put("departments", getDeparts)
-		put("project", getProject)
+		put("project", getMyProject)
 		super.indexSetting()
 	}
 
 	override def editSetting(entity: T): Unit = {
 		val builder = OqlBuilder.from(classOf[Semester], "semester")
-			.where("semester.calendar in(:calendars)", getProject.calendars)
+			.where("semester.calendar in(:calendars)", getMyProject.calendars)
 		builder.orderBy("semester.code desc")
 		put("semesters", entityDao.search(builder))
 		put("currentSemester", getCurrentSemester)
-		put("project", getProject)
+		put("project", getMyProject)
 		super.editSetting(entity)
 	}
 
@@ -79,9 +81,31 @@ class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSuppor
 		val builder = OqlBuilder.from(clazz, "aa")
 		builder.where("aa.course=:course", courseBlog.course)
 		builder.where("aa.semester=:semester", courseBlog.semester)
-//		builder.where("aa.author=:author", courseBlog.author)
+		//		builder.where("aa.author=:author", courseBlog.author)
 		entityDao.search(builder)
 	}
 
+	override def getCurrentSemester: Semester = {
+		val builder = OqlBuilder.from(classOf[Semester], "semester")
+			.where("semester.calendar in(:calendars)", getMyProject.calendars)
+		builder.where(":date between semester.beginOn and  semester.endOn", LocalDate.now)
+		builder.cacheable()
+		val rs = entityDao.search(builder)
+		if (rs.isEmpty) { //如果没有正在其中的学期，则查找一个距离最近的
+			val builder2 = OqlBuilder.from(classOf[Semester], "semester")
+				.where("semester.calendar in(:calendars)", getMyProject.calendars)
+			builder2.orderBy("abs(semester.beginOn - current_date() + semester.endOn - current_date())")
+			builder2.cacheable()
+			builder2.limit(1, 1)
+			entityDao.search(builder2).headOption.orNull
+		} else {
+			rs.head
+		}
+	}
 
+	def getMyProject:Project={
+		val builder=OqlBuilder.from(classOf[Project],"project")
+		builder.where("project.endOn is null")
+		entityDao.search(builder).head
+	}
 }

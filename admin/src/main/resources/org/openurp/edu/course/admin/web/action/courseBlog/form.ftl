@@ -57,7 +57,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/#if]
       [/@]
-      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" >注：没有预修课程请填“无”</span>' /]
+      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
@@ -91,7 +91,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/@]
       [/#list]
-      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" comment='<span style="color:red" >注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</span>' /]
+      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>' /]
       [@b.formfoot]
         [#if courseBlog.persisted]<input type="hidden" name="courseBlog.id" value="${courseBlog.id!}" />[/#if]
         [@b.submit value="action.submit"/]
