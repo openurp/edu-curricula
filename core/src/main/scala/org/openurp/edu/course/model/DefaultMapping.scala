@@ -29,6 +29,7 @@ class DefaultMapping extends MappingModule {
 		bind[CourseBlog] declare { e =>
 			e.description is length(40000)
 			e.enDescription is length(40000)
+			e.books is length(4000)
 			e.awards is depends("courseBlog")
 		}
 

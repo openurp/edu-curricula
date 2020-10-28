@@ -53,7 +53,7 @@ class CourseOrUserSearchAction extends RestfulAction[Course] with ProjectSupport
 		put("users", entityDao.search(query))
 		forward("usersJSON")
 	}
-	
+
 	def getMyProject:Project={
 		val builder=OqlBuilder.from(classOf[Project],"project")
 		builder.where("project.endOn is null")

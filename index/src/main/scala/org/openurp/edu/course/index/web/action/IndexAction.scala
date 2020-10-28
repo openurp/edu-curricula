@@ -89,7 +89,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 		builder.where("courseBlog.semester=:semester", getSemester)
 		//		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		get("nameOrCode").foreach(nameOrCode => {
-			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", '%' + nameOrCode + '%', '%' + nameOrCode + '%')
+			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", s"$nameOrCode", s"$nameOrCode")
 		})
 		val first = getInt("courseGroup")
 		val second = getInt("courseGroup_child")
@@ -301,7 +301,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	def getProject: Project = {
 		val builder = OqlBuilder.from(classOf[Project], "project")
-		builder.where("project.endOn is not null")
+		builder.where("project.endOn is null")
 		val projects = entityDao.search(builder)
 		if (projects.isEmpty) {
 			null

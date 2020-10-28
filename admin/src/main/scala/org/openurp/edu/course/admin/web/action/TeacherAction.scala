@@ -251,7 +251,6 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			}
 			val meta = blob.upload("/" + semester.id.toString,
 				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
-			println("--------------------" + meta.filePath)
 			val attachment = new Attachment()
 			attachment.size = Option(meta.fileSize)
 			attachment.key = Option(meta.filePath)

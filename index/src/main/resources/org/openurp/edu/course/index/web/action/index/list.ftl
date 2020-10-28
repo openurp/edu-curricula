@@ -17,7 +17,7 @@
   [#list courseBlogs as courseBlog]
     <tr>
       <td width="10%" >${(courseBlog.course.code)!}</td>
-      <td width="15%" >[#if courseBlog.status = BlogStatus.Published]<a onclick="openLayer(${courseBlog.id})">${(courseBlog.course.name)!}</a>[#else]${(courseBlog.course.name)!}[/#if]</td>
+      <td width="15%" >[#if courseBlog.status = BlogStatus.Published]<a onclick="openLayer('${courseBlog.id}')">${(courseBlog.course.name)!}</a>[#else]${(courseBlog.course.name)!}[/#if]</td>
       <td width="15%" >${(courseBlog.department.name)!}</td>
       <td width="5%" >${(courseBlog.course.credits)!}</td>
       <td width="5%" >${(courseBlog.course.creditHours)!}</td>

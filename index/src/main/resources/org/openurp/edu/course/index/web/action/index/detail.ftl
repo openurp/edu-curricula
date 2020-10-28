@@ -13,9 +13,9 @@
         	<div class="bg_img p_lr_30 p_t_5 p_b_25">
                 <div class="title_con"><span class="title_text"><i class="quan"></i>${(courseBlog.course.name)!}</span></div>
                 <div class="xq_list m_t_20">       
-                    <table style="background: none">
+                    <table style="background: none;width: 1065px">
                     	<tr>
-                        	<td style="width:160px;">学年学期：</td>
+                        	<td style="width:200px;">学年学期：</td>
                             <td>${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
                         </tr>
                         <tr>
@@ -44,10 +44,10 @@
                         </tr>
                         <tr>
 													<td>中文简介：</td>
-													<td>[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</td>
+													<td><div style="width: 865px">[#if courseBlog.description!="--"]${courseBlog.description!}[/#if]</div></td>
 												</tr><tr>
 												<td>英文简介：</td>
-												<td>[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</td>
+												<td><div style="width: 865px">[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</div></td>
                         </tr>
                         [#if syllabuses ?? && syllabuses?size>0]
                         <tr>
@@ -56,7 +56,7 @@
 														[#list syllabuses as syllabus]
 															[#if syllabus.attachment??]
 																<div>${(syllabus.attachment.name)!}
-																	<a class="m_l_30 xiazai" target="_blank" href="${b.url('syllabus!attachment?id='+syllabus.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
+[#--																	<a class="m_l_30 xiazai" target="_blank" href="${b.url('syllabus!attachment?id='+syllabus.id)}"><span class="iconfont icon-xiazai"></span>下载</a>--]
 																	<a class="m_l_30 yulan" target="_blank" href="${b.url('syllabus!view?id='+syllabus.id)}"><span class="iconfont icon-yulan"></span>预览</a>
 																	[#if syllabus_has_next]<br>[/#if]
 																</div>
@@ -72,7 +72,7 @@
                               [#list lecturePlans as lecturePlan]
                                   [#if lecturePlan.attachment??]
 																		<div>${(lecturePlan.attachment.name)!}
-																			<a class="m_l_30 xiazai" target="_blank" href="${b.url('lecture-plan!attachment?id='+lecturePlan.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
+[#--																			<a class="m_l_30 xiazai" target="_blank" href="${b.url('lecture-plan!attachment?id='+lecturePlan.id)}"><span class="iconfont icon-xiazai"></span>下载</a>--]
 																			<a class="m_l_30 yulan" target="_blank" href="${b.url('lecture-plan!view?id='+lecturePlan.id)}"><span class="iconfont icon-yulan"></span>预览</a>
 																			[#if lecturePlan_has_next]<br>[/#if]
 																		</div>

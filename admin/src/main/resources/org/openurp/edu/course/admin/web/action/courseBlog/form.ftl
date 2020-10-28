@@ -37,7 +37,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [#list syllabuses as syllabus]
             [#if syllabus.attachment??]
               <br>已有附件：${(syllabus.attachment.name)!}
-              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]
+[#--              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]--]
               &nbsp;&nbsp;[@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]
               [#if syllabus_has_next]<br>[/#if]
             [/#if]
@@ -50,7 +50,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [#list lecturePlans as lecturePlan]
             [#if lecturePlan.attachment??]
               <br>已有附件：${(lecturePlan.attachment.name)!}
-              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]
+[#--              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]--]
               &nbsp;&nbsp;[@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]
               [#if lecturePlan_has_next]<br>[/#if]
             [/#if]

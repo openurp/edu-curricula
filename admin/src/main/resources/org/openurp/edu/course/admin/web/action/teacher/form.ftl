@@ -28,7 +28,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [#list syllabuses as syllabus]
             [#if syllabus.attachment??]
               <br>已有附件：${(syllabus.attachment.name)!}
-              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]
+[#--              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]--]
               &nbsp;&nbsp;[@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]
               [#if syllabus_has_next]<br>[/#if]
             [/#if]
@@ -41,7 +41,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [#list lecturePlans as lecturePlan]
             [#if lecturePlan.attachment??]
               <br>已有附件：${(lecturePlan.attachment.name)!}
-              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]
+[#--              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]--]
               &nbsp;&nbsp;[@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]
               [#if lecturePlan_has_next]<br>[/#if]
             [/#if]
@@ -49,7 +49,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
         [/#if]
       [/@]
       [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
-      [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
+      [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" maxlength="10000"/]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
         <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传</span>
