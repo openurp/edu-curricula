@@ -37,7 +37,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [#list syllabuses as syllabus]
             [#if syllabus.attachment??]
               <br>已有附件：${(syllabus.attachment.name)!}
-[#--              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]--]
+              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]
               &nbsp;&nbsp;[@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]
               [#if syllabus_has_next]<br>[/#if]
             [/#if]
@@ -50,7 +50,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [#list lecturePlans as lecturePlan]
             [#if lecturePlan.attachment??]
               <br>已有附件：${(lecturePlan.attachment.name)!}
-[#--              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]--]
+              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]
               &nbsp;&nbsp;[@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]
               [#if lecturePlan_has_next]<br>[/#if]
             [/#if]
@@ -61,7 +61,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
-        <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传</span>
+        <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传，不超过50MB</span>
         [#if courseBlog.materialAttachment??]
           <br>已有附件：[@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
         [/#if]
@@ -186,8 +186,18 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       $('#syllabusSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
     }
+    if (!$('#syllabus').val()=="" && !$('#syllabus').val().endsWith("pdf")){
+      $('#syllabusSpan').html("请上传pdf格式的文件");
+      $('#syllabusSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
+      return false;
+    }
     if($('#lecturePlan').val()=="" && ${lecturePlans?exists?c}==false){
       $('#lecturePlanSpan').html("请上传授课计划");
+      $('#lecturePlanSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
+      return false;
+    }
+    if (!$('#lecturePlan').val()=="" && !$('#lecturePlan').val().endsWith("pdf")){
+      $('#lecturePlanSpan').html("请上传pdf格式的文件");
       $('#lecturePlanSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
     }

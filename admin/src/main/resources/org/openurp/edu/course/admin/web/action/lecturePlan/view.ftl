@@ -12,9 +12,11 @@
   <script src="${b.static_url('pdfjs','build/pdf.js')}"></script>
 </head>
 
-<body tabindex="1" class="loadingInProgress">
 
-<canvas id="the-canvas"></canvas>
+<body>
+<div class="wrapper" id="pdf-container">
+</div>
+</body>
 
 <script>
   PDFJS.workerSrc="${b.static_url('pdfjs','build/pdf.worker.js')}"
@@ -22,31 +24,74 @@
   PDFJS.disableAutoFetch = true;
   var url = "${url}";
 
-  var loadingTask = PDFJS.getDocument(url);
-  loadingTask.promise.then(function(pdf) {
+  window.onload = function () {
+    //创建
+    function createPdfContainer(id,className) {
+      var pdfContainer = document.getElementById('pdf-container');
+      var canvasNew =document.createElement('canvas');
+      canvasNew.id = id;
+      canvasNew.className = className;
+      pdfContainer.appendChild(canvasNew);
+    };
 
-    pdf.getPage(1).then(function(page) {
-      var scale = 1.5;
-      var viewport = page.getViewport(scale);
-      var canvas = document.getElementById('the-canvas');
-      var context = canvas.getContext('2d');
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+    //渲染pdf
+    //建议给定pdf宽度
+    function renderPDF(pdf,i,id) {
+      pdf.getPage(i).then(function(page) {
 
-      var renderContext = {
-        canvasContext: context,
-        viewport: viewport
-      };
-      var renderTask = page.render(renderContext);
-      renderTask.then(function () {
-        console.log('Page rendered');
+        var scale = 1.5;
+        var viewport = page.getViewport(scale);
+
+        //
+        //  准备用于渲染的 canvas 元素
+        //
+
+        var canvas = document.getElementById(id);
+        var context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        //
+        // 将 PDF 页面渲染到 canvas 上下文中
+        //
+        var renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+        page.render(renderContext);
       });
-    });
-  }, function (reason) {
-    console.error(reason);
-  });
+    };
+    //创建和pdf页数等同的canvas数
+    function createSeriesCanvas(num,template) {
+      var id = '';
+      for(var j = 1; j <= num; j++){
+        id = template + j;
+        createPdfContainer(id,'pdfClass');
+      }
+    }
+    //读取pdf文件，并加载到页面中
+    function loadPDF(fileURL) {
+      PDFJS.getDocument(fileURL).then(function(pdf) {
+        //用 promise 获取页面
+        var id = '';
+        var idTemplate = 'cw-pdf-';
+        var pageNum = pdf.numPages;
+        //根据页码创建画布
+        createSeriesCanvas(pageNum,idTemplate);
+        //将pdf渲染到画布上去
+        for (var i = 1; i <= pageNum; i++) {
+          id = idTemplate + i;
+          renderPDF(pdf,i,id);
+        }
+
+      });
+    }
+    //如果在本地运行，需要从服务器获取pdf文件
+    loadPDF(url);
+    //如果在服务端运行，需要再不跨域的情况下，获取pdf文件
+
+  };
 </script>
-</body>
 </html>
 [#else]
   找不到附件
