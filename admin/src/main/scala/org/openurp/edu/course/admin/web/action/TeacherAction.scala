@@ -69,7 +69,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 
 			val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
 			courseBlogBuilder.where("courseBlog.author=:author", getUser)
-			courseBlogBuilder.where("courseBlog.description <> :description","--")
+			courseBlogBuilder.where("courseBlog.description <> :description", "--")
 			val hisBlogs = entityDao.search(courseBlogBuilder)
 			put("hisBlogs", hisBlogs)
 		}
@@ -152,7 +152,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		courseBlog.semester = semester
 		//		courseBlog.course = course
 		//		courseBlog.department = course.department
-		courseBlog.author = Option(getUser)
+		//		courseBlog.author = Option(getUser)
 		courseBlog.updatedAt = Instant.now()
 		get("courseBlog.website").foreach(a => {
 			val website = a.trim
@@ -349,6 +349,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
 		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
 		builder.where("courseBlog.course=:course", courseBlog.course)
+		builder.where("courseBlog.author=:author", courseBlog.author)
+		builder.where("courseBlog.semester<>:semester", courseBlog.semester)
 		//		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		builder.orderBy("courseBlog.semester desc")
 		val hisBlogs = entityDao.search(builder)
@@ -357,11 +359,11 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			courseBlog.description = hisBlog.description
 			courseBlog.enDescription = hisBlog.enDescription
 			courseBlog.books = hisBlog.books
-			courseBlog.author = Option(getUser)
+			//			courseBlog.author = Option(getUser)
 			courseBlog.materials = hisBlog.materials
 			courseBlog.website = hisBlog.website
 			courseBlog.preCourse = hisBlog.preCourse
-			courseBlog.awards = hisBlog.awards
+			courseBlog.awards ++= hisBlog.awards
 			courseBlog.updatedAt = Instant.now()
 			courseBlog.meta = hisBlog.meta
 			courseBlog.remark = hisBlog.remark

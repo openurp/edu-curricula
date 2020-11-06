@@ -52,7 +52,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" maxlength="10000"/]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
-        <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传，不超过50MB</span>
+        <label id="materialAttachmentSpan"></label><span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包上传，不超过50MB</span>
         [#if courseBlog.materialAttachment??]
           <br>已有附件：[@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
         [/#if]
@@ -165,6 +165,13 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
     if (!$('#lecturePlan').val()=="" && !$('#lecturePlan').val().endsWith("pdf")){
       $('#lecturePlanSpan').html("请上传pdf格式的文件");
       $('#lecturePlanSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
+      return false;
+    }
+
+    var files = document.getElementById("materialAttachment").files;
+    if (files.length>0 && files[0].size > 50000000){
+      $('#materialAttachmentSpan').html("文件不超过50MB");
+      $('#materialAttachmentSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
     }
     return true;

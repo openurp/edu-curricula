@@ -61,12 +61,12 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
-        <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包成一个zip文件上传，不超过50MB</span>
+        <label id="materialAttachmentSpan"></label><span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包上传，不超过50MB</span>
         [#if courseBlog.materialAttachment??]
           <br>已有附件：[@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
         [/#if]
       [/@]
-      [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"/]
+      [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"  comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>'/]
       [@b.field label="获奖情况"]
         [#list labelTypes!?sort_by("code") as awardLabelType]
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
@@ -91,7 +91,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/@]
       [/#list]
-      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>' /]
+      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" /]
       [@b.formfoot]
         [#if courseBlog.persisted]<input type="hidden" name="courseBlog.id" value="${courseBlog.id!}" />[/#if]
         [@b.submit value="action.submit"/]
@@ -199,6 +199,13 @@ ${b.script("kindeditor","lang/zh-CN.js")}
     if (!$('#lecturePlan').val()=="" && !$('#lecturePlan').val().endsWith("pdf")){
       $('#lecturePlanSpan').html("请上传pdf格式的文件");
       $('#lecturePlanSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
+      return false;
+    }
+
+    var files = document.getElementById("materialAttachment").files;
+    if (files.length>0 && files[0].size > 50000000){
+      $('#materialAttachmentSpan').html("文件不超过50MB");
+      $('#materialAttachmentSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
     }
     return true;
