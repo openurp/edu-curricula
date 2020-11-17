@@ -58,7 +58,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         [/#if]
       [/@]
       [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
-      [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" /]
+      [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" maxlength="10000"/]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
         <label id="materialAttachmentSpan"></label><span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包上传，不超过50MB</span>
