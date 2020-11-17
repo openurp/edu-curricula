@@ -36,9 +36,13 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         [#if courseBlog?? && syllabuses ?? && syllabuses?size>0]
           [#list syllabuses as syllabus]
             [#if syllabus.attachment??]
-              <br>已有附件：${(syllabus.attachment.name)!}
-              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]
-              &nbsp;&nbsp;[@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]
+              <br>
+              <label id="syllabusAttaLabel" class="form-check-label">
+              已有附件：${(syllabus.attachment.name)!}
+                [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]&nbsp;&nbsp;
+                [@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]&nbsp;&nbsp;
+                [@b.a onclick="removeSyllabusAtta('${syllabus.id}');return false"]删除[/@]
+              </label>
               [#if syllabus_has_next]<br>[/#if]
             [/#if]
           [/#list]
@@ -49,9 +53,13 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         [#if courseBlog.persisted && lecturePlans?? && lecturePlans?size>0 ]
           [#list lecturePlans as lecturePlan]
             [#if lecturePlan.attachment??]
-              <br>已有附件：${(lecturePlan.attachment.name)!}
-              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]
-              &nbsp;&nbsp;[@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]
+              <br>
+              <label id="lecturePlanAttaLabel" class="form-check-label">
+                已有附件：${(lecturePlan.attachment.name)!}
+                [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]&nbsp;&nbsp;
+                [@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]&nbsp;&nbsp;
+                [@b.a onclick="removePlanAtta('${lecturePlan.id}');return false"]删除[/@]
+              </label>
               [#if lecturePlan_has_next]<br>[/#if]
             [/#if]
           [/#list]
@@ -63,7 +71,12 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
         <label id="materialAttachmentSpan"></label><span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包上传，不超过50MB</span>
         [#if courseBlog.materialAttachment??]
-          <br>已有附件：[@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]${(courseBlog.materialAttachment.name)!}[/@]
+          <br>
+          <label id="materialAttaLabel" class="form-check-label">
+            已有附件：${(courseBlog.materialAttachment.name)!}
+            [@b.a target="_blank" href="teacher!attachment?id=${courseBlog.id}"]下载[/@]&nbsp;&nbsp;
+            [@b.a onclick="removeMaterialAtta('${courseBlog.id}');return false"]删除[/@]
+          </label>
         [/#if]
       [/@]
       [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"  comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>'/]
@@ -94,7 +107,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" /]
       [@b.formfoot]
         [#if courseBlog.persisted]<input type="hidden" name="courseBlog.id" value="${courseBlog.id!}" />[/#if]
-        [@b.submit value="action.submit"/]
+        [@b.submit value="确定" /]
         <span style="color:red;font-weight: 700" >注：如果点击提交后无反应，可能是有文件尚未上传完毕，请不要关闭浏览器，稍作等待。</span>
       [/@]
     [/@]
@@ -181,7 +194,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
   });
 
   function syncEditor(){
-    if($('#syllabus').val()=="" && ${syllabuses?exists?c}==false){
+    if($('#syllabus').val()=="" && $('#syllabusAttaLabel').length==0 ){
       $('#syllabusSpan').html("请上传教学大纲");
       $('#syllabusSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
@@ -191,7 +204,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       $('#syllabusSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
     }
-    if($('#lecturePlan').val()=="" && ${lecturePlans?exists?c}==false){
+    if($('#lecturePlan').val()=="" && $('#lecturePlanAttaLabel').length==0 ){
       $('#lecturePlanSpan').html("请上传授课计划");
       $('#lecturePlanSpan').css({"background-image":"url('${b.static_url('bui','images/arrow.gif')}')","background-position":"left center","padding":"2px","padding-left":"18px","color":"#fff"})
       return false;
@@ -224,5 +237,48 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       item.children().prop("checked", false);
     }
   })
+
+  function removeSyllabusAtta(id){
+    var url = "${b.url('syllabus!removeAtta?id=aaa')}";
+    var newUrl = url.replace("aaa",id);
+    if (confirm("是否确认删除附件？")) {
+      $.ajax({
+        "type": "post",
+        "url": newUrl,
+        "async": false,
+        "success": function () {
+          $('#syllabusAttaLabel').remove();
+        }
+      });
+    }
+  }
+  function removePlanAtta(id){
+    var url = "${b.url('syllabus!removeAtta?id=aaa')}";
+    var newUrl = url.replace("aaa",id);
+    if (confirm("是否确认删除附件？")) {
+      $.ajax({
+        "type": "post",
+        "url": newUrl,
+        "async": false,
+        "success": function () {
+          $('#lecturePlanAttaLabel').remove();
+        }
+      });
+    }
+  }
+  function removeMaterialAtta(id){
+    var url = "${b.url('course-blog!removeAtta?id=aaa')}";
+    var newUrl = url.replace("aaa",id);
+    if (confirm("是否确认删除附件？")) {
+      $.ajax({
+        "type": "post",
+        "url": newUrl,
+        "async": false,
+        "success": function () {
+          $('#materialAttaLabel').remove();
+        }
+      });
+    }
+  }
 </script>
 [@b.foot/]

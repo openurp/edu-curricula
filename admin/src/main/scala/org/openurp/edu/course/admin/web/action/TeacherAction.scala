@@ -306,6 +306,10 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		if (null != courseBlog.materialAttachment && null != courseBlog.materialAttachment.key) {
 			blob.remove(courseBlog.materialAttachment.key.get)
 		}
+		courseBlog.materialAttachment.size = null
+		courseBlog.materialAttachment.name = null
+		courseBlog.materialAttachment.mimeType = null
+		courseBlog.materialAttachment.key = null
 
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		syllabuses.foreach(
@@ -380,4 +384,6 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 		response.sendRedirect(path.get)
 		null
 	}
+
+
 }

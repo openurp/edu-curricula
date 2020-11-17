@@ -25,6 +25,7 @@ import jakarta.servlet.http.Part
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
+import org.beangle.webmvc.api.annotation.{param, response}
 import org.beangle.webmvc.api.view.View
 import org.openurp.edu.base.model.{Course, Semester}
 import org.openurp.edu.course.model._
@@ -123,8 +124,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 		}
 		//		courseBlog.author = Option(user)
-//		courseBlog.course = course
-//		courseBlog.department = course.department
+		//		courseBlog.course = course
+		//		courseBlog.department = course.department
 		courseBlog.status = BlogStatus.Submited
 
 		get("courseBlog.website").foreach(a => {
@@ -191,16 +192,16 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		//		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		//		Dirs.on(path).mkdirs()
 		//保存syllabus
-		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
-		val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
-		syllabus.semester = semester
-		syllabus.course = course
-		syllabus.locale = Locale.CHINESE
-		syllabus.author = user
-		syllabus.updatedAt = Instant.now()
 
 		val parts = getAll("syllabus.attachment", classOf[Part])
+		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		if (parts.nonEmpty && parts.head.getSize > 0) {
+			val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
+			syllabus.semester = semester
+			syllabus.course = course
+			syllabus.locale = Locale.CHINESE
+			syllabus.author = user
+			syllabus.updatedAt = Instant.now()
 			val blob = EmsApp.getBlobRepository(true)
 			val part = parts.head
 			if (null != syllabus.attachment && syllabus.attachment.key.nonEmpty) {
@@ -214,20 +215,20 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			syllabus.attachment = attachment
+			entityDao.saveOrUpdate(syllabus)
 		}
-		entityDao.saveOrUpdate(syllabus)
 
 		//lecturePlan
-		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
-		val lecturePlan = if (lecturePlans.isEmpty) new LecturePlan else lecturePlans.head
-		lecturePlan.semester = semester
-		lecturePlan.course = course
-		lecturePlan.locale = Locale.CHINESE
-		lecturePlan.author = user
-		lecturePlan.updatedAt = Instant.now()
 
 		val LParts = getAll("lecturePlan.attachment", classOf[Part])
+		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
 		if (LParts.nonEmpty && LParts.head.getSize > 0) {
+			val lecturePlan = if (lecturePlans.isEmpty) new LecturePlan else lecturePlans.head
+			lecturePlan.semester = semester
+			lecturePlan.course = course
+			lecturePlan.locale = Locale.CHINESE
+			lecturePlan.author = user
+			lecturePlan.updatedAt = Instant.now()
 			val blob = EmsApp.getBlobRepository(true)
 			val part = LParts.head
 			if (null != lecturePlan.attachment && lecturePlan.attachment.key.nonEmpty) {
@@ -240,8 +241,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			attachment.mimeType = Option(meta.mediaType)
 			attachment.name = Option(meta.name)
 			lecturePlan.attachment = attachment
+			entityDao.saveOrUpdate(lecturePlan)
 		}
-		entityDao.saveOrUpdate(lecturePlan)
 		saveOrUpdate(courseBlog)
 
 		redirect("search", "info.save.success")
@@ -338,5 +339,22 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		redirect("search", "info.remove.success")
 	}
 
-
+	@response
+	def removeAtta(@param("id") id: Long): Boolean = {
+		val blob = EmsApp.getBlobRepository(true)
+		val courseBlog = entityDao.get(classOf[CourseBlog], id)
+		try {
+			blob.remove(courseBlog.materialAttachment.key.get)
+			courseBlog.materialAttachment.key = null
+			courseBlog.materialAttachment.mimeType = null
+			courseBlog.materialAttachment.name = null
+			courseBlog.materialAttachment.size = null
+			entityDao.saveOrUpdate(courseBlog)
+			true
+		} catch {
+			case e: Exception =>
+				logger.info("removeAndRedirect failure", e)
+				false
+		}
+	}
 }

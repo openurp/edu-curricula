@@ -20,7 +20,7 @@ package org.openurp.edu.course.admin.web.action
 
 import org.beangle.ems.app.EmsApp
 import org.beangle.webmvc.api.action.ServletSupport
-import org.beangle.webmvc.api.annotation.param
+import org.beangle.webmvc.api.annotation.{param, response}
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.edu.course.model.LecturePlan
@@ -43,6 +43,21 @@ class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 			put("url",path.get)
 		}
 		forward()
+	}
+
+	@response
+	def removeAtta(@param("id") id: Long): Boolean = {
+		val blob = EmsApp.getBlobRepository(true)
+		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
+		try {
+			blob.remove(lecturePlan.attachment.key.get)
+			entityDao.remove(lecturePlan)
+			true
+		} catch {
+			case e: Exception =>
+				logger.info("removeAndRedirect failure", e)
+				false
+		}
 	}
 
 }

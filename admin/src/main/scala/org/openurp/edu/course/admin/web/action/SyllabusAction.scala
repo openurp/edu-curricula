@@ -20,12 +20,12 @@ package org.openurp.edu.course.admin.web.action
 
 import org.beangle.ems.app.EmsApp
 import org.beangle.webmvc.api.action.ServletSupport
-import org.beangle.webmvc.api.annotation.param
+import org.beangle.webmvc.api.annotation.{param, response}
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.edu.course.model.Syllabus
 
-class SyllabusAction extends RestfulAction[Syllabus]  with ServletSupport{
+class SyllabusAction extends RestfulAction[Syllabus] with ServletSupport {
 
 	def attachment(@param("id") id: Long): View = {
 		val syllabus = entityDao.get(classOf[Syllabus], id)
@@ -39,10 +39,23 @@ class SyllabusAction extends RestfulAction[Syllabus]  with ServletSupport{
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
 			val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
 			put("syllabus", syllabus)
-			put("url",path.get)
+			put("url", path.get)
 		}
 		forward()
 	}
 
-
+	@response
+	def removeAtta(@param("id") id: Long): Boolean = {
+		val blob = EmsApp.getBlobRepository(true)
+		val syllabus = entityDao.get(classOf[Syllabus], id)
+		try {
+			blob.remove(syllabus.attachment.key.get)
+			entityDao.remove(syllabus)
+			true
+		} catch {
+			case e: Exception =>
+				logger.info("removeAndRedirect failure", e)
+				false
+		}
+	}
 }
