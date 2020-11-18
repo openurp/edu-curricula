@@ -32,44 +32,46 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       [@b.textarea label="中文简介" name="courseBlog.description" value=(courseBlog.description)! id="description" cols="100" rows="10" required="true" maxlength="10000"/]
       [@b.textarea label="英文简介" name="courseBlog.enDescription" value=(courseBlog.enDescription)! id="enDescription" cols="100" rows="10" required="true" maxlength="10000"/]
       [@b.field label="教学大纲" required="true"]
-        <input name="syllabus.attachment" type="file" style="display:inline-block" id="syllabus"/> <label id="syllabusSpan" > </label><span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
-        [#if courseBlog?? && syllabuses ?? && syllabuses?size>0]
-          [#list syllabuses as syllabus]
-            [#if syllabus.attachment??]
-              <br>
-              <label id="syllabusAttaLabel" class="form-check-label">
-              已有附件：${(syllabus.attachment.name)!}
-                [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]&nbsp;&nbsp;
-                [@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]&nbsp;&nbsp;
-                [@b.a onclick="removeSyllabusAtta('${syllabus.id}');return false"]删除[/@]
-              </label>
-              [#if syllabus_has_next]<br>[/#if]
-            [/#if]
-          [/#list]
+        <input name="syllabus.attachment" type="file" style="display:inline-block" id="syllabus"/>
+        [@b.a onclick="removeSyllabus();return false" id="syllabusA" ]清除[/@]
+        <label id="syllabusSpan" > </label>
+        <span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
+        [#if courseBlog?? && syllabus ?? ]
+          [#if syllabus.attachment??]
+            <br>
+            <label id="syllabusAttaLabel" class="form-check-label">
+            已有附件：${(syllabus.attachment.name)!}
+              [@b.a target="_blank" href="syllabus!attachment?id=${syllabus.id}"]下载[/@]&nbsp;&nbsp;
+              [@b.a target="_blank" href="syllabus!view?id=${syllabus.id}"]预览[/@]&nbsp;&nbsp;
+              [@b.a onclick="removeSyllabusAtta('${syllabus.id}');return false"]删除[/@]
+            </label>
+          [/#if]
         [/#if]
       [/@]
       [@b.field label="授课计划" required="true" ]
-        <input name="lecturePlan.attachment" type="file" style="display:inline-block" id="lecturePlan"/> <label id="lecturePlanSpan"> </label> <span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
-        [#if courseBlog.persisted && lecturePlans?? && lecturePlans?size>0 ]
-          [#list lecturePlans as lecturePlan]
-            [#if lecturePlan.attachment??]
-              <br>
-              <label id="lecturePlanAttaLabel" class="form-check-label">
-                已有附件：${(lecturePlan.attachment.name)!}
-                [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]&nbsp;&nbsp;
-                [@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]&nbsp;&nbsp;
-                [@b.a onclick="removePlanAtta('${lecturePlan.id}');return false"]删除[/@]
-              </label>
-              [#if lecturePlan_has_next]<br>[/#if]
-            [/#if]
-          [/#list]
+        <input name="lecturePlan.attachment" type="file" style="display:inline-block" id="lecturePlan"/>
+        [@b.a onclick="removeLecturePlan();return false" id="lecturePlanA" ]清除[/@]
+        <label id="lecturePlanSpan"> </label>
+        <span style="color:red;font-weight: 700" >注：请上传pdf格式的文件</span>
+        [#if courseBlog.persisted && lecturePlan??]
+          [#if lecturePlan.attachment??]
+            <br>
+            <label id="lecturePlanAttaLabel" class="form-check-label">
+              已有附件：${(lecturePlan.attachment.name)!}
+              [@b.a target="_blank" href="lecture-plan!attachment?id=${lecturePlan.id}"]下载[/@]&nbsp;&nbsp;
+              [@b.a target="_blank" href="lecture-plan!view?id=${lecturePlan.id}"]预览[/@]&nbsp;&nbsp;
+              [@b.a onclick="removePlanAtta('${lecturePlan.id}');return false"]删除[/@]
+            </label>
+          [/#if]
         [/#if]
       [/@]
       [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" maxlength="10000"/]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
-        <label id="materialAttachmentSpan"></label><span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包上传，不超过50MB</span>
+        [@b.a onclick="removeMaterial();return false" id="materialA" ]清除[/@]
+        <label id="materialAttachmentSpan"></label>
+        <span style="color:red;font-weight: 700" >注：可根据具体情况将电子教案、习题、试卷等课程教学资料打包上传，不超过50MB</span>
         [#if courseBlog.materialAttachment??]
           <br>
           <label id="materialAttaLabel" class="form-check-label">
@@ -192,7 +194,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
     }
     });
   });
-
+//提交前检查
   function syncEditor(){
     if($('#syllabus').val()=="" && $('#syllabusAttaLabel').length==0 ){
       $('#syllabusSpan').html("请上传教学大纲");
@@ -238,6 +240,36 @@ ${b.script("kindeditor","lang/zh-CN.js")}
     }
   })
 
+  //清除上传但未提交的附件
+  $('#syllabusA').attr("style", "display:none;");
+  $('#syllabus').change(function () {
+    $('#syllabusA').attr("style", "display:inline;");
+  });
+  function removeSyllabus(){
+    $('#syllabus').val("");
+    $('#syllabusA').attr("style", "display:none;");
+  }
+
+  $('#lecturePlanA').attr("style", "display:none;");
+  $('#lecturePlan').change(function () {
+    $('#lecturePlanA').attr("style", "display:inline;");
+  });
+  function removeLecturePlan(){
+    $('#lecturePlan').val("");
+    $('#lecturePlanA').attr("style", "display:none;");
+  }
+
+  $('#materialA').attr("style", "display:none;");
+  $('#materialAttachment').change(function () {
+    $('#materialA').attr("style", "display:inline;");
+  });
+  function removeMaterial(){
+    $('#materialAttachment').val("");
+    $('#materialA').attr("style", "display:none;");
+  }
+
+
+  //附件添加删除功能
   function removeSyllabusAtta(id){
     var url = "${b.url('syllabus!removeAtta?id=aaa')}";
     var newUrl = url.replace("aaa",id);

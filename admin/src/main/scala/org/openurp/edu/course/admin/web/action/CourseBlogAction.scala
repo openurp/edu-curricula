@@ -80,11 +80,11 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		if (courseBlog.persisted) {
 			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 			if (!syllabuses.isEmpty) {
-				put("syllabuses", syllabuses)
+				put("syllabus", syllabuses.head)
 			}
 			val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
 			if (!lecturePlans.isEmpty) {
-				put("lecturePlans", lecturePlans)
+				put("lecturePlan", lecturePlans.head)
 			}
 		}
 		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
@@ -136,23 +136,6 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			}
 		})
 
-		val materialParts = getAll("materialAttachment", classOf[Part])
-		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
-			val blob = EmsApp.getBlobRepository(true)
-			val part = materialParts.head
-			if (courseBlog.materialAttachment != null && courseBlog.materialAttachment.key.nonEmpty) {
-				blob.remove(courseBlog.materialAttachment.key.get)
-			}
-			val meta = blob.upload("/" + semester.id.toString,
-				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
-			val attachment = new Attachment()
-			attachment.size = Option(meta.fileSize)
-			attachment.key = Option(meta.filePath)
-			attachment.mimeType = Option(meta.mediaType)
-			attachment.name = Option(meta.name)
-			courseBlog.materialAttachment = attachment
-		}
-
 		//		courseBlog.awards.clear()
 		var labelIds = Collections.newBuffer[Int]
 		val labelTypes = getCodes(classOf[AwardLabelType])
@@ -189,6 +172,9 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			})
 			courseBlog.awards --= deleteAwards
 		}
+
+		//在处理附件之前先保存一下其他对象，这样不至于附件保存不成功导致其他内容丢失
+		saveOrUpdate(courseBlog)
 		//		val path = Constants.AttachmentBase + "/" + courseBlog.semester.id.toString
 		//		Dirs.on(path).mkdirs()
 		//保存syllabus
@@ -242,6 +228,24 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			attachment.name = Option(meta.name)
 			lecturePlan.attachment = attachment
 			entityDao.saveOrUpdate(lecturePlan)
+		}
+
+		//教学资料附件
+		val materialParts = getAll("materialAttachment", classOf[Part])
+		if (materialParts.nonEmpty && materialParts.head.getSize > 0) {
+			val blob = EmsApp.getBlobRepository(true)
+			val part = materialParts.head
+			if (courseBlog.materialAttachment != null && courseBlog.materialAttachment.key.nonEmpty) {
+				blob.remove(courseBlog.materialAttachment.key.get)
+			}
+			val meta = blob.upload("/" + semester.id.toString,
+				part.getInputStream, part.getSubmittedFileName, getUser.code + " " + getUser.name)
+			val attachment = new Attachment()
+			attachment.size = Option(meta.fileSize)
+			attachment.key = Option(meta.filePath)
+			attachment.mimeType = Option(meta.mediaType)
+			attachment.name = Option(meta.name)
+			courseBlog.materialAttachment = attachment
 		}
 		saveOrUpdate(courseBlog)
 
