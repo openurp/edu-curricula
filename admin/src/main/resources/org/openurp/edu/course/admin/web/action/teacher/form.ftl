@@ -56,7 +56,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [/#if]
         [/#if]
       [/@]
-      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
+      [@b.textfield label="预修课程" name="courseBlog.preCourse" value=(courseBlog.preCourse)! style="width:600px"  required="true" onblur="saveAttribute('preCourse',this.value)" comment='<span style="color:red" ><b>注：没有预修课程请填“无”</b></span>' /]
       [@b.textarea label="教材和参考书目" name="courseBlog.books" value=(courseBlog.books)! id="books" required="true" maxlength="10000"/]
       [@b.field label="教学资料"]
         <input name="materialAttachment" type="file" style="display:inline-block" id="materialAttachment"/>
@@ -72,7 +72,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           </label>
         [/#if]
       [/@]
-      [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px" comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>' /]
+      [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"  onblur="saveAttribute('website',this.value)" comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>'/]
       [@b.field label="获奖情况"]
         [#list labelTypes!?sort_by("code") as awardLabelType]
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
@@ -97,10 +97,10 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
           [/#list]
         [/@]
       [/#list]
-      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px"/]
+      [@b.textfield label="备注" name="courseBlog.remark" value=(courseBlog.remark)! style="width:600px" onblur="saveAttribute('remark',this.value)"/]
       [@b.formfoot]
         [@b.submit value="确定"/]
-        <span style="color:red;font-weight: 700" >注：如果点击提交后无反应，可能是有文件尚未上传完毕，请不要关闭浏览器，稍作等待。</span>
+        <span style="color:red;font-weight: 700" >注：如果点击确定后无反应，可能是有文件尚未上传完毕，请不要关闭浏览器，稍作等待。</span>
       [/@]
     [/@]
 <script>
@@ -123,6 +123,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       ],
       afterBlur:function () {
         $('#description').val(descriptionEditor.html());
+        saveAttribute("description", $('#description').val())
       }
     });
     enDescriptionEditor = KindEditor.create('textarea[name="courseBlog.enDescription"]', {
@@ -140,6 +141,7 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       ],
       afterBlur:function () {
         $('#enDescription').val(enDescriptionEditor.html());
+        saveAttribute("enDescription", $('#enDescription').val())
       }
     });
     booksEditor = KindEditor.create('textarea[name="courseBlog.books"]', {
@@ -157,7 +159,8 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
       ],
       afterBlur:function () {
         $('#books').val(booksEditor.html());
-      }
+        saveAttribute("books", $('#books').val())
+    }
     });
   });
   //提交前检查
@@ -276,6 +279,22 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
         "success": function () {
           $('#materialAttaLabel').remove();
         }
+      });
+    }
+  }
+
+  //焦点离开即保存
+  function saveAttribute(name,value) {
+    if(name && value){
+      $.ajax({
+        "type": "post",
+        "url": "${b.url("course-blog!saveAttribute")}",
+        "data": {
+          "id": ${courseBlog.id},
+          "name": name,
+          "value":value
+        },
+        "async": false,
       });
     }
   }

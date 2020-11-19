@@ -22,6 +22,7 @@ import java.time.{Instant, LocalDate}
 import java.util.Locale
 
 import jakarta.servlet.http.Part
+import org.beangle.commons.bean.Properties
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
@@ -343,6 +344,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		redirect("search", "info.remove.success")
 	}
 
+	//删除附件功能
 	@response
 	def removeAtta(@param("id") id: Long): Boolean = {
 		val blob = EmsApp.getBlobRepository(true)
@@ -353,6 +355,30 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			courseBlog.materialAttachment.mimeType = null
 			courseBlog.materialAttachment.name = null
 			courseBlog.materialAttachment.size = null
+			entityDao.saveOrUpdate(courseBlog)
+			true
+		} catch {
+			case e: Exception =>
+				logger.info("removeAndRedirect failure", e)
+				false
+		}
+	}
+
+	//保存单个对象
+	@response
+	def saveAttribute(): Boolean = {
+		try {
+			val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+			val name = get("name").get
+			val value = get("value").get
+			if (name.equals("website")){
+				if (value != "" && !value.startsWith("http://") && !value.startsWith("https://")) {
+					val newWebsite = "http://" + value
+					courseBlog.website = Option(newWebsite)
+				}
+			}else{
+				Properties.set(courseBlog, name, value)
+			}
 			entityDao.saveOrUpdate(courseBlog)
 			true
 		} catch {
