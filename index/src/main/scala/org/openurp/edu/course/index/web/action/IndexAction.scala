@@ -36,7 +36,7 @@ import org.openurp.edu.base.model.{Project, Semester}
 import org.openurp.edu.course.model._
 
 
-class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
+class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 
 	var casConfig: CasConfig = _
 
@@ -54,7 +54,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	override def indexSetting(): Unit = {
 		nav()
-		put("portal",Ems.portal)
+		put("portal", Ems.portal)
 		put("casConfig", casConfig)
 		// 没有父类的分组
 		var courseGroups = Collections.newBuffer[CourseGroup]
@@ -67,11 +67,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 			}
 		})
 		put("courseGroups", courseGroups)
-
-		val builder = OqlBuilder.from(classOf[Semester], "semester")
-			.where("semester.calendar in(:calendars)", getProject.calendars)
-		builder.orderBy("semester.code desc")
-		put("semesters", entityDao.search(builder))
+		put("semesters", getSemesters)
 		put("currentSemester", getCurrentSemester)
 
 		super.indexSetting()
@@ -89,7 +85,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 		builder.where("courseBlog.semester=:semester", getSemester)
 		//		builder.where("courseBlog.status =:status", BlogStatus.Published)
 		get("nameOrCode").foreach(nameOrCode => {
-			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", s"$nameOrCode", s"$nameOrCode")
+			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", s"%$nameOrCode%", s"%$nameOrCode%")
 		})
 		val first = getInt("courseGroup")
 		val second = getInt("courseGroup_child")
@@ -120,7 +116,13 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	def getSemester: Semester = {
 		val semesterString = get("courseBlog.semester.id").orNull
-		if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+		if (semesterString != "" && semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+	}
+
+	def getSemesters: Seq[Semester] = {
+		val builder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
+		builder.select("distinct courseBlog.semester")
+		entityDao.search(builder)
 	}
 
 	def getCourseGroups(id: Int): Set[CourseGroup] = {
@@ -130,6 +132,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	override def info(id: String): View = {
 		put("BlogStatus", BlogStatus)
+		put("Transform",Transform)
 		super.info(id)
 	}
 
@@ -139,15 +142,32 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 		put("courseBlog", courseBlog)
 		val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
 		put("courseBlogs", courseBlogs)
+
+		val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+		courseBlogBuilder.where("courseBlog.course=:course", courseBlog.course)
+		courseBlogBuilder.where("courseBlog.status= :status", BlogStatus.Published)
+		courseBlogBuilder.where("courseBlog.semester<>:semester", courseBlog.semester)
+		val hisBlogs = entityDao.search(courseBlogBuilder)
+		put("hisBlogs", hisBlogs)
+
 		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
 		if (!syllabuses.isEmpty) {
-			put("syllabuses", syllabuses)
+			put("syllabus", syllabuses.head)
 		}
 		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
 		if (!lecturePlans.isEmpty) {
-			put("lecturePlans", lecturePlans)
+			put("lecturePlan", lecturePlans.head)
 		}
 		put("BlogStatus", BlogStatus)
+		println(courseBlog.description+"------------------------")
+		println(Transform.getResultsFromHtml(courseBlog.description))
+
+		val ss = "<p>桥边姑娘</p><p>你的芬芳</p><p>我把你放心上</p><p>不想让你流浪</p>"
+		val results = Transform.getResultsFromHtml(ss)
+		println("results:" + results)
+		val ss1 = "<p><span style=\"white-space: normal;\">王者荣耀</span></p>"
+		val results1 = Transform.getResultsFromHtml(ss1)
+		println("results1:" + results1)
 		forward()
 	}
 
@@ -200,11 +220,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 			}
 		})
 		put("courseGroups", courseGroups)
-
-		val builder = OqlBuilder.from(classOf[Semester], "semester")
-			.where("semester.calendar in(:calendars)", getProject.calendars)
-		builder.orderBy("semester.code desc")
-		put("semesters", entityDao.search(builder))
+		put("semesters", getSemesters)
 		put("currentSemester", getCurrentSemester)
 		forward()
 	}
@@ -321,7 +337,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport{
 
 	def notice(@param("id") id: String): View = {
 		nav()
-		put("id",id)
+		put("id", id)
 		forward()
 	}
 

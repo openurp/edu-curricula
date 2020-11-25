@@ -15,7 +15,7 @@
     </tr>
     </thead>
     <tbody>
-    [#list courseBlogs as courseBlog]
+    [#list hisBlogs as courseBlog]
       <tr>
         <td width="15%" >${courseBlog.semester.schoolYear}学年${courseBlog.semester.name}学期</td>
         <td width="10%" >${(courseBlog.course.code)!}</td>

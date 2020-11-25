@@ -367,24 +367,29 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	//保存单个对象
 	@response
 	def saveAttribute(): Boolean = {
-		try {
-			val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
-			val name = get("name").get
-			val value = get("value").get
-			if (name.equals("website")){
-				if (value != "" && !value.startsWith("http://") && !value.startsWith("https://")) {
-					val newWebsite = "http://" + value
-					courseBlog.website = Option(newWebsite)
+		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+		val name = get("name").get
+		val value = get("value").get
+		if (courseBlog.persisted) {
+			try {
+				if (name.equals("website")) {
+					if (value != "" && !value.startsWith("http://") && !value.startsWith("https://")) {
+						val newWebsite = "http://" + value
+						courseBlog.website = Option(newWebsite)
+					}
+				} else {
+					println(getUser.code + "(" + getUser.name + ")" + " " + "try to save" + " " + name + "," + " courseBlog_id=" + courseBlog.id)
+					Properties.set(courseBlog, name, value)
 				}
-			}else{
-				Properties.set(courseBlog, name, value)
+				entityDao.saveOrUpdate(courseBlog)
+				true
+			} catch {
+				case e: Exception =>
+					logger.info("saveAttribute failure", e)
+					false
 			}
-			entityDao.saveOrUpdate(courseBlog)
-			true
-		} catch {
-			case e: Exception =>
-				logger.info("removeAndRedirect failure", e)
-				false
+		} else {
+			false
 		}
 	}
 }

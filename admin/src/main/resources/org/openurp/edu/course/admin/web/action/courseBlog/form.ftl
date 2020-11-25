@@ -287,7 +287,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
     }
   }
   function removePlanAtta(id){
-    var url = "${b.url('syllabus!removeAtta?id=aaa')}";
+    var url = "${b.url('lecture-plan!removeAtta?id=aaa')}";
     var newUrl = url.replace("aaa",id);
     if (confirm("是否确认删除附件？")) {
       $.ajax({

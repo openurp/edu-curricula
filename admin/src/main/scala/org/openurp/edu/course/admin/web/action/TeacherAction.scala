@@ -71,6 +71,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
 			courseBlogBuilder.where("courseBlog.author=:author", getUser)
 			courseBlogBuilder.where("courseBlog.description <> :description", "--")
+			courseBlogBuilder.where("courseBlog.semester<>:semester", getSemester)
 			val hisBlogs = entityDao.search(courseBlogBuilder)
 			put("hisBlogs", hisBlogs)
 		}
