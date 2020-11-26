@@ -159,15 +159,6 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 			put("lecturePlan", lecturePlans.head)
 		}
 		put("BlogStatus", BlogStatus)
-		println(courseBlog.description+"------------------------")
-		println(Transform.getResultsFromHtml(courseBlog.description))
-
-		val ss = "<p>桥边姑娘</p><p>你的芬芳</p><p>我把你放心上</p><p>不想让你流浪</p>"
-		val results = Transform.getResultsFromHtml(ss)
-		println("results:" + results)
-		val ss1 = "<p><span style=\"white-space: normal;\">王者荣耀</span></p>"
-		val results1 = Transform.getResultsFromHtml(ss1)
-		println("results1:" + results1)
 		forward()
 	}
 

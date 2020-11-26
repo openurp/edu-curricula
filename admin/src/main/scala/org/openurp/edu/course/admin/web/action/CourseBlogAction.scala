@@ -282,6 +282,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				entityDao.saveOrUpdate(courseBlogs)
 				redirect("search", s"成功审核${j}条课程资料")
 			}
+			case _ => redirect("search", "审核失败")
 		}
 	}
 
@@ -367,7 +368,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 	//保存单个对象
 	@response
 	def saveAttribute(): Boolean = {
-		val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+		val id = getLong("id").get
+		val courseBlog = entityDao.get(classOf[CourseBlog], id)
 		val name = get("name").get
 		val value = get("value").get
 		if (courseBlog.persisted) {

@@ -322,7 +322,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
         "type": "post",
         "url": "${b.url("course-blog!saveAttribute")}",
         "data": {
-          "id": ${courseBlog.id},
+          "id": '${courseBlog.id}',
           "name": name,
           "value":value
         },

@@ -96,8 +96,9 @@ class ImportAction extends AbstractAction[ReviseTask] {
 				courseBlog.preCourse = "--"
 				courseBlog.department = clazz.teachDepart
 				courseBlog.updatedAt = Instant.now()
-				if (!metas.isEmpty) {
-					courseBlog.meta = Option(metas.head)
+				val newMetas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
+				if (!newMetas.isEmpty) {
+					courseBlog.meta = Option(newMetas.head)
 				}
 				entityDao.saveOrUpdate(courseBlog)
 			} else {
