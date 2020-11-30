@@ -11,28 +11,28 @@
     <div class="con_area m_t_20">
       <div class="clearfix">
           <div class="index_l fl">
-              <div class="clearfix">
-                  <div class="kctj fl">
-                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>课程统计</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>
-                        <div class="kctj_con">
-                          <ul>
-                              <li><span class="iconfont icon-kechengbao"></span>课程总数：<span class="kctj_num">--</span></li>
-                                <li><span class="iconfont icon-kecheng"></span>选修课数：<span class="kctj_num">--</span></li>
-                                <li><span class="iconfont icon-zaixiankecheng-solid"></span>在线课程数：<span class="kctj_num">--</span></li>
-                                <li><span class="iconfont icon-zhengshu-xiantiao"></span>校级金课数：<span class="kctj_num">--</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="tzgg fr" style="height: 300px">
-                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>通知公告</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="${b.url('!notices')}" >+MORE</a></div>
-                      <div class="tzgg_con">
-                          <ul id="tzgg">
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="module_bg kclb m_t_20">
-                  [@b.form name="courseBlogSearchForm"  action="!search?pageSize=10" target="courseBloglist" title="ui.searchForm" theme="html" ]
+[#--              <div class="clearfix">--]
+[#--                  <div class="kctj fl">--]
+[#--                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>课程统计</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"></div>--]
+[#--                        <div class="kctj_con">--]
+[#--                          <ul>--]
+[#--                              <li><span class="iconfont icon-kechengbao"></span>课程总数：<span class="kctj_num">--</span></li>--]
+[#--                                <li><span class="iconfont icon-kecheng"></span>选修课数：<span class="kctj_num">--</span></li>--]
+[#--                                <li><span class="iconfont icon-zaixiankecheng-solid"></span>在线课程数：<span class="kctj_num">--</span></li>--]
+[#--                                <li><span class="iconfont icon-zhengshu-xiantiao"></span>校级金课数：<span class="kctj_num">--</span></li>--]
+[#--                            </ul>--]
+[#--                        </div>--]
+[#--                    </div>--]
+[#--                    <div class="tzgg fr" style="height: 300px">--]
+[#--                      <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>通知公告</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="${b.url('!notices')}" >+MORE</a></div>--]
+[#--                      <div class="tzgg_con">--]
+[#--                          <ul id="tzgg">--]
+[#--                            </ul>--]
+[#--                        </div>--]
+[#--                    </div>--]
+[#--                </div>--]
+                <div class="module_bg kclb m_t_20" style="padding: 10px 10px;margin-top: 0px;">
+                  [@b.form name="courseBlogSearchForm"  action="!search?pageSize=25" target="courseBloglist" title="ui.searchForm" theme="html" ]
                      <div class="kclb_cx_tj">
                       <span>请选择课程类别：</span>
                        <select  name="courseBlog.semester.id"  style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;">
@@ -52,7 +52,7 @@
                      <div class="kclb_list clearfix">
                       <div class="select_item">
                           <div class="select_title">请选择</div>
-                            <select class="select_zk" size="6" name="courseGroup" id="courseGroupId" style="height:200px;">
+                            <select class="select_zk" size="4" name="courseGroup" id="courseGroupId" style="height:150px;">
                               <option value="">全部</option>
                               [#list courseGroups as courseGroup]
                                 <option value="${courseGroup.id}">${courseGroup.name}</option>
@@ -61,18 +61,18 @@
                         </div>
                         <div class="select_item">
                           <div class="select_title">请选择</div>
-                            <select class="select_zk" size="6" name="courseGroup_child"  style="height:200px;">
+                            <select class="select_zk" size="4" name="courseGroup_child"  style="height:150px;">
                             </select>
                         </div>
                         <div class="select_item">
                           <div class="select_title">请选择</div>
-                            <select class="select_zk" size="6" name="courseGroup_child_child" style="height:200px;">
+                            <select class="select_zk" size="4" name="courseGroup_child_child" style="height:150px;">
                             </select>
                         </div>
                      </div>
                   [/@]
                 </div>
-                [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?pageSize=10"/]
+                [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?pageSize=25"/]
 
             </div>
             <div class="index_r fr">
@@ -124,7 +124,7 @@
                     <div class="kstd_con">
                       <ul>
                           <li><a href="https://xxb.lixin.edu.cn/yhgg/88988.htm" target="_blank">网络教学平台</a></li>
-                            <li><a href="http://newjw.lixin.edu.cn/sso/login?local=1" target="_blank">教务管理系统</a></li>
+                            <li><a href="http://lxjw.lixin.edu.cn/cas/login" target="_blank">教务管理系统</a></li>
                             <li><a href="https://jwc.lixin.edu.cn/" target="_blank">教务处</a></li>
                         </ul>
                     </div>
@@ -152,6 +152,11 @@
   <div class="tk_box" style=" width:500px;"/>
 </body>
 [@b.foot/]
+<style>
+  .kclb_list{ border:0px; padding:0px; margin-top:15px;background:#ffffff}
+  .select_zk option { padding: 5px 5px; }
+  .kc_table tbody td {padding: 10px 5px;}
+  </style>
 <script>
 
   $.ajax({

@@ -83,29 +83,29 @@
 								<div class="page">
 										<ul class="clearfix">
 											<li>
-                          [@b.a href="!awardLabel?pageIndex=1&pageSize=20"+param ]
+                          [@b.a href="!awardLabel?pageIndex=1&pageSize=25"+param ]
 														<span aria-hidden="true">首页</span>
                           [/@]
 											</li>
                         [#if pageIndex>1]
 													<li>
-                              [@b.a href="!awardLabel?pageIndex=${pageIndex-1}&pageSize=20"+param ]
+                              [@b.a href="!awardLabel?pageIndex=${pageIndex-1}&pageSize=25"+param ]
 																<span aria-hidden="true">«</span>
                               [/@]
 													</li>
                         [/#if]
                         [#list start..end as i]
-													<li>[@b.a href="!awardLabel?pageIndex=${i}&pageSize=20"+param ]${i}[/@]</li>
+													<li>[@b.a href="!awardLabel?pageIndex=${i}&pageSize=25"+param ]${i}[/@]</li>
                         [/#list]
                         [#if pageIndex!=totalPages]
 													<li>
-                              [@b.a href="!awardLabel?pageIndex=${pageIndex+1}&pageSize=20"+param]
+                              [@b.a href="!awardLabel?pageIndex=${pageIndex+1}&pageSize=25"+param]
 																<span aria-hidden="true">»</span>
                               [/@]
 													</li>
                         [/#if]
 											<li>
-                          [@b.a href="!awardLabel?pageIndex=${totalPages}&pageSize=20"+param ]
+                          [@b.a href="!awardLabel?pageIndex=${totalPages}&pageSize=25"+param ]
 														<span aria-hidden="true">尾页</span>
                           [/@]
 											</li>

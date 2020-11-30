@@ -11,7 +11,7 @@
         	<div class="bg_img border p_lr_30 p_t_5 p_b_25">
                 <div class="title_con"><span class="title_text"><i class="quan"></i>课程类别</span></div>
                 <div class="m_t_30">
-                  [@b.form name="courseBlogSearchForm"  action="!search?pageSize=10" target="courseBloglist" title="ui.searchForm" theme="html" ]
+                  [@b.form name="courseBlogSearchForm"  action="!search?pageSize=25" target="courseBloglist" title="ui.searchForm" theme="html" ]
                     <div class="kclb_cx_tj">
                       <span>请选择课程类别：</span>
                       <select  name="courseBlog.semester.id"  style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;">
@@ -51,7 +51,7 @@
                     </div>
                   [/@]
                 </div>
-            [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?nameOrCode=${Parameters['nameOrCode']!}&pageSize=10"/]
+            [@b.div id="courseBloglist" style="margin-top:20px;" href="!search?nameOrCode=${Parameters['nameOrCode']!}&pageSize=25"/]
             </div>
         </div>
     <div class="tk_box"/>

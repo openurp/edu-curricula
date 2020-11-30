@@ -64,29 +64,29 @@
                 <div class="page">
                   <ul class="clearfix">
                     <li>
-                      [@b.a href="!courseBlogForName?pageIndex=1&pageSize=20"+param target="courseBloglist"]
+                      [@b.a href="!courseBlogForName?pageIndex=1&pageSize=25"+param target="courseBloglist"]
                         <span aria-hidden="true">首页</span>
                       [/@]
                     </li>
                     [#if pageIndex>1]
                       <li>
-                        [@b.a href="!courseBlogForName?pageIndex=${pageIndex-1}&pageSize=20"+param target="courseBloglist"]
+                        [@b.a href="!courseBlogForName?pageIndex=${pageIndex-1}&pageSize=25"+param target="courseBloglist"]
                           <span aria-hidden="true">上一页</span>
                         [/@]
                       </li>
                     [/#if]
                     [#list start..end as i]
-                      <li>[@b.a href="!courseBlogForName?pageIndex=${i}&pageSize=20"+param  target="courseBloglist"]${i}[/@]</li>
+                      <li>[@b.a href="!courseBlogForName?pageIndex=${i}&pageSize=25"+param  target="courseBloglist"]${i}[/@]</li>
                     [/#list]
                     [#if pageIndex!=totalPages]
                       <li>
-                        [@b.a href="!courseBlogForName?pageIndex=${pageIndex+1}&pageSize=20"+param  target="courseBloglist"]
+                        [@b.a href="!courseBlogForName?pageIndex=${pageIndex+1}&pageSize=25"+param  target="courseBloglist"]
                           <span aria-hidden="true">下一页</span>
                         [/@]
                       </li>
                     [/#if]
                     <li>
-                      [@b.a href="!courseBlogForName?pageIndex=${totalPages}&pageSize=20"+param target="courseBloglist"]
+                      [@b.a href="!courseBlogForName?pageIndex=${totalPages}&pageSize=25"+param target="courseBloglist"]
                         <span aria-hidden="true">尾页</span>
                       [/@]
                     </li>
