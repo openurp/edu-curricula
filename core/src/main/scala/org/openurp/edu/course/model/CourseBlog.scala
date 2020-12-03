@@ -98,7 +98,7 @@ object Transform {
 		val htmlTagRegEx = "<[a-zA-Z]+.*?>([\\s\\S]*?)<\\/[a-zA-Z ]*?>|<[a-zA-Z]+\\s\\/>"
 		val p = Pattern.compile(htmlTagRegEx)
 		var m = p.matcher(htmlString)
-		var result = ""
+		var result = htmlString
 		while (m.find) {
 			result = m.replaceAll("$1")
 			m = p.matcher(result)

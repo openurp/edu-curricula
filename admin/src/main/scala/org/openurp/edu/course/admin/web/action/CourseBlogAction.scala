@@ -380,7 +380,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 						courseBlog.website = Option(newWebsite)
 					}
 				} else {
-					println(getUser.code + "(" + getUser.name + ")" + " " + "try to save" + " " + name + "," + " courseBlog_id=" + courseBlog.id)
+					println(getUser.code + "(" + getUser.name + ")" + " " + "try to save" + " " + name + "," + " courseBlog_id=" + courseBlog.id + "in " + Instant.now())
 					Properties.set(courseBlog, name, value)
 				}
 				entityDao.saveOrUpdate(courseBlog)

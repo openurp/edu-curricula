@@ -15,13 +15,21 @@
         <tr>
           <td><span class="tk_table_title">中文简介：</span></td>
           <td id="description">
-            [#if courseBlog.description!="--"]${Transform.getResultsFromHtml(courseBlog.description)?substring(0,149)!}[#if Transform.getResultsFromHtml(courseBlog.description)?length>150]...[/#if][/#if]
+            [#if courseBlog.description!="--"]
+              [#if Transform.getResultsFromHtml(courseBlog.description)?length>150]${Transform.getResultsFromHtml(courseBlog.description)?substring(0,149)!}...
+              [#else ]${Transform.getResultsFromHtml(courseBlog.description)!}
+              [/#if]
+            [/#if]
           </td>
         </tr>
         <tr>
           <td><span class="tk_table_title">英文简介：</span></td>
           <td id="enDescription">
-            [#if courseBlog.enDescription!="--"]${Transform.getResultsFromHtml(courseBlog.enDescription)?substring(0,299)!}[#if Transform.getResultsFromHtml(courseBlog.enDescription)?length>300]...[/#if][/#if]
+            [#if courseBlog.enDescription!="--"]
+              [#if Transform.getResultsFromHtml(courseBlog.enDescription)?length>300]${Transform.getResultsFromHtml(courseBlog.enDescription)?substring(0,299)!}...
+              [#else ]${Transform.getResultsFromHtml(courseBlog.enDescription)!}
+              [/#if]
+            [/#if]
           </td>
         </tr>
         <tr>
