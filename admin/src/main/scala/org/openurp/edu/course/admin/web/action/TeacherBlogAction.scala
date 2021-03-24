@@ -20,7 +20,7 @@ package org.openurp.edu.course.admin.web.action
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.course.model.TeacherBlog
+import org.openurp.edu.curricula.model.TeacherBlog
 
 class TeacherBlogAction extends AbstractAction[TeacherBlog] {
 

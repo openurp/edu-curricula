@@ -23,7 +23,7 @@ import org.beangle.webmvc.api.action.ServletSupport
 import org.beangle.webmvc.api.annotation.{param, response}
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.edu.course.model.Syllabus
+import org.openurp.edu.curricula.model.Syllabus
 
 class SyllabusAction extends RestfulAction[Syllabus] with ServletSupport {
 

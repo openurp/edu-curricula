@@ -16,35 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.model
 
-import java.util.Locale
+import org.beangle.data.model.pojo.Hierarchical
+import org.openurp.code.CodeBean
 
-import org.beangle.data.model.pojo.{Named, Updated}
-import org.beangle.data.model.{Component, LongId}
-import org.openurp.base.model.User
-import org.openurp.edu.base.model.{Course, Semester}
+class CourseGroup extends CodeBean with Hierarchical[CourseGroup] {
 
-/** 教学大纲
- *  每个课程、每个学期、每个语种、每个作者做唯一限制
- */
-class Syllabus extends LongId with Updated {
-  var course: Course = _
+	var color: Option[String] = None
 
-  var locale: Locale = _
-
-  var semester: Semester = _
-
-  var author: User = _
-
-  var attachment: Attachment = new Attachment
-
-  var passed: Boolean = _
-}
-
-class Attachment extends Component {
-  var name: Option[String] = None
-  var size: Option[Integer] = None
-  var mimeType: Option[String] = None
-  var key: Option[String] = None
 }

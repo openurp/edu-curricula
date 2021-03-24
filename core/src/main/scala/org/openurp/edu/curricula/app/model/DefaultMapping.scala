@@ -16,17 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.app.model
+package org.openurp.edu.curricula.app.model
 
-import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.TemporalAt
-import org.openurp.edu.base.model.Semester
+import org.beangle.data.orm.{IdGenerator, MappingModule}
 
-/**修订设置
- *
- */
-class ReviseSetting extends IntId with TemporalAt{
+class DefaultMapping extends MappingModule {
 
-	var semester: Semester = _
+  def binding(): Unit = {
+    defaultCache("openurp.app.course", "read-write")
 
+    bind[ReviseSetting].generator("auto_increment")
+
+    bind[ReviseTask].generator("auto_increment")
+
+  }
 }

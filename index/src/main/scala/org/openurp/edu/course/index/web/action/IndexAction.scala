@@ -30,10 +30,11 @@ import org.beangle.webmvc.api.action.ServletSupport
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
+import org.openurp.base.edu.model.{Project, Semester}
 import org.openurp.base.model.Department
 import org.openurp.code.Code
-import org.openurp.edu.base.model.{Project, Semester}
-import org.openurp.edu.course.model._
+import org.openurp.edu.curricula.model
+import org.openurp.edu.curricula.model._
 
 
 class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
@@ -150,7 +151,7 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 		val hisBlogs = entityDao.search(courseBlogBuilder)
 		put("hisBlogs", hisBlogs)
 
-		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+		val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
 		if (!syllabuses.isEmpty) {
 			put("syllabus", syllabuses.head)
 		}

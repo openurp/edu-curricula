@@ -20,13 +20,12 @@ package org.openurp.edu.course.admin.web.action
 
 import java.time.Instant
 
-import org.beangle.commons.collection.{Collections, Order}
+import org.beangle.commons.collection.Order
 import org.beangle.commons.lang.Strings
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.base.code.model.CourseType
-import org.openurp.edu.course.model.{CourseBlog, CourseBlogMeta, CourseGroup}
+import org.openurp.edu.curricula.model.{CourseBlog, CourseBlogMeta, CourseGroup}
 
 class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 

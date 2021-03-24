@@ -2,7 +2,7 @@
 [@b.head/]
 [@b.toolbar title="从教学任务导入"]bar.addBack();[/@]
 [@b.form action="!importFromClazz" theme="list" ]
-    [@edu.semester name="reviseTask.semester.id" label="请选择学年学期"  value=currentSemester required="true"/]
+    [@urp_base.semester name="reviseTask.semester.id" label="请选择学年学期"  value=currentSemester required="true"/]
     [@b.formfoot]
 		[@b.submit value="导入"/]
     [/@]

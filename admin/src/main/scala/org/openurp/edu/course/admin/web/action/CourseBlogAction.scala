@@ -28,8 +28,9 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
 import org.beangle.webmvc.api.annotation.{param, response}
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.course.model._
+import org.openurp.base.edu.model.{Course, Semester}
+import org.openurp.edu.curricula.model
+import org.openurp.edu.curricula.model._
 
 
 class CourseBlogAction extends AbstractAction[CourseBlog] {
@@ -54,7 +55,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 
 	override def info(id: String): View = {
 		val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
-		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+		val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
 		if (!syllabuses.isEmpty) {
 			put("syllabuses", syllabuses)
 		}
@@ -79,7 +80,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			courseBlog.preCourse = ""
 		}
 		if (courseBlog.persisted) {
-			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+			val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
 			if (!syllabuses.isEmpty) {
 				put("syllabus", syllabuses.head)
 			}
@@ -181,9 +182,9 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		//保存syllabus
 
 		val parts = getAll("syllabus.attachment", classOf[Part])
-		val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+		val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
 		if (parts.nonEmpty && parts.head.getSize > 0) {
-			val syllabus = if (syllabuses.isEmpty) new Syllabus else syllabuses.head
+			val syllabus = if (syllabuses.isEmpty) new model.Syllabus else syllabuses.head
 			syllabus.semester = semester
 			syllabus.course = course
 			syllabus.locale = Locale.CHINESE
@@ -312,7 +313,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 			courseBlog.materials = None
 			courseBlog.website = None
 			courseBlog.remark = None
-			val syllabuses = getDatas(classOf[Syllabus], courseBlog)
+			val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
 			syllabuses.foreach(
 				syllabus => {
 

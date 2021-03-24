@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <orm>
-  <mapping class="org.openurp.edu.course.model.DefaultMapping" />
-  <mapping class="org.openurp.edu.course.app.model.DefaultMapping" />
+  <mapping class="org.openurp.edu.curricula.model.DefaultMapping" />
+  <mapping class="org.openurp.edu.curricula.app.model.DefaultMapping" />
   <naming>
-    <profile package = "org.openurp.edu.course.model" pluralize="true" schema="edu_course"/>
-    <profile package = "org.openurp.edu.course.app.model" pluralize="true" schema="app_course"/>
+    <profile package = "org.openurp.edu.curricula.model" pluralize="true" schema="edu_course"/>
+    <profile package = "org.openurp.edu.curricula.app.model" pluralize="true" schema="app"/>
   </naming>
 </orm>

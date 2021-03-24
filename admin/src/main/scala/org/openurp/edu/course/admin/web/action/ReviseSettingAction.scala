@@ -19,7 +19,7 @@
 package org.openurp.edu.course.admin.web.action
 
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.course.app.model.ReviseSetting
+import org.openurp.edu.curricula.app.model.ReviseSetting
 
 class ReviseSettingAction extends AbstractAction[ReviseSetting] {
 

@@ -5,6 +5,7 @@
     [@b.form name="courseBlogMetaSearchForm"  action="!search" target="courseBlogMetalist" title="ui.searchForm" theme="search"]
       [@b.textfield name="courseBlogMeta.course.code" label="课程代码"/]
       [@b.textfield name="courseBlogMeta.course.name" label="课程名称"/]
+      [@b.select name="courseBlogMeta.course.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
       [@b.textfield name="courseBlogMeta.course.credits" label="学分"/]
       [@b.select name="courseBlogMeta.course.courseType.id" label="课程类别" items=courseTypes?sort_by("code") empty="..."/]
       [@b.select name="courseGroup.id" label="课程分组" ]

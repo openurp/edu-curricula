@@ -21,7 +21,7 @@ package org.openurp.edu.course.admin.web.action
 import org.beangle.commons.collection.Collections
 import org.beangle.data.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.base.model.User
-import org.openurp.edu.course.app.model.ReviseTask
+import org.openurp.edu.curricula.app.model.ReviseTask
 
 class CoursePropertyExtractor  extends DefaultPropertyExtractor {
 

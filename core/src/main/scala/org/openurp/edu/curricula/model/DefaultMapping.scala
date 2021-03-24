@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
-
+package org.openurp.edu.curricula.model
 
 import org.beangle.data.orm.MappingModule
+import org.openurp.edu.course.model.Syllabus
+import org.openurp.edu.curricula.model
 
 class DefaultMapping extends MappingModule {
 
@@ -35,7 +36,7 @@ class DefaultMapping extends MappingModule {
 
 		bind[LecturePlan].generator("auto_increment")
 
-		bind[Syllabus].generator("auto_increment")
+		bind[model.Syllabus].generator("auto_increment")
 
 		bind[TeacherBlog] declare{e=>
 			e.intro is length(40000)

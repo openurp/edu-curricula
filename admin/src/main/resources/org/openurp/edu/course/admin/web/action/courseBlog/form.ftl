@@ -21,7 +21,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/@]
       [#else]
-        [@edu.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester required="true"/]
+        [@urp_base.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester required="true"/]
         [@b.field label="选择课程" required='true']
           <select id="courses" name="courseBlog.course" style="width:200px;" >
             <option value="${(courseBlog.course.code)!}" selected>${(courseBlog.course.name)!}${(courseBlog.course.code)!}</option>

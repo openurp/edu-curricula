@@ -18,18 +18,15 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.time.Instant
-
-import org.beangle.commons.collection.{Collections, Order}
+import org.beangle.commons.collection.Order
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.data.transfer.exporter.{DefaultPropertyExtractor, ExportSetting, PropertyExtractor}
+import org.beangle.data.transfer.exporter.ExportSetting
 import org.beangle.webmvc.api.annotation.ignore
 import org.beangle.webmvc.api.view.View
+import org.openurp.base.edu.model.{Course, Semester}
 import org.openurp.base.model.User
-import org.openurp.edu.base.model.{Course, Semester, Teacher}
-import org.openurp.edu.clazz.model.Clazz
-import org.openurp.edu.course.app.model.ReviseTask
-import org.openurp.edu.course.model.{CourseBlog, CourseBlogMeta, Syllabus}
+import org.openurp.edu.curricula.app.model.ReviseTask
+import org.openurp.edu.curricula.model.CourseBlog
 
 class ReviseTaskAction extends AbstractAction[ReviseTask] {
 

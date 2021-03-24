@@ -16,25 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.app.model
 
 import org.beangle.data.model.IntId
-import org.beangle.data.model.pojo.Updated
-import org.openurp.base.model.User
-import org.openurp.edu.base.model.Course
+import org.beangle.data.model.pojo.TemporalAt
+import org.openurp.base.edu.model.Semester
 
-class CourseBlogMeta extends IntId with Updated {
+/**修订设置
+ *
+ */
+class ReviseSetting extends IntId with TemporalAt{
 
-	var course: Course = _
-
-	var courseGroup: Option[CourseGroup] = _
-	/*
-//	CourseBlog的数量
-//	 */
-//	var count: Int = _
-	/*
-	最后更新作者
-	 */
-	var author: User = _
+	var semester: Semester = _
 
 }

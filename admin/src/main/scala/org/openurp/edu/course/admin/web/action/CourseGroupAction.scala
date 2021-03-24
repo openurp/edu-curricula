@@ -25,7 +25,7 @@ import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.edu.course.model.{CourseBlogMeta, CourseGroup}
+import org.openurp.edu.curricula.model.{CourseBlogMeta, CourseGroup}
 
 class CourseGroupAction extends RestfulAction[CourseGroup] {
 

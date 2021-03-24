@@ -16,17 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.app.model
 
-object BlogStatus extends Enumeration(0) {
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.LongId
+import org.openurp.base.edu.model.{Course, Semester}
+import org.openurp.base.model.{Department, User}
 
-  class Status(val name: String) extends super.Val {
-  }
+import scala.collection.mutable
 
-  val Draft = new Status("草稿")
-  val Submited = new Status("已提交")
-  val Unpassed = new Status("未通过")
-  val Passed = new Status("审核通过")
-  val Published = new Status("已发布")
+/** 修订任务
+ *
+ */
+class ReviseTask extends LongId {
 
+	var semester: Semester = _
+
+	var course: Course = _
+
+	var author: Option[User] = _
+
+	var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
+
+	/** 开课院系 */
+	var department: Department = _
 }

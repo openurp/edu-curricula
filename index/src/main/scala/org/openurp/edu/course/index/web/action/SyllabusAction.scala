@@ -23,20 +23,20 @@ import org.beangle.webmvc.api.action.ServletSupport
 import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.edu.course.model.Syllabus
+import org.openurp.edu.curricula.model
 
-class SyllabusAction extends RestfulAction[Syllabus]  with ServletSupport{
+class SyllabusAction extends RestfulAction[model.Syllabus]  with ServletSupport{
 
 
 	def attachment(@param("id") id: Long): View = {
-		val syllabus = entityDao.get(classOf[Syllabus], id)
+		val syllabus = entityDao.get(classOf[model.Syllabus], id)
 		val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
 		response.sendRedirect(path.get.toString)
 		null
 	}
 
 	def view(@param("id") id: Long): View = {
-		val syllabus = entityDao.get(classOf[Syllabus], id)
+		val syllabus = entityDao.get(classOf[model.Syllabus], id)
 		if (null != syllabus.attachment && null != syllabus.attachment.key) {
 			val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
 			put("syllabus", syllabus)

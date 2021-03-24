@@ -22,15 +22,14 @@ import java.time.{Instant, LocalDate}
 import java.util.Locale
 
 import jakarta.servlet.http.Part
-import org.beangle.commons.bean.Properties
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.webmvc.api.annotation.{param, response}
+import org.beangle.webmvc.api.annotation.param
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.base.model.{Course, Semester}
-import org.openurp.edu.course.app.model.{ReviseSetting, ReviseTask}
-import org.openurp.edu.course.model._
+import org.openurp.base.edu.model.{Course, Semester}
+import org.openurp.edu.curricula.app.model.{ReviseSetting, ReviseTask}
+import org.openurp.edu.curricula.model._
 
 class TeacherAction extends AbstractAction[CourseBlog] {
 

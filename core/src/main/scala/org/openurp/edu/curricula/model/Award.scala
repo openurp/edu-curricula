@@ -16,10 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.model
 
-import org.openurp.code.CodeBean
+import org.beangle.data.model.IntId
 
-class AwardLabelType extends CodeBean{
+class Award extends IntId {
 
+	var awardLabel: AwardLabel = _
+
+	var year: String = _
+
+	var courseBlog: CourseBlog = _
 }

@@ -16,13 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.model
 
-import org.beangle.data.model.pojo.Hierarchical
-import org.openurp.code.CodeBean
+object BlogStatus extends Enumeration(0) {
 
-class CourseGroup extends CodeBean with Hierarchical[CourseGroup] {
+  class Status(val name: String) extends super.Val {
+  }
 
-	var color: Option[String] = None
+  val Draft = new Status("草稿")
+  val Submited = new Status("已提交")
+  val Unpassed = new Status("未通过")
+  val Passed = new Status("审核通过")
+  val Published = new Status("已发布")
 
 }

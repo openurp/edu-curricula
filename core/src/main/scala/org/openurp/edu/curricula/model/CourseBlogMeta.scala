@@ -16,12 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.model
 
-import org.openurp.code.CodeBean
+import org.beangle.data.model.IntId
+import org.beangle.data.model.pojo.Updated
+import org.openurp.base.edu.model.Course
+import org.openurp.base.model.User
 
-class AwardLabel extends CodeBean {
+class CourseBlogMeta extends IntId with Updated {
 
-	var labelType: AwardLabelType = _
+	var course: Course = _
+
+	var courseGroup: Option[CourseGroup] = _
+	/*
+//	CourseBlog的数量
+//	 */
+//	var count: Int = _
+	/*
+	最后更新作者
+	 */
+	var author: User = _
 
 }

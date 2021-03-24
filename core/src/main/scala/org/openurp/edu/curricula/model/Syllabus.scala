@@ -16,28 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.app.model
+package org.openurp.edu.curricula.model
 
-import org.beangle.commons.collection.Collections
-import org.beangle.data.model.LongId
-import org.openurp.base.model.{Department, User}
-import org.openurp.edu.base.model.{Course, Semester}
+import java.util.Locale
 
-import scala.collection.mutable
+import org.beangle.data.model.pojo.Updated
+import org.beangle.data.model.{Component, LongId}
+import org.openurp.base.edu.model.{Course, Semester}
+import org.openurp.base.model.User
 
-/** 修订任务
- *
+/** 教学大纲
+ *  每个课程、每个学期、每个语种、每个作者做唯一限制
  */
-class ReviseTask extends LongId {
+class Syllabus extends LongId with Updated {
+  var course: Course = _
 
-	var semester: Semester = _
+  var locale: Locale = _
 
-	var course: Course = _
+  var semester: Semester = _
 
-	var author: Option[User] = _
+  var author: User = _
 
-	var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
+  var attachment: Attachment = new Attachment
 
-	/** 开课院系 */
-	var department: Department = _
+  var passed: Boolean = _
+}
+
+class Attachment extends Component {
+  var name: Option[String] = None
+  var size: Option[Integer] = None
+  var mimeType: Option[String] = None
+  var key: Option[String] = None
 }

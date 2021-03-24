@@ -18,13 +18,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.openurp.edu.base</groupId>
-      <artifactId>openurp-edu-base-api</artifactId>
-      <version>${openurp.api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openurp.edu.clazz</groupId>
-      <artifactId>openurp-edu-clazz-api</artifactId>
+      <groupId>org.openurp.edu</groupId>
+      <artifactId>openurp-edu-api</artifactId>
       <version>${openurp.api.version}</version>
     </dependency>
     <dependency>

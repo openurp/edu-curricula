@@ -22,10 +22,11 @@ import java.time.Instant
 
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.webmvc.api.view.View
-import org.openurp.edu.base.model.{Course, Semester}
+import org.openurp.base.edu.model.{Course, Semester}
 import org.openurp.edu.clazz.model.Clazz
-import org.openurp.edu.course.app.model.ReviseTask
-import org.openurp.edu.course.model.{CourseBlog, CourseBlogMeta, Syllabus}
+import org.openurp.edu.curricula.app.model.ReviseTask
+import org.openurp.edu.curricula.model
+import org.openurp.edu.curricula.model.{CourseBlog, CourseBlogMeta}
 
 class ImportAction extends AbstractAction[ReviseTask] {
 
@@ -121,7 +122,7 @@ class ImportAction extends AbstractAction[ReviseTask] {
 
 		//删除不存在任务的courseBlog,reviseTask
 		entityDao.findBy(classOf[CourseBlog], "semester", List(getSemester)).foreach(blog => {
-			val hasSyllabus = duplicate(classOf[Syllabus].getName, null, Map("semester" -> semester, "course" -> blog.course))
+			val hasSyllabus = duplicate(classOf[model.Syllabus].getName, null, Map("semester" -> semester, "course" -> blog.course))
 			val hasClazz = duplicate(classOf[Clazz].getName, null, Map("semester" -> semester, "course" -> blog.course))
 			if (!hasSyllabus && !hasClazz) {
 				entityDao.remove(blog)

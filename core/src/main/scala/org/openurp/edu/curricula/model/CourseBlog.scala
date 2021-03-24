@@ -16,17 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.model
+package org.openurp.edu.curricula.model
 
 import java.time.Instant
-import java.util
 import java.util.regex.Pattern
 
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
+import org.openurp.base.edu.model.{Course, Semester}
 import org.openurp.base.model.{Department, User}
-import org.openurp.edu.base.model.{Course, Semester}
 
 import scala.collection.mutable
 
