@@ -48,7 +48,9 @@ class DefaultMapping extends MappingModule {
 			e.children is(depends("parent"), orderby("indexno"))
 		}
 
-		bind[CourseBlogMeta].generator("auto_increment")
+		bind[CourseBlogMeta] declare { e =>
+			e.awards is depends("meta")
+		}
 
 		bind[Award].generator("auto_increment")
 

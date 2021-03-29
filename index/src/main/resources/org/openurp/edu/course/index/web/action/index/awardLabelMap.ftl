@@ -16,15 +16,15 @@
                         <div class="jkc_list">
                             <div class="jkc_title"><img alt="${labelType.name}" src="${b.static_url('openurp-edu-course','images/jpzy_${labelType.code}_t.png')}"></div>
                             <ul class="jkc_item clearfix">
-                              [#list labelTypeMap.get(labelType) as blog]
-                                [#if blog_index<16]
+                              [#list labelTypeMap.get(labelType) as courseBlogMeta]
+                                [#if courseBlogMeta_index<16]
                                 <li>
-                                [#if blog.status = BlogStatus.Published]
-                                  [@b.a href="index!detail?id=${blog.id!}" target="_blank"]
-                                    ${blog.course.name}
-                                  [/@]
-                                [#else ]${blog.course.name}
-                                [/#if]
+                                  [#if blogMap.get(courseBlogMeta) ??]
+                                    [@b.a href="index!detail?id=${blogMap.get(courseBlogMeta).id!}" target="_blank"]
+                                      ${courseBlogMeta.course.name}
+                                    [/@]
+                                  [#else ]${courseBlogMeta.course.name}
+                                  [/#if]
                                 </li>
                                 [/#if]
                               [/#list]

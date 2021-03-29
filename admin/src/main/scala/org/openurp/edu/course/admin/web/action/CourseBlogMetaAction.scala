@@ -78,7 +78,7 @@ class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 			redirect("search", "error.parameters.needed")
 		}
 		else {
-			val metaIds = Strings.splitToInt(metaIdsString.get)
+			val metaIds = Strings.splitToLong(metaIdsString.get)
 			val courseGroupMetas = entityDao.find(classOf[CourseBlogMeta], metaIds)
 			if (get("courseGroup.id").isEmpty || (!get("courseGroup.id").isEmpty && get("courseGroup.id").get == "")) {
 				courseGroupMetas.foreach(meta => {

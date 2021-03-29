@@ -25,14 +25,14 @@
 			<div class="right_yxcon fr bg_white">
 				<div class="title_con">
 					<span class="title_text"><i class="quan"></i>${(choosedAwardLabel.name)?default("全部")}</span>
-					<a class="fanhui fr" href="#"><span	class="iconfont icon-fanhui1"></span>返回</a></div>
+					<a class="fanhui fr" href=""></a></div>
 				<div class=" bg_white m_t_20">
 					<table class="kc_table">
 						<thead>
 						<tr>
 							<th>课程代码</th>
 							<th>课程名称</th>
-							<th>开课院系</th>
+							<th>所属院系</th>
 							<th>学分</th>
 							<th>学时</th>
 							<th>课程类别</th>
@@ -41,34 +41,42 @@
 						</tr>
 						</thead>
 						<tbody>
-            [#list courseBlogs as courseBlog]
+            [#list courseBlogMetas as courseBlogMeta]
 							<tr>
-								<td width="10%" >${(courseBlog.course.code)!}</td>
+								<td width="10%" >${(courseBlogMeta.course.code)!}</td>
 								<td width="15%" >
-                    [#if courseBlog.status = BlogStatus.Published]
-                        [@b.a href="index!detail?id=${courseBlog.id!}" target="_blank"]
-                            ${courseBlog.course.name}
+                    [#if blogMap.get(courseBlogMeta) ??]
+                        [@b.a href="index!detail?id=${blogMap.get(courseBlogMeta).id!}" target="_blank"]
+													<span style="text-decoration:underline;">${courseBlogMeta.course.name}</span>
                         [/@]
-                    [#else ]${courseBlog.course.name}
+                    [#else ]${courseBlogMeta.course.name}
                     [/#if]
 								</td>
-								<td width="10%" >${(courseBlog.author.name)!}</td>
-								<td width="15%" >${(courseBlog.department.name)!}</td>
-								<td width="5%" >${(courseBlog.course.credits)!}</td>
-								<td width="5%" >${(courseBlog.course.creditHours)!}</td>
-								<td width="15%" >${(courseBlog.meta.courseGroup.name)!}</td>
-								<td width="25%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
+								<td width="15%" >${(courseBlogMeta.course.department.name)!}</td>
+								<td width="5%" >${(courseBlogMeta.course.credits)!}</td>
+								<td width="5%" >${(courseBlogMeta.course.creditHours)!}</td>
+								<td width="15%" >${(courseBlogMeta.courseGroup.name)!}</td>
+								<td width="10%" >
+                    [#if blogMap.get(courseBlogMeta) ??]
+                        ${(blogMap.get(courseBlogMeta).author.name)!}
+                    [/#if]
+								</td>
+								<td width="25%" >
+                    [#if blogMap.get(courseBlogMeta) ??]
+                        [#list blogMap.get(courseBlogMeta).teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]
+                    [/#if]
+								</td>
 							</tr>
             [/#list]
 						</tbody>
 					</table>
 					<div class="text_right m_t_20 ptn_relative">
-						<div class="kcs_num">课程总数：<span>${courseBlogs?size}</span></div>
+						<div class="kcs_num">课程总数：<span>${courseBlogMetas?size}</span></div>
 
-              [#if courseBlogs?size>0]
+              [#if courseBlogMetas?size>0]
                   [#assign param = "&labelTypeId=${labelTypeId!}&labelId=${Parameters['labelId']!}"]
-                  [#assign pageIndex = courseBlogs.pageIndex]
-                  [#assign totalPages = courseBlogs.totalPages]
+                  [#assign pageIndex = courseBlogMetas.pageIndex]
+                  [#assign totalPages = courseBlogMetas.totalPages]
                   [#if pageIndex-2>0]
                       [#assign start = pageIndex-2]
                   [#else]

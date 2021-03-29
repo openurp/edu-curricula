@@ -1,103 +1,92 @@
 [#ftl/]
 [@b.head/]
 <div class="xq_list m_t_20">
-  <table style="width: 1000px;margin: 0 auto;">
+  <table style="width: 1095px;margin: 0 auto;">
     <tr>
-      <td style="width:200px;">学年学期：</td>
-      <td>${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">学年学期：</td>
+      <td style="width: 200px" >${(courseBlog.semester.schoolYear)!}学年${(courseBlog.semester.name)!}学期</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">开课院系：</td>
+      <td style="width: 200px">${(courseBlog.department.name)!}</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">负责人：</td>
+      <td style="width: 200px">${(courseBlog.author.name)!}</td>
     </tr>
     <tr>
-      <td>课程代码：</td>
-      <td>${(courseBlog.course.code)!}</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">课程代码：</td>
+      <td style="width: 200px">${(courseBlog.course.code)!}</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">课程名称：</td>
+      <td style="width: 200px">${(courseBlog.course.name)!}</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">课程类别：</td>
+      <td style="width: 200px">${(courseBlog.meta.courseGroup.name)!}</td>
     </tr>
     <tr>
-      <td>课程名称：</td>
-      <td>${(courseBlog.course.name)!}</td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">授课老师：</td>
+      <td colspan="5" style="width: 930px">[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
     </tr>
     <tr>
-      <td>课程类别：</td>
-      <td>${(courseBlog.meta.courseGroup.name)!}</td>
+      <td style="width: 165px">中文简介：</td>
+      <td colspan="5" style="width: 930px"><div style="width: 900px">[#if courseBlog.description!="--"]${courseBlog.description!}[/#if]</div></td>
     </tr>
     <tr>
-      <td>开课院系：</td>
-      <td>${(courseBlog.department.name)!}</td>
+      <td style="width: 165px">英文简介：</td>
+      <td colspan="5" style="width: 930px"><div style="width: 900px">[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</div></td>
     </tr>
     <tr>
-      <td>授课老师：</td>
-      <td>[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
-    </tr>
-    <tr>
-      <td>中文简介：</td>
-      <td><div style="width: 800px;">[#if courseBlog.description!="--"]${courseBlog.description!}[/#if]</div></td>
-    </tr>
-    <tr>
-      <td>英文简介：</td>
-      <td><div style="width: 800px;">[#if courseBlog.enDescription!="--"]${courseBlog.enDescription!}[/#if]</div></td>
-    </tr>
-    [#if syllabuses ?? && syllabuses?size>0]
-      <tr>
-        <td>教学大纲：</td>
-        <td>
-          [#list syllabuses as syllabus]
-            [#if syllabus.attachment??]
-              <div>${(syllabus.attachment.name)!}
-[#--                <a class="m_l_30 xiazai" target="_blank" href="${b.url('syllabus!attachment?id='+syllabus.id)}"><span class="iconfont icon-xiazai"></span>下载</a>--]
-                <a class="m_l_30 yulan" target="_blank" href="${b.url('syllabus!view?id='+syllabus.id)}"><span class="iconfont icon-yulan"></span>预览</a>
-                [#if syllabus_has_next]<br>[/#if]
-              </div>
-            [/#if]
-          [/#list]
-        </td>
-      </tr>
-    [/#if]
-    [#if lecturePlans ?? && lecturePlans?size>0]
-      <tr>
-        <td>授课计划：</td>
-        <td>
-          [#list lecturePlans as lecturePlan]
-            [#if lecturePlan.attachment??]
-              <div>${(lecturePlan.attachment.name)!}
-[#--                <a class="m_l_30 xiazai" target="_blank" href="${b.url('lecture-plan!attachment?id='+lecturePlan.id)}"><span class="iconfont icon-xiazai"></span>下载</a>--]
-                <a class="m_l_30 yulan" target="_blank" href="${b.url('lecture-plan!view?id='+lecturePlan.id)}"><span class="iconfont icon-yulan"></span>预览</a>
-                [#if lecturePlan_has_next]<br>[/#if]
-              </div>
-            [/#if]
-          [/#list]
-        </td>
-      </tr>
-    [/#if]
-    <tr>
-      <td>预修课程：</td>
-      <td>[#if courseBlog.preCourse!="--"]${courseBlog.preCourse!}[/#if]</td>
-    </tr>
-    <tr>
-      <td>教材和参考书目：</td>
-      <td>[#if courseBlog.books!="--"]${courseBlog.books!}[/#if]</td>
-    </tr>
-    <tr>
-      <td>教学资料：</td>
-      <td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">教学大纲：</td>
+      <td style="width: 200px">
+        [#list syllabuses! as syllabus]
+          [#if syllabus.attachment??]
+            <div>
+              <a class="m_l_35 xiazai" target="_blank" href="${b.url('syllabus!attachment?id='+syllabus.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
+              <a class="m_l_35 yulan" target="_blank" href="${b.url('syllabus!view?id='+syllabus.id)}"><span class="iconfont icon-yulan"></span>预览</a>
+            </div>
+          [/#if]
+        [/#list]
+      </td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">授课计划：</td>
+      <td style="width: 200px">
+        [#list lecturePlans! as lecturePlan]
+          [#if lecturePlan.attachment??]
+            <div>
+              <a class="m_l_35 xiazai" target="_blank" href="${b.url('lecture-plan!attachment?id='+lecturePlan.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
+              <a class="m_l_35 yulan" target="_blank" href="${b.url('lecture-plan!view?id='+lecturePlan.id)}"><span class="iconfont icon-yulan"></span>预览</a>
+            </div>
+          [/#if]
+			  [/#list]
+      </td>
+      <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">教学资料：</td>
+      <td style="width: 200px">
         [#if courseBlog.materialAttachment??]
-          <div>${(courseBlog.materialAttachment.name)!}
+          <div>
             <a class="m_l_30 xiazai" target="_blank" href="${b.url('teacher!attachment?id='+courseBlog.id)}"><span class="iconfont icon-xiazai"></span>下载</a>
           </div>
         [/#if]
       </td>
-    </tr><tr>
-      <td>课程网站地址：</td>
-      <td><a href="${courseBlog.website!}" target="_blank">${courseBlog.website!}</a></td>
     </tr>
     <tr>
-      <td>获奖情况：</td>
-      <td >
-        [#list courseBlog.awards! as award]
-          ${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
-        [/#list]
+      <td style="width: 165px">预修课程：</td>
+      <td colspan="5" style="width: 930px">[#if courseBlog.preCourse!="--"]${courseBlog.preCourse!}[/#if]</td>
+    </tr>
+    <tr>
+      <td style="width: 165px">教材和参考书目：</td>
+      <td colspan="5" style="width: 930px">[#if courseBlog.books!="--"]${courseBlog.books!}[/#if]</td>
+    </tr>
+    <tr>
+      <td style="width: 165px">课程网站地址：</td>
+      <td colspan="5" style="width: 930px"><a href="${courseBlog.website!}" target="_blank">${courseBlog.website!}</a></td>
+    </tr>
+    <tr>
+      <td style="width: 165px">获奖情况：</td>
+      <td colspan="5" style="width: 930px">
+        [#if courseBlog.meta??]
+          [#list courseBlog.meta.awards! as award]
+            ${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
+          [/#list]
+        [/#if]
       </td>
     </tr>
     <tr>
-      <td>备注：</td>
-      <td>${courseBlog.remark!}</td>
+      <td style="width: 165px;">备注：</td>
+      <td colspan="5" style="width: 930px">${courseBlog.remark!}</td>
     </tr>
   </table>
 </div>

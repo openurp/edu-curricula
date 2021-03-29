@@ -82,6 +82,12 @@ ${b.script("kindeditor","lang/zh-CN.js")}
       [/@]
       [@b.textfield label="课程网站地址" name="courseBlog.website" value=(courseBlog.website)! style="width:250px"  onblur="saveAttribute('website',this.value)" comment='<span style="color:red" ><b>注：请填写一个课程网站地址，如有多个课程网站，可填入备注栏</b></span>'/]
       [@b.field label="获奖情况"]
+        [#if meta??]
+          [#list meta.awards! as award]
+            ${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
+          [/#list]
+          [#if meta.awards?size>0]<br>[/#if]
+        [/#if]
         [#list labelTypes!?sort_by("code") as awardLabelType]
           <input type="checkBox" name="awardLabelTypeId" value="${awardLabelType.id}" [#if choosedType?? && choosedType?seq_contains(awardLabelType)]checked[/#if]>${awardLabelType.name}&nbsp;
         [/#list]

@@ -30,7 +30,7 @@
 			<li>[@b.a href="!awardLabelMap"]课程资源[/@b.a]
 				<ul class="subnav">
 					<li>[@b.a href="!awardLabelMap"]课程总览[/@]</li>
-					[#list awardLabelTypes as type]
+					[#list awardLabelTypes?sort_by("code") as type]
 						<li>
 								[@b.a href="!awardLabel?labelTypeId="+type.id]${type.name}[/@]
 						</li>

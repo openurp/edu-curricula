@@ -40,17 +40,17 @@
           <div class="yx_bt_kc fr text_center">课程</div>
         </div>
         <div class="yxb_con">
-          [#list courseBlogMap?keys?sort_by("indexno") as courseGroup]
+          [#list metaMap?keys?sort_by("indexno") as courseGroup]
             <div class="yxb_list" style="background: ${(rootMap.get(courseGroup).color)!}">
               <div class="yxb_title" >${courseGroup.name}</div>
               <ul class="yxb_item">
-                [#list courseBlogMap.get(courseGroup) as blog]
+                [#list metaMap.get(courseGroup)! as courseBlogMeta]
                   <li>
-                    [#if blog.status = BlogStatus.Published]
-                      [@b.a href="index!detail?id=${blog.id!}" target="_blank"]
-                        <span style="color: #0b54b0">${blog.course.name}</span>
+                    [#if blogMap.get(courseBlogMeta) ??]
+                      [@b.a href="index!detail?id=${blogMap.get(courseBlogMeta).id!}" target="_blank"]
+                        <span style="color: #0b54b0">${courseBlogMeta.course.name}</span>
                       [/@]
-                    [#else ]${blog.course.name}
+                    [#else ]${courseBlogMeta.course.name}
                     [/#if]
                   </li>
                 [/#list]

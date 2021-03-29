@@ -93,8 +93,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 		builder.orderBy("courseGroup.indexno")
 		put("courseGroups", entityDao.search(builder))
 
-		//		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
-		//		put("meta", metas.head)
+		val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(courseBlog.course))
+		put("meta", metas.head)
 
 		val awardMap = Collections.newMap[AwardLabelType, Seq[AwardLabel]]
 		val labelTypes = getCodes(classOf[AwardLabelType])
@@ -296,6 +296,10 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
 				courseBlog.status = BlogStatus.Published
 				courseBlog.auditor = Option(getUser)
 				courseBlog.auditAt = Option(Instant.now())
+				courseBlog.awards.foreach(award => {
+					award.meta = courseBlog.meta
+					entityDao.saveOrUpdate(award)
+				})
 			}
 		})
 		entityDao.saveOrUpdate(courseBlogs)

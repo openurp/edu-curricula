@@ -15,7 +15,7 @@
               <tr>
                 <th>课程代码</th>
                 <th>课程名称</th>
-                <th>开课院系</th>
+                <th>所属院系</th>
                 <th>学分</th>
                 <th>学时</th>
                 <th>课程类别</th>
@@ -24,31 +24,39 @@
               </tr>
               </thead>
               <tbody>
-              [#list courseBlogs as courseBlog]
+              [#list courseBlogMetas as courseBlogMeta]
                 <tr>
-                  <td width="10%" >${(courseBlog.course.code)!}</td>
+                  <td width="10%" >${(courseBlogMeta.course.code)!}</td>
                   <td width="15%" >
-                    [#if courseBlog.status = BlogStatus.Published]
-                      [@b.a href="index!detail?id=${courseBlog.id!}" target="_blank"]
-                        <span style="text-decoration:underline;">${courseBlog.course.name}</span>
+                    [#if blogMap.get(courseBlogMeta) ??]
+                      [@b.a href="index!detail?id=${blogMap.get(courseBlogMeta).id!}" target="_blank"]
+                        <span style="text-decoration:underline;">${courseBlogMeta.course.name}</span>
                       [/@]
-                    [#else ]${courseBlog.course.name}
+                    [#else ]${courseBlogMeta.course.name}
                     [/#if]
                   </td>
-                  <td width="15%" >${(courseBlog.department.name)!}</td>
-                  <td width="5%" >${(courseBlog.course.credits)!}</td>
-                  <td width="5%" >${(courseBlog.course.creditHours)!}</td>
-                  <td width="15%" >${(courseBlog.meta.courseGroup.name)!}</td>
-                  <td width="10%" >${(courseBlog.author.name)!}</td>
-                  <td width="25%" >[#list courseBlog.teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]</td>
+                  <td width="15%" >${(courseBlogMeta.course.department.name)!}</td>
+                  <td width="5%" >${(courseBlogMeta.course.credits)!}</td>
+                  <td width="5%" >${(courseBlogMeta.course.creditHours)!}</td>
+                  <td width="15%" >${(courseBlogMeta.courseGroup.name)!}</td>
+                  <td width="10%" >
+                    [#if blogMap.get(courseBlogMeta) ??]
+                      ${(blogMap.get(courseBlogMeta).author.name)!}
+                    [/#if]
+                  </td>
+                  <td width="25%" >
+                    [#if blogMap.get(courseBlogMeta) ??]
+                      [#list blogMap.get(courseBlogMeta).teachers as teacher]${teacher.name}[#if teacher_has_next],[/#if][/#list]
+                    [/#if]
+                  </td>
                 </tr>
               [/#list]
               </tbody>
             </table>
-            [#if courseBlogs?size>0]
+            [#if courseBlogMetas?size>0]
               [#assign param = "&nameOrCode=${Parameters['nameOrCode']!}"]
-              [#assign pageIndex = courseBlogs.pageIndex]
-              [#assign totalPages = courseBlogs.totalPages]
+              [#assign pageIndex = courseBlogMetas.pageIndex]
+              [#assign totalPages = courseBlogMetas.totalPages]
               [#if pageIndex-2>0]
                 [#assign start = pageIndex-2]
               [#else]

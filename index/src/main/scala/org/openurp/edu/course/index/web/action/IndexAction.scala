@@ -37,7 +37,7 @@ import org.openurp.edu.curricula.model
 import org.openurp.edu.curricula.model._
 
 
-class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
+class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 
 	var casConfig: CasConfig = _
 
@@ -68,25 +68,24 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 			}
 		})
 		put("courseGroups", courseGroups)
-		put("semesters", getSemesters)
-		put("currentSemester", getCurrentSemester)
+//		put("semesters", getSemesters)
+//		put("currentSemester", getCurrentSemester)
 
 		super.indexSetting()
 	}
 
 	override def search(): View = {
-		val courseblogs = entityDao.search(getQueryBuilder)
-		put("courseBlogs", courseblogs)
+		val courseBlogMetas = entityDao.search(getQueryBuilder)
+		put("courseBlogMetas", courseBlogMetas)
+		put("blogMap", getBlogMap(courseBlogMetas))
 		put("BlogStatus", BlogStatus)
 		forward()
 	}
 
-	override def getQueryBuilder: OqlBuilder[CourseBlog] = {
-		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.semester=:semester", getSemester)
-		//		builder.where("courseBlog.status =:status", BlogStatus.Published)
+	override def getQueryBuilder: OqlBuilder[CourseBlogMeta] = {
+		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
 		get("nameOrCode").foreach(nameOrCode => {
-			builder.where("(courseBlog.course.name like :name or courseBlog.course.code like :code)", s"%$nameOrCode%", s"%$nameOrCode%")
+			metaBuilder.where("(meta.course.name like :name or meta.course.code like :code)", s"%$nameOrCode%", s"%$nameOrCode%")
 		})
 		val first = getInt("courseGroup")
 		val second = getInt("courseGroup_child")
@@ -100,31 +99,30 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 			groups ++= getCourseGroups(first.get)
 		}
 		if (!groups.isEmpty) {
-			builder.where("courseBlog.meta.courseGroup in :groups", groups)
+			metaBuilder.where("meta.courseGroup in :groups", groups)
 		}
 		get("courseBlog.department.id").foreach(depart => {
 			depart match {
-				case "else" => builder.where("courseBlog.department.teaching is false ")
+				case "else" => metaBuilder.where("meta.course.department.teaching is false ")
 				case "" =>
-				case _ => builder.where("courseBlog.department.id=:id", depart.toInt)
+				case _ => metaBuilder.where("meta.course.department.id=:id", depart.toInt)
 			}
 		})
-		builder.limit(getPageLimit)
-		builder.orderBy("courseBlog.status desc")
-		builder.orderBy("courseBlog.course.code")
+		metaBuilder.limit(getPageLimit)
+		metaBuilder.orderBy("meta.course.code")
 	}
 
-
-	def getSemester: Semester = {
-		val semesterString = get("courseBlog.semester.id").orNull
-		if (semesterString != "" && semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
-	}
-
-	def getSemesters: Seq[Semester] = {
-		val builder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
-		builder.select("distinct courseBlog.semester")
-		entityDao.search(builder)
-	}
+//
+//	def getSemester: Semester = {
+//		val semesterString = get("courseBlog.semester.id").orNull
+//		if (semesterString != "" && semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+//	}
+//
+//	def getSemesters: Seq[Semester] = {
+//		val builder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
+//		builder.select("distinct courseBlog.semester")
+//		entityDao.search(builder)
+//	}
 
 	def getCourseGroups(id: Int): Set[CourseGroup] = {
 		val courseGroup = entityDao.get(classOf[CourseGroup], id)
@@ -132,8 +130,10 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 	}
 
 	override def info(id: String): View = {
+		val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
+		put("courseBlog", courseBlog)
 		put("BlogStatus", BlogStatus)
-		put("Transform",Transform)
+		put("Transform", Transform)
 		super.info(id)
 	}
 
@@ -172,24 +172,22 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 		if (id != "else") {
 			put("choosedDepartment", entityDao.get(classOf[Department], id.toInt))
 		}
-		val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		builder.where("courseBlog.semester=:semester", getCurrentSemester)
-		//		courseBlogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
-		builder.where("courseBlog.meta.courseGroup is not null")
-		builder.orderBy("courseBlog.course.code")
+		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
+		metaBuilder.where("meta.courseGroup is not null")
+		metaBuilder.orderBy("meta.course.code")
 		id match {
-			case "else" => builder.where("courseBlog.department.teaching is false")
-			case _ => builder.where("courseBlog.department.id=:id", id.toInt)
+			case "else" => metaBuilder.where("meta.course.department.teaching is false")
+			case _ => metaBuilder.where("meta.course.department.id=:id", id.toInt)
 		}
-		val courseBlogs = entityDao.search(builder).toBuffer
-		val courseBlogMap = courseBlogs.groupBy { x => x.meta.get.courseGroup.get }
+		val courseBlogMetas = entityDao.search(metaBuilder)
+		val metaMap = courseBlogMetas.groupBy(_.courseGroup.get)
+		put("metaMap", metaMap)
+		put("blogMap", getBlogMap(courseBlogMetas))
 		val courseGroups = getCodes(classOf[CourseGroup])
 		val rootMap = courseGroups.map(x => (x, getRoot(x))).toMap
 		val roots = courseGroups.filter(a => a.parent.isEmpty)
 		put("roots", roots)
 		put("rootMap", rootMap)
-		put("courseBlogMap", courseBlogMap)
-		put("BlogStatus", BlogStatus)
 		forward()
 	}
 
@@ -199,6 +197,9 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 		} else courseGroup
 	}
 
+	/*
+	课策类别页面
+	 */
 	def courseBlogForType(): View = {
 		nav()
 		// 没有父类的分组
@@ -212,16 +213,19 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 			}
 		})
 		put("courseGroups", courseGroups)
-		put("semesters", getSemesters)
-		put("currentSemester", getCurrentSemester)
+//		put("semesters", getSemesters)
+//		put("currentSemester", getCurrentSemester)
 		forward()
 	}
 
+	/*
+	代码名称查询界面
+	 */
 	def courseBlogForName(): View = {
 		nav()
-		val courseblogs = entityDao.search(getQueryBuilder)
-		put("courseBlogs", courseblogs)
-		put("BlogStatus", BlogStatus)
+		val courseBlogMetas = entityDao.search(getQueryBuilder)
+		put("courseBlogMetas", courseBlogMetas)
+		put("blogMap", getBlogMap(courseBlogMetas))
 		forward()
 	}
 
@@ -231,9 +235,9 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 	 */
 	def awardLabel(): View = {
 		nav()
-		val builder = getQueryBuilder
+		val metaBuilder = getQueryBuilder
 		get("labelTypeId").foreach(labelTypeId => {
-			builder.where("exists(from courseBlog.awards a where a.awardLabel.labelType.id=:labelTypeId)", labelTypeId.toInt)
+			metaBuilder.where("exists(from meta.awards a where a.awardLabel.labelType.id=:labelTypeId)", labelTypeId.toInt)
 			put("labelTypeId", labelTypeId)
 			put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
 			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
@@ -242,33 +246,50 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 		get("labelId").foreach(labelId => {
 			val choosedAwardLabel = entityDao.get(classOf[AwardLabel], labelId.toInt)
 			put("choosedAwardLabel", choosedAwardLabel)
-			builder.where("exists(from courseBlog.awards a where a.awardLabel.id=:labelId)", labelId.toInt)
+			metaBuilder.where("exists(from meta.awards a where a.awardLabel.id=:labelId)", labelId.toInt)
 			val labelTypeId = choosedAwardLabel.labelType.id
 			put("labelTypeId", labelTypeId)
 			put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
 			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
 			put("awardLabels", awardLabels)
 		})
-
-		val courseblogs = entityDao.search(builder)
-		put("courseBlogs", courseblogs)
-		put("BlogStatus", BlogStatus)
+		val courseBlogMetas = entityDao.search(metaBuilder)
+		put("courseBlogMetas", courseBlogMetas)
+		put("blogMap", getBlogMap(courseBlogMetas))
 		forward()
 	}
 
 
 	def awardLabelMap(): View = {
 		nav()
-		val labelTypeMap = Collections.newMap[AwardLabelType, Seq[CourseBlog]]
-		val builder = getQueryBuilder
+		val labelTypeMap = Collections.newMap[AwardLabelType, Seq[CourseBlogMeta]]
+		val blogMap = Collections.newMap[CourseBlogMeta, CourseBlog]
 		val awardLabelTypes = getCodes(classOf[AwardLabelType])
+		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
 		awardLabelTypes.foreach(labelType => {
-			builder.where("exists(from courseBlog.awards a where a.awardLabel.labelType=:labelType)", labelType)
-			labelTypeMap.put(labelType, entityDao.search(builder))
+			metaBuilder.where("exists(from meta.awards a where a.awardLabel.labelType=:labelType)", labelType)
+			val courseBlogMetas = entityDao.search(metaBuilder)
+			labelTypeMap.put(labelType, courseBlogMetas)
+			blogMap.++=(getBlogMap(courseBlogMetas))
 		})
 		put("labelTypeMap", labelTypeMap)
-		put("BlogStatus", BlogStatus)
+		put("blogMap", blogMap)
 		forward()
+	}
+
+	def getBlogMap(metas: Seq[CourseBlogMeta]): collection.mutable.Map[CourseBlogMeta, CourseBlog] = {
+		val blogMap = Collections.newMap[CourseBlogMeta, CourseBlog]
+		val blogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+		blogBuilder.where("courseBlog.status =:status", BlogStatus.Published)
+		blogBuilder.orderBy("courseBlog.semester desc")
+		metas.foreach(meta => {
+			blogBuilder.where("courseBlog.course =:course", meta.course)
+			val courseBlogs = entityDao.search(blogBuilder)
+			if (courseBlogs.nonEmpty) {
+				blogMap.put(meta, courseBlogs.head)
+			}
+		})
+		blogMap
 	}
 
 
@@ -289,23 +310,23 @@ class IndexAction extends RestfulAction[CourseBlog] with ServletSupport {
 		forward("childrenJSON")
 	}
 
-	def getCurrentSemester: Semester = {
-		val builder = OqlBuilder.from(classOf[Semester], "semester")
-			.where("semester.calendar in(:calendars)", getProject.calendars)
-		builder.where(":date between semester.beginOn and  semester.endOn", LocalDate.now)
-		builder.cacheable()
-		val rs = entityDao.search(builder)
-		if (rs.isEmpty) { //如果没有正在其中的学期，则查找一个距离最近的
-			val builder2 = OqlBuilder.from(classOf[Semester], "semester")
-				.where("semester.calendar in(:calendars)", getProject.calendars)
-			builder2.orderBy("abs(semester.beginOn - current_date() + semester.endOn - current_date())")
-			builder2.cacheable()
-			builder2.limit(1, 1)
-			entityDao.search(builder2).headOption.orNull
-		} else {
-			rs.head
-		}
-	}
+//	def getCurrentSemester: Semester = {
+//		val builder = OqlBuilder.from(classOf[Semester], "semester")
+//			.where("semester.calendar in(:calendars)", getProject.calendars)
+//		builder.where(":date between semester.beginOn and  semester.endOn", LocalDate.now)
+//		builder.cacheable()
+//		val rs = entityDao.search(builder)
+//		if (rs.isEmpty) { //如果没有正在其中的学期，则查找一个距离最近的
+//			val builder2 = OqlBuilder.from(classOf[Semester], "semester")
+//				.where("semester.calendar in(:calendars)", getProject.calendars)
+//			builder2.orderBy("abs(semester.beginOn - current_date() + semester.endOn - current_date())")
+//			builder2.cacheable()
+//			builder2.limit(1, 1)
+//			entityDao.search(builder2).headOption.orNull
+//		} else {
+//			rs.head
+//		}
+//	}
 
 	def getProject: Project = {
 		val builder = OqlBuilder.from(classOf[Project], "project")

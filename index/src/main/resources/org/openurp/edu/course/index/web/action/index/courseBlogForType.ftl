@@ -13,15 +13,8 @@
                 <div class="m_t_30">
                   [@b.form name="courseBlogSearchForm"  action="!search?pageSize=25" target="courseBloglist" title="ui.searchForm" theme="html" ]
                     <div class="kclb_cx_tj">
-                      <span>请选择课程类别：</span>
-                      <select  name="courseBlog.semester.id"  style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;">
-                        <option value="">请选择学年学期</option>
-                        [#list semesters?reverse as semester]
-                          <option value="${(semester.id)!}" [#if semester==currentSemester]selected[/#if]>${semester.schoolYear}学年${semester.name}学期</option>
-                        [/#list]
-                      </select>
                       <select  name="courseBlog.department.id"  style="width:230px; height:36px; border:1px solid #e1e1e1; margin-right:15px;  padding:-left:10px;">
-                        <option value="">请选择开课院系</option>
+                        <option value="">请选择课程所属院系</option>
                         [#list departments as department]
                           <option value="${(department.id)!}" [#if (courseBlog.department.id)?? && (courseBlog.department.id==department.id)]selected[/#if]>${(department.name)!}</option>
                         [/#list]
@@ -63,7 +56,7 @@
 [@b.foot/]
 <script>
 
-  $(".aaa").css({"padding":"20px", "margin-top":"15px"})
+  $(".aaa").css({"margin-top":"15px"})
   function setSearchParams(form) {
     jQuery('input[name=params]', form).remove();
     var params = jQuery(form).serialize();

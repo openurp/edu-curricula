@@ -18,23 +18,27 @@
  */
 package org.openurp.edu.curricula.model
 
-import org.beangle.data.model.IntId
+import org.beangle.commons.collection.Collections
+import org.beangle.data.model.LongId
 import org.beangle.data.model.pojo.Updated
 import org.openurp.base.edu.model.Course
 import org.openurp.base.model.User
 
-class CourseBlogMeta extends IntId with Updated {
+import scala.collection.mutable
+
+class CourseBlogMeta extends LongId with Updated {
 
 	var course: Course = _
 
 	var courseGroup: Option[CourseGroup] = _
 	/*
-//	CourseBlog的数量
-//	 */
-//	var count: Int = _
-	/*
 	最后更新作者
 	 */
 	var author: User = _
+
+	/**
+	 * 获奖情况
+	 */
+	var awards: mutable.Buffer[Award] = Collections.newBuffer[Award]
 
 }

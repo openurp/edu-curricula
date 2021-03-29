@@ -85,9 +85,11 @@
 											<tr>
 												<td style="width: 150px">获奖情况：</td>
 												<td colspan="5" style="width: 915px">
-													[#list courseBlog.awards! as award]
-															${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
-													[/#list]
+													[#if courseBlog.meta??]
+														[#list courseBlog.meta.awards! as award]
+																${award.awardLabel.name},${award.year}年[#if award_has_next]<br>[/#if]
+														[/#list]
+													[/#if]
 												</td>
 											</tr>
 											<tr>

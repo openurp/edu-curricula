@@ -143,6 +143,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
 			years.+=:(LocalDate.now().minusYears(a).getYear.toString)
 		}
 		put("years", years)
+
 		super.editSetting(courseBlog)
 	}
 
