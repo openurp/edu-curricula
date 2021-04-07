@@ -42,6 +42,7 @@ class CourseOrUserSearchAction extends RestfulAction[Course] with ProjectSupport
 
 	def userAjax(): View = {
 		val query = OqlBuilder.from(classOf[User], "user")
+		query.where("user.category.id <> 2")
 		query.orderBy("user.code")
 		populateConditions(query)
 		get("term").foreach(codeOrName => {
