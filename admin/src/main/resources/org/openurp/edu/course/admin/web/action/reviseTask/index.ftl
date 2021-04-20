@@ -21,6 +21,11 @@
       [/@]
       [@b.textfield name="teacherName" label="授课教师"/]
       [@b.textfield name="reviseTask.author.name" label="负责人"/]
+      [@b.select name="appointed" label="是否已分配"]
+        <option value="">...</option>
+        <option value="1">是</option>
+        <option value="0">否</option>
+      [/@]
       <input type="hidden" name="orderBy" value="reviseTask.course.code"/>
     [/@]
     </div>

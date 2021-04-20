@@ -46,6 +46,13 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
 				case _ =>
 			}
 		})
+		get("appointed").foreach(e => {
+			e match {
+				case "1" => builder.where("reviseTask.author is not null")
+				case "0" => builder.where("reviseTask.author is null")
+				case _ =>
+			}
+		})
 		val teacherName = get("teacherName").orNull
 		if (teacherName != null && teacherName != "") {
 			builder.where("exists(from reviseTask.teachers t where t.name like :name)", s"%$teacherName%")
