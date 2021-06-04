@@ -10,5 +10,5 @@
 	<link rel="stylesheet" href="${b.static_url('openurp-edu-course','css/style.css')}">
 	<link rel="shortcut icon" href="${b.static_url('openurp-edu-course','font/fav.ico')}">
 	<script src="${b.static_url('openurp-edu-course','js/web.js')}"></script>
-	<title>上海立信会计金融学院课程平台</title>
+	<title>上海立信会计金融学院课程信息网</title>
 </head>

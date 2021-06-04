@@ -1,7 +1,7 @@
 
 <div class="con_area">
 	<div class="clearfix">
-		<div class="logo fl"><img alt="logo" src="${b.static_url('openurp-edu-course','images/logo.png')}"></div>
+		<div class="logo fl"><img alt="logo" src="${b.static_url('local','images/course.png')}"></div>
       [@b.form name="blogSearchForm"  action="!courseBlogForName"  title="ui.searchForm" theme="html" ]
 				<div class="search_con fr">
 					<input class="secar_input" type="text" name="nameOrCode" placeholder="输入课程代码，名称"><button class="secar_btn" type="button" onclick="courseBlogForName()"><span class="iconfont icon-search01"></span>查询</button>
@@ -37,15 +37,15 @@
 					[/#list]
 				</ul>
 			</li>
-			<li><a href="#">课程统计</a></li>
-			<li><a href="#">课程建设</a></li>
-			<li><a href="#">课程服务</a>
-				<ul class="subnav">
-					<li><a href="#">使用指南</a></li>
-					<li><a href="#">常用下载</a>
-					</li>
-				</ul>
-			</li>
+[#--			<li><a href="#">课程统计</a></li>--]
+[#--			<li><a href="#">课程建设</a></li>--]
+[#--			<li><a href="#">课程服务</a>--]
+[#--				<ul class="subnav">--]
+[#--					<li><a href="#">使用指南</a></li>--]
+[#--					<li><a href="#">常用下载</a>--]
+[#--					</li>--]
+[#--				</ul>--]
+[#--			</li>--]
 		</ul>
 	</div>
 </div>

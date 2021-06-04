@@ -123,16 +123,16 @@
                     </div>
                 </div>
 
-                <div class="cyxz m_t_20">
-                  <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>常用下载</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="#">+MORE</a></div>
-                    <div class="cyxz_con">
-                      <ul>
-                          <li><span class="xz"></span><a href="#"></a></li>
-                            <li><span class="xz"></span><a href="#"></a></li>
-                            <li><span class="xz"></span><a href="#"></a></li>
-                        </ul>
-                    </div>
-                </div>
+[#--                <div class="cyxz m_t_20">--]
+[#--                  <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>常用下载</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="#">+MORE</a></div>--]
+[#--                    <div class="cyxz_con">--]
+[#--                      <ul>--]
+[#--                          <li><span class="xz"></span><a href="#"></a></li>--]
+[#--                            <li><span class="xz"></span><a href="#"></a></li>--]
+[#--                            <li><span class="xz"></span><a href="#"></a></li>--]
+[#--                        </ul>--]
+[#--                    </div>--]
+[#--                </div>--]
 
             </div>
         </div>
