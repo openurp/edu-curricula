@@ -71,7 +71,7 @@
 						</tbody>
 					</table>
 					<div class="text_right m_t_20 ptn_relative">
-						<div class="kcs_num">课程总数：<span>${courseBlogMetas?size}</span></div>
+						<div class="kcs_num">课程总数：<span>${size}</span></div>
 
               [#if courseBlogMetas?size>0]
                   [#assign param = "&labelTypeId=${labelTypeId!}&labelId=${Parameters['labelId']!}"]

@@ -19,8 +19,8 @@
 package org.openurp.edu.course.index.web.action
 
 import java.time.LocalDate
-
 import org.beangle.commons.collection.Collections
+import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
@@ -68,8 +68,8 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 			}
 		})
 		put("courseGroups", courseGroups)
-//		put("semesters", getSemesters)
-//		put("currentSemester", getCurrentSemester)
+		//		put("semesters", getSemesters)
+		//		put("currentSemester", getCurrentSemester)
 
 		super.indexSetting()
 	}
@@ -112,17 +112,17 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 		metaBuilder.orderBy("meta.course.code")
 	}
 
-//
-//	def getSemester: Semester = {
-//		val semesterString = get("courseBlog.semester.id").orNull
-//		if (semesterString != "" && semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
-//	}
-//
-//	def getSemesters: Seq[Semester] = {
-//		val builder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
-//		builder.select("distinct courseBlog.semester")
-//		entityDao.search(builder)
-//	}
+	//
+	//	def getSemester: Semester = {
+	//		val semesterString = get("courseBlog.semester.id").orNull
+	//		if (semesterString != "" && semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+	//	}
+	//
+	//	def getSemesters: Seq[Semester] = {
+	//		val builder = OqlBuilder.from(classOf[CourseBlog].getName, "courseBlog")
+	//		builder.select("distinct courseBlog.semester")
+	//		entityDao.search(builder)
+	//	}
 
 	def getCourseGroups(id: Int): Set[CourseGroup] = {
 		val courseGroup = entityDao.get(classOf[CourseGroup], id)
@@ -213,8 +213,8 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 			}
 		})
 		put("courseGroups", courseGroups)
-//		put("semesters", getSemesters)
-//		put("currentSemester", getCurrentSemester)
+		//		put("semesters", getSemesters)
+		//		put("currentSemester", getCurrentSemester)
 		forward()
 	}
 
@@ -235,7 +235,8 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 	 */
 	def awardLabel(): View = {
 		nav()
-		val metaBuilder = getQueryBuilder
+		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
+		//		val metaBuilder = getQueryBuilder
 		get("labelTypeId").foreach(labelTypeId => {
 			metaBuilder.where("exists(from meta.awards a where a.awardLabel.labelType.id=:labelTypeId)", labelTypeId.toInt)
 			put("labelTypeId", labelTypeId)
@@ -253,6 +254,8 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
 			put("awardLabels", awardLabels)
 		})
+		put("size", entityDao.search(metaBuilder).size)
+		metaBuilder.limit(PageLimit(1, 25))
 		val courseBlogMetas = entityDao.search(metaBuilder)
 		put("courseBlogMetas", courseBlogMetas)
 		put("blogMap", getBlogMap(courseBlogMetas))
@@ -310,23 +313,23 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 		forward("childrenJSON")
 	}
 
-//	def getCurrentSemester: Semester = {
-//		val builder = OqlBuilder.from(classOf[Semester], "semester")
-//			.where("semester.calendar in(:calendars)", getProject.calendars)
-//		builder.where(":date between semester.beginOn and  semester.endOn", LocalDate.now)
-//		builder.cacheable()
-//		val rs = entityDao.search(builder)
-//		if (rs.isEmpty) { //如果没有正在其中的学期，则查找一个距离最近的
-//			val builder2 = OqlBuilder.from(classOf[Semester], "semester")
-//				.where("semester.calendar in(:calendars)", getProject.calendars)
-//			builder2.orderBy("abs(semester.beginOn - current_date() + semester.endOn - current_date())")
-//			builder2.cacheable()
-//			builder2.limit(1, 1)
-//			entityDao.search(builder2).headOption.orNull
-//		} else {
-//			rs.head
-//		}
-//	}
+	//	def getCurrentSemester: Semester = {
+	//		val builder = OqlBuilder.from(classOf[Semester], "semester")
+	//			.where("semester.calendar in(:calendars)", getProject.calendars)
+	//		builder.where(":date between semester.beginOn and  semester.endOn", LocalDate.now)
+	//		builder.cacheable()
+	//		val rs = entityDao.search(builder)
+	//		if (rs.isEmpty) { //如果没有正在其中的学期，则查找一个距离最近的
+	//			val builder2 = OqlBuilder.from(classOf[Semester], "semester")
+	//				.where("semester.calendar in(:calendars)", getProject.calendars)
+	//			builder2.orderBy("abs(semester.beginOn - current_date() + semester.endOn - current_date())")
+	//			builder2.cacheable()
+	//			builder2.limit(1, 1)
+	//			entityDao.search(builder2).headOption.orNull
+	//		} else {
+	//			rs.head
+	//		}
+	//	}
 
 	def getProject: Project = {
 		val builder = OqlBuilder.from(classOf[Project], "project")

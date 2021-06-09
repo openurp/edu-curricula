@@ -17,7 +17,7 @@
                             <div class="jkc_title"><img alt="${labelType.name}" src="${b.static_url('openurp-edu-course','images/jpzy_${labelType.code}_t.png')}"></div>
                             <ul class="jkc_item clearfix">
                               [#list labelTypeMap.get(labelType) as courseBlogMeta]
-                                [#if courseBlogMeta_index<16]
+                                [#if courseBlogMeta_index<20]
                                 <li>
                                   [#if blogMap.get(courseBlogMeta) ??]
                                     [@b.a href="index!detail?id=${blogMap.get(courseBlogMeta).id!}" target="_blank"]

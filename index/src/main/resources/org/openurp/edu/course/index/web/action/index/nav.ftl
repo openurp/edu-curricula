@@ -27,9 +27,9 @@
 					</li>
 				</ul>
 			</li>
-			<li>[@b.a href="!awardLabelMap"]课程资源[/@b.a]
+			<li>[@b.a href="!awardLabelMap"]优质课程[/@b.a]
 				<ul class="subnav">
-					<li>[@b.a href="!awardLabelMap"]课程总览[/@]</li>
+[#--					<li>[@b.a href="!awardLabelMap"]课程总览[/@]</li>--]
 					[#list awardLabelTypes?sort_by("code") as type]
 						<li>
 								[@b.a href="!awardLabel?labelTypeId="+type.id]${type.name}[/@]
