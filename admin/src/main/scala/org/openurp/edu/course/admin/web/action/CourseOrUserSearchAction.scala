@@ -23,7 +23,7 @@ import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.edu.model.{Course, Project}
 import org.openurp.base.model.User
-import org.openurp.boot.edu.helper.ProjectSupport
+import org.openurp.starter.edu.helper.ProjectSupport
 
 class CourseOrUserSearchAction extends RestfulAction[Course] with ProjectSupport {
 

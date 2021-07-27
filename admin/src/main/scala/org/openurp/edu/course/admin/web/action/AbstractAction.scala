@@ -18,16 +18,16 @@
  */
 package org.openurp.edu.course.admin.web.action
 
-import java.time.LocalDate
-
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.security.Securities
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.edu.model.{Project, Semester}
 import org.openurp.base.model.User
-import org.openurp.boot.edu.helper.ProjectSupport
 import org.openurp.edu.curricula.model.CourseBlog
+import org.openurp.starter.edu.helper.ProjectSupport
+
+import java.time.LocalDate
 
 class AbstractAction[T <: Entity[_]] extends RestfulAction[T] with ProjectSupport {
 

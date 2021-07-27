@@ -168,16 +168,25 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 	 */
 	def courseBlogForDepart(@param("id") id: String): View = {
 		nav()
-
 		if (id != "else") {
-			put("choosedDepartment", entityDao.get(classOf[Department], id.toInt))
+			try {
+				put("choosedDepartment", entityDao.get(classOf[Department], id.toInt))
+			} catch {
+				case e: Throwable =>
+			}
 		}
 		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
 		metaBuilder.where("meta.courseGroup is not null")
 		metaBuilder.orderBy("meta.course.code")
 		id match {
 			case "else" => metaBuilder.where("meta.course.department.teaching is false")
-			case _ => metaBuilder.where("meta.course.department.id=:id", id.toInt)
+			case _ => {
+				try {
+					metaBuilder.where("meta.course.department.id=:id", id.toInt)
+				} catch {
+					case e: Throwable => metaBuilder.where("meta.course.department.teaching is false")
+				}
+			}
 		}
 		val courseBlogMetas = entityDao.search(metaBuilder)
 		val metaMap = courseBlogMetas.groupBy(_.courseGroup.get)
