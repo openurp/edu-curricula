@@ -139,27 +139,31 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 
 	def detail(@param("id") id: String): View = {
 		nav()
-		val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
-		put("courseBlog", courseBlog)
-		val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
-		put("courseBlogs", courseBlogs)
+		try {
+			val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
+			put("courseBlog", courseBlog)
+			val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseBlog.course))
+			put("courseBlogs", courseBlogs)
 
-		val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
-		courseBlogBuilder.where("courseBlog.course=:course", courseBlog.course)
-		courseBlogBuilder.where("courseBlog.status= :status", BlogStatus.Published)
-		courseBlogBuilder.where("courseBlog.semester<>:semester", courseBlog.semester)
-		val hisBlogs = entityDao.search(courseBlogBuilder)
-		put("hisBlogs", hisBlogs)
+			val courseBlogBuilder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
+			courseBlogBuilder.where("courseBlog.course=:course", courseBlog.course)
+			courseBlogBuilder.where("courseBlog.status= :status", BlogStatus.Published)
+			courseBlogBuilder.where("courseBlog.semester<>:semester", courseBlog.semester)
+			val hisBlogs = entityDao.search(courseBlogBuilder)
+			put("hisBlogs", hisBlogs)
 
-		val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
-		if (!syllabuses.isEmpty) {
-			put("syllabus", syllabuses.head)
+			val syllabuses = getDatas(classOf[model.Syllabus], courseBlog)
+			if (!syllabuses.isEmpty) {
+				put("syllabus", syllabuses.head)
+			}
+			val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
+			if (!lecturePlans.isEmpty) {
+				put("lecturePlan", lecturePlans.head)
+			}
+			put("BlogStatus", BlogStatus)
+		} catch {
+			case e: Throwable => return redirect("index", null)
 		}
-		val lecturePlans = getDatas(classOf[LecturePlan], courseBlog)
-		if (!lecturePlans.isEmpty) {
-			put("lecturePlan", lecturePlans.head)
-		}
-		put("BlogStatus", BlogStatus)
 		forward()
 	}
 
@@ -247,21 +251,29 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
 		//		val metaBuilder = getQueryBuilder
 		get("labelTypeId").foreach(labelTypeId => {
-			metaBuilder.where("exists(from meta.awards a where a.awardLabel.labelType.id=:labelTypeId)", labelTypeId.toInt)
-			put("labelTypeId", labelTypeId)
-			put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
-			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
-			put("awardLabels", awardLabels)
+			try {
+				metaBuilder.where("exists(from meta.awards a where a.awardLabel.labelType.id=:labelTypeId)", labelTypeId.toInt)
+				put("labelTypeId", labelTypeId)
+				put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
+				val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
+				put("awardLabels", awardLabels)
+			} catch {
+				case e: Throwable => return redirect("index", null)
+			}
 		})
 		get("labelId").foreach(labelId => {
-			val choosedAwardLabel = entityDao.get(classOf[AwardLabel], labelId.toInt)
-			put("choosedAwardLabel", choosedAwardLabel)
-			metaBuilder.where("exists(from meta.awards a where a.awardLabel.id=:labelId)", labelId.toInt)
-			val labelTypeId = choosedAwardLabel.labelType.id
-			put("labelTypeId", labelTypeId)
-			put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
-			val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
-			put("awardLabels", awardLabels)
+			try {
+				val choosedAwardLabel = entityDao.get(classOf[AwardLabel], labelId.toInt)
+				put("choosedAwardLabel", choosedAwardLabel)
+				metaBuilder.where("exists(from meta.awards a where a.awardLabel.id=:labelId)", labelId.toInt)
+				val labelTypeId = choosedAwardLabel.labelType.id
+				put("labelTypeId", labelTypeId)
+				put("labelType", entityDao.get(classOf[AwardLabelType], labelTypeId.toInt))
+				val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
+				put("awardLabels", awardLabels)
+			} catch {
+				case e: Throwable => return redirect("index", null)
+			}
 		})
 		put("size", entityDao.search(metaBuilder).size)
 		metaBuilder.limit(PageLimit(1, 25))
