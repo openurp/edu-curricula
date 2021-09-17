@@ -18,27 +18,29 @@
  */
 package org.openurp.edu.course.index.web.action
 
-import java.time.LocalDate
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.data.dao.OqlBuilder
+import org.beangle.data.dao.{EntityDao, OqlBuilder}
 import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.realm.cas.CasConfig
-import org.beangle.webmvc.api.action.ServletSupport
-import org.beangle.webmvc.api.annotation.param
+import org.beangle.webmvc.api.action.{ActionSupport, ServletSupport}
+import org.beangle.webmvc.api.annotation.{mapping, param}
 import org.beangle.webmvc.api.view.View
-import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.base.edu.model.{Project, Semester}
+import org.beangle.webmvc.entity.helper.QueryHelper
+import org.openurp.base.edu.model.Project
 import org.openurp.base.model.Department
 import org.openurp.code.Code
 import org.openurp.edu.curricula.model
 import org.openurp.edu.curricula.model._
 
+import java.time.LocalDate
 
-class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 
+class IndexAction extends ActionSupport with ServletSupport {
+
+	var entityDao: EntityDao = _
 	var casConfig: CasConfig = _
 
 	def nav(): Unit = {
@@ -53,7 +55,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 		put("awardLabelTypes", getCodes(classOf[AwardLabelType]))
 	}
 
-	override def indexSetting(): Unit = {
+	def index(): View = {
 		nav()
 		put("portal", Ems.portal)
 		put("casConfig", casConfig)
@@ -71,18 +73,24 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 		//		put("semesters", getSemesters)
 		//		put("currentSemester", getCurrentSemester)
 
-		super.indexSetting()
-	}
-
-	override def search(): View = {
-		val courseBlogMetas = entityDao.search(getQueryBuilder)
-		put("courseBlogMetas", courseBlogMetas)
-		put("blogMap", getBlogMap(courseBlogMetas))
-		put("BlogStatus", BlogStatus)
 		forward()
 	}
 
-	override def getQueryBuilder: OqlBuilder[CourseBlogMeta] = {
+	def search(): View = {
+		try {
+			val courseBlogMetas = entityDao.search(getQueryBuilder)
+			put("courseBlogMetas", courseBlogMetas)
+			put("blogMap", getBlogMap(courseBlogMetas))
+			put("BlogStatus", BlogStatus)
+			forward()
+		} catch {
+			case e: Exception =>
+				logger.info("无效字符", e)
+				redirect("index", null)
+		}
+	}
+
+	def getQueryBuilder: OqlBuilder[CourseBlogMeta] = {
 		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
 		get("nameOrCode").foreach(nameOrCode => {
 			metaBuilder.where("(meta.course.name like :name or meta.course.code like :code)", s"%$nameOrCode%", s"%$nameOrCode%")
@@ -108,7 +116,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 				case _ => metaBuilder.where("meta.course.department.id=:id", depart.toInt)
 			}
 		})
-		metaBuilder.limit(getPageLimit)
+		metaBuilder.limit(QueryHelper.pageLimit)
 		metaBuilder.orderBy("meta.course.code")
 	}
 
@@ -129,12 +137,18 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 		Hierarchicals.getFamily(courseGroup)
 	}
 
-	override def info(id: String): View = {
-		val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
-		put("courseBlog", courseBlog)
-		put("BlogStatus", BlogStatus)
-		put("Transform", Transform)
-		super.info(id)
+	def info(@param("id") id: String): View = {
+		try {
+			val courseBlog = entityDao.get(classOf[CourseBlog], id.toLong)
+			put("courseBlog", courseBlog)
+			put("BlogStatus", BlogStatus)
+			put("Transform", Transform)
+			forward()
+		} catch {
+			case e: Exception =>
+				logger.info("无效字符", e)
+				redirect("index", null)
+		}
 	}
 
 	def detail(@param("id") id: String): View = {
@@ -162,7 +176,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 			}
 			put("BlogStatus", BlogStatus)
 		} catch {
-			case e: Throwable => return redirect("index", null)
+			case e: Exception => return redirect("index", null)
 		}
 		forward()
 	}
@@ -176,7 +190,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 			try {
 				put("choosedDepartment", entityDao.get(classOf[Department], id.toInt))
 			} catch {
-				case e: Throwable =>
+				case e: Exception =>
 			}
 		}
 		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta], "meta")
@@ -188,7 +202,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 				try {
 					metaBuilder.where("meta.course.department.id=:id", id.toInt)
 				} catch {
-					case e: Throwable => metaBuilder.where("meta.course.department.teaching is false")
+					case e: Exception => metaBuilder.where("meta.course.department.teaching is false")
 				}
 			}
 		}
@@ -258,7 +272,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 				val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
 				put("awardLabels", awardLabels)
 			} catch {
-				case e: Throwable => return redirect("index", null)
+				case e: Exception => return redirect("index", null)
 			}
 		})
 		get("labelId").foreach(labelId => {
@@ -272,7 +286,7 @@ class IndexAction extends RestfulAction[CourseBlogMeta] with ServletSupport {
 				val awardLabels = entityDao.findBy(classOf[AwardLabel], "labelType.id", List(labelTypeId.toInt))
 				put("awardLabels", awardLabels)
 			} catch {
-				case e: Throwable => return redirect("index", null)
+				case e: Exception => return redirect("index", null)
 			}
 		})
 		put("size", entityDao.search(metaBuilder).size)
