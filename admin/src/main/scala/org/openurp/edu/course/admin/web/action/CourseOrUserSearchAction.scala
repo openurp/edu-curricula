@@ -27,35 +27,35 @@ import org.openurp.starter.edu.helper.ProjectSupport
 
 class CourseOrUserSearchAction extends RestfulAction[Course] with ProjectSupport {
 
-	def courseAjax(): View = {
-		val query = OqlBuilder.from(classOf[Course], "course")
-		query.orderBy("course.code")
-		query.where("course.project = :project", getMyProject)
-		populateConditions(query)
-		get("term").foreach(codeOrName => {
-			query.where("(course.name like :name or course.code like :code)", s"%$codeOrName%", s"%$codeOrName%")
-		})
-		query.limit(getPageLimit)
-		put("courses", entityDao.search(query))
-		forward("coursesJSON")
-	}
+  def courseAjax(): View = {
+    val query = OqlBuilder.from(classOf[Course], "course")
+    query.orderBy("course.code")
+    query.where("course.project = :project", getMyProject)
+    populateConditions(query)
+    get("term").foreach(codeOrName => {
+      query.where("(course.name like :name or course.code like :code)", s"%$codeOrName%", s"%$codeOrName%")
+    })
+    query.limit(getPageLimit)
+    put("courses", entityDao.search(query))
+    forward("coursesJSON")
+  }
 
-	def userAjax(): View = {
-		val query = OqlBuilder.from(classOf[User], "user")
-		query.where("user.category.id <> 2")
-		query.orderBy("user.code")
-		populateConditions(query)
-		get("term").foreach(codeOrName => {
-			query.where("(user.name like :name or user.code like :code)", s"%$codeOrName%", s"%$codeOrName%")
-		})
-		query.limit(getPageLimit)
-		put("users", entityDao.search(query))
-		forward("usersJSON")
-	}
+  def userAjax(): View = {
+    val query = OqlBuilder.from(classOf[User], "user")
+    query.where("user.category.id <> 2")
+    query.orderBy("user.code")
+    populateConditions(query)
+    get("term").foreach(codeOrName => {
+      query.where("(user.name like :name or user.code like :code)", s"%$codeOrName%", s"%$codeOrName%")
+    })
+    query.limit(getPageLimit)
+    put("users", entityDao.search(query))
+    forward("usersJSON")
+  }
 
-	def getMyProject:Project={
-		val builder=OqlBuilder.from(classOf[Project],"project")
-		builder.where("project.endOn is null")
-		entityDao.search(builder).head
-	}
+  def getMyProject:Project={
+    val builder=OqlBuilder.from(classOf[Project],"project")
+    builder.where("project.endOn is null")
+    entityDao.search(builder).head
+  }
 }

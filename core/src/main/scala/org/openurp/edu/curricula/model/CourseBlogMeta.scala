@@ -28,17 +28,17 @@ import scala.collection.mutable
 
 class CourseBlogMeta extends LongId with Updated {
 
-	var course: Course = _
+  var course: Course = _
 
-	var courseGroup: Option[CourseGroup] = _
-	/*
-	最后更新作者
-	 */
-	var author: User = _
+  var courseGroup: Option[CourseGroup] = _
+  /*
+  最后更新作者
+   */
+  var author: User = _
 
-	/**
-	 * 获奖情况
-	 */
-	var awards: mutable.Buffer[Award] = Collections.newBuffer[Award]
+  /**
+   * 获奖情况
+   */
+  var awards: mutable.Buffer[Award] = Collections.newBuffer[Award]
 
 }

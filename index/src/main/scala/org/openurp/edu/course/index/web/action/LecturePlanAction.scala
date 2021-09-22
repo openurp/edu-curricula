@@ -27,23 +27,21 @@ import org.openurp.edu.curricula.model.LecturePlan
 
 class LecturePlanAction extends RestfulAction[LecturePlan] with ServletSupport{
 
-	def attachment(@param("id") id: Long): View = {
-		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
-		val path = EmsApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
-		response.sendRedirect(path.get)
-		null
-	}
+  def attachment(@param("id") id: Long): View = {
+    val lecturePlan = entityDao.get(classOf[LecturePlan], id)
+    val path = EmsApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
+    response.sendRedirect(path.get)
+    null
+  }
 
-
-	def view(@param("id") id: Long): View = {
-		val lecturePlan = entityDao.get(classOf[LecturePlan], id)
-		if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
-			val path = EmsApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
-			put("lecturePlan", lecturePlan)
-			put("url",path.get)
-		}
-		forward()
-	}
-
+  def view(@param("id") id: Long): View = {
+    val lecturePlan = entityDao.get(classOf[LecturePlan], id)
+    if (null != lecturePlan.attachment && null != lecturePlan.attachment.key) {
+      val path = EmsApp.getBlobRepository(true).path(lecturePlan.attachment.key.get)
+      put("lecturePlan", lecturePlan)
+      put("url",path.get)
+    }
+    forward()
+  }
 
 }

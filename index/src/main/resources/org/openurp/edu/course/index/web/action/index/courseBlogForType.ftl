@@ -1,14 +1,12 @@
 [#ftl]
-[@b.head/]
 [#include "head.ftl"/]
 
-<body>
-	<div class="wrapper">
+  <div class="wrapper">
 
     [#include "nav.ftl"/]
 
         <div class="con_area m_t_30">
-        	<div class="bg_img border p_lr_30 p_t_5 p_b_25">
+          <div class="bg_img border p_lr_30 p_t_5 p_b_25">
                 <div class="title_con"><span class="title_text"><i class="quan"></i>课程类别</span></div>
                 <div class="m_t_30">
                   [@b.form name="courseBlogSearchForm"  action="!search?pageSize=25" target="courseBloglist" title="ui.searchForm" theme="html" ]

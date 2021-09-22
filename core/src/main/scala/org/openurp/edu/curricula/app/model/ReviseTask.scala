@@ -30,14 +30,14 @@ import scala.collection.mutable
  */
 class ReviseTask extends LongId {
 
-	var semester: Semester = _
+  var semester: Semester = _
 
-	var course: Course = _
+  var course: Course = _
 
-	var author: Option[User] = _
+  var author: Option[User] = _
 
-	var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
+  var teachers: mutable.Buffer[User] = Collections.newBuffer[User]
 
-	/** 开课院系 */
-	var department: Department = _
+  /** 开课院系 */
+  var department: Department = _
 }

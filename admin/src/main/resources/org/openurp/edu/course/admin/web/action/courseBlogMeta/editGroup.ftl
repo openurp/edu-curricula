@@ -3,7 +3,7 @@
 [@b.toolbar title="维护课程分组"]bar.addBack();[/@]
 [@b.tabs]
   [@b.form action="!saveGroup" theme="list"]
-		<input type="hidden" name="metaIds" value="${metaIds}"/>
+    <input type="hidden" name="metaIds" value="${metaIds}"/>
     [@b.select name="courseGroup.id" label="课程分组" ]
       <option value="">...</option>
       [#list courseGroups as courseGroup]

@@ -1,9 +1,13 @@
 [#ftl]
-[@b.head/]
-[#include "head.ftl"/]
-
-<body>
-	<div class="wrapper">
+[@b.head title="上海立信会计金融学院课程信息网"]
+  <!-- 针对360浏览器的内核调用,强制调用极速模式 -->
+  <meta name="renderer" content="webkit">
+  <link rel="stylesheet" href="${b.static_url('openurp-edu-course','font/iconfont.css')}">
+  <link rel="stylesheet" href="${b.static_url('openurp-edu-course','css/style.css')}">
+  <link rel="shortcut icon" href="${b.static_url('openurp-edu-course','font/fav.ico')}">
+  <script src="${b.static_url('openurp-edu-course','js/web.js')}"></script>
+[/@]
+  <div class="wrapper">
 
     [#include "nav.ftl"/]
     <div class="con_area"><img src="${b.static_url('openurp-edu-course','images/banner.jpg')}" alt="banner"></div>
@@ -74,19 +78,19 @@
                 <input type="hidden" name="sid_name" value="URP_SID">
                 <input type="hidden" name="isService" value="1">
                 <input type="hidden" name="service" value="${portal}">
-								<div class="login">
-									<div class="login_title">课程负责人和管理员入口：</div>
-									<div class="login_con">
-										<div class="login_text">用户名：</div>
-										<div><input name="username" id="username" style="width:94%; padding:0 3%; border:1px solid #ccc; height:34px; line-height:34px; outline:none;" type="text" placeholder="请输入用户名"></div>
-										<div class="login_text">密码：</div>
-										<div><input id="password" name="password" style="width:94%; padding:0 3%; border:1px solid #ccc; height:34px; line-height:34px; outline:none;"  type="password" placeholder="请输入密码"></div>
-										<!--  错去提示区域 -->
-										<!--<div class="login_error">请输入正确的用户名和密码！</div>-->
-										<div class="text_center"><button class="login_btn" type="button" onclick="checkLogin(this.form)" >登录<span class="iconfont icon-denglu-circle-xian"></span></button></div>
-									</div>
-								</div>
-							[/@]
+                <div class="login">
+                  <div class="login_title">课程负责人和管理员入口：</div>
+                  <div class="login_con">
+                    <div class="login_text">用户名：</div>
+                    <div><input name="username" id="username" style="width:94%; padding:0 3%; border:1px solid #ccc; height:34px; line-height:34px; outline:none;" type="text" placeholder="请输入用户名"></div>
+                    <div class="login_text">密码：</div>
+                    <div><input id="password" name="password" style="width:94%; padding:0 3%; border:1px solid #ccc; height:34px; line-height:34px; outline:none;"  type="password" placeholder="请输入密码"></div>
+                    <!--  错去提示区域 -->
+                    <!--<div class="login_error">请输入正确的用户名和密码！</div>-->
+                    <div class="text_center"><button class="login_btn" type="button" onclick="checkLogin(this.form)" >登录<span class="iconfont icon-denglu-circle-xian"></span></button></div>
+                  </div>
+                </div>
+              [/@]
 
                 <div class="yxlb m_t_20">
                   <div class="module_title"><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><span>院系列表</span><img src="${b.static_url('openurp-edu-course','images/tiao.png')}"><a class="gd" href="${b.url('!courseBlogForDepart?id='+firstDepartment.id)}">+MORE</a></div>
@@ -138,7 +142,6 @@
         </div>
     </div>
 
-
     [#include "foot.ftl"/]
   </div>
 
@@ -172,19 +175,19 @@
     }
   });
 
-	function checkLogin(form) {
-		var form  = document.loginForm;
-		if (!form['username'].value) {
-			alert("用户名称不能为空");
-			return;
-		}
-		if (!form['password'].value) {
-			alert("密码不能为空");
-			return;
-		}
-		setSearchParams(form);
-		bg.form.submit(form);
-	};
+  function checkLogin(form) {
+    var form  = document.loginForm;
+    if (!form['username'].value) {
+      alert("用户名称不能为空");
+      return;
+    }
+    if (!form['password'].value) {
+      alert("密码不能为空");
+      return;
+    }
+    setSearchParams(form);
+    bg.form.submit(form);
+  };
 
   function setSearchParams(form) {
     jQuery('input[name=params]', form).remove();

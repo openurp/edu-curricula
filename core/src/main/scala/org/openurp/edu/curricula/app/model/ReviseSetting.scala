@@ -27,6 +27,6 @@ import org.openurp.base.edu.model.Semester
  */
 class ReviseSetting extends IntId with TemporalAt{
 
-	var semester: Semester = _
+  var semester: Semester = _
 
 }

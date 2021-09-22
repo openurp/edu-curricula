@@ -22,6 +22,6 @@ import org.openurp.code.CodeBean
 
 class AwardLabel extends CodeBean {
 
-	var labelType: AwardLabelType = _
+  var labelType: AwardLabelType = _
 
 }

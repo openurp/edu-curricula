@@ -1,15 +1,11 @@
 [#ftl]
-[@b.head/]
 [#include "head.ftl"/]
-
-<body>
-	<div class="wrapper">
-
+  <div class="wrapper">
 
     [#include "nav.ftl"/]
-        
+
         <div class="con_area m_t_30">
-        	<div class="bg_white p_lr_10">
+          <div class="bg_white p_lr_10">
                 <div class="title_con"><span class="title_text"><i class="quan"></i>精品课程</span></div>
                     <div class="jkc_con m_t_20">
                       [#list labelTypeMap?keys?sort_by("code") as labelType]
@@ -40,7 +36,7 @@
         </div>
 
   [#include "foot.ftl"/]
-        
+
     </div>
 </body>
 [@b.foot/]

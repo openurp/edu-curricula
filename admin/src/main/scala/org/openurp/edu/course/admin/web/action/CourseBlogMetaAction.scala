@@ -29,84 +29,83 @@ import org.openurp.edu.curricula.model.{CourseBlog, CourseBlogMeta, CourseGroup}
 
 class CourseBlogMetaAction extends AbstractAction[CourseBlogMeta] {
 
-	override def indexSetting(): Unit = {
-		//		put("courseTypes", getCodes(classOf[CourseType]))
-		val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta].getName, "meta")
-		metaBuilder.select("distinct meta.course.courseType")
-		val courseTypes = entityDao.search(metaBuilder)
-		put("courseTypes", courseTypes)
-		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
-		builder.orderBy("courseGroup.indexno")
-		put("courseGroups", entityDao.search(builder))
-		super.indexSetting()
-	}
+  override def indexSetting(): Unit = {
+    //    put("courseTypes", getCodes(classOf[CourseType]))
+    val metaBuilder = OqlBuilder.from(classOf[CourseBlogMeta].getName, "meta")
+    metaBuilder.select("distinct meta.course.courseType")
+    val courseTypes = entityDao.search(metaBuilder)
+    put("courseTypes", courseTypes)
+    val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+    builder.orderBy("courseGroup.indexno")
+    put("courseGroups", entityDao.search(builder))
+    super.indexSetting()
+  }
 
-	override def getQueryBuilder: OqlBuilder[CourseBlogMeta] = {
-		val builder = OqlBuilder.from(classOf[CourseBlogMeta], "courseBlogMeta")
-		get("hasGroup").foreach(a => a match {
-			case "0" => builder.where("courseBlogMeta.courseGroup is not null")
-			case "1" => builder.where("courseBlogMeta.courseGroup is null")
-			case _ =>
-		})
-		get("courseGroup.id").foreach(groupId => {
-			if (groupId != "") {
-				val courseGroup = entityDao.get(classOf[CourseGroup], groupId.toInt)
-				val groups = Hierarchicals.getFamily(courseGroup)
-				builder.where("courseBlogMeta.courseGroup in :groups", groups)
-			}
-		})
+  override def getQueryBuilder: OqlBuilder[CourseBlogMeta] = {
+    val builder = OqlBuilder.from(classOf[CourseBlogMeta], "courseBlogMeta")
+    get("hasGroup").foreach(a => a match {
+      case "0" => builder.where("courseBlogMeta.courseGroup is not null")
+      case "1" => builder.where("courseBlogMeta.courseGroup is null")
+      case _ =>
+    })
+    get("courseGroup.id").foreach(groupId => {
+      if (groupId != "") {
+        val courseGroup = entityDao.get(classOf[CourseGroup], groupId.toInt)
+        val groups = Hierarchicals.getFamily(courseGroup)
+        builder.where("courseBlogMeta.courseGroup in :groups", groups)
+      }
+    })
 
-		populateConditions(builder)
-		get(Order.OrderStr) foreach { orderClause =>
-			builder.orderBy(orderClause)
-		}
-		builder.tailOrder("courseBlogMeta.id")
-		builder.limit(getPageLimit)
-	}
+    populateConditions(builder)
+    get(Order.OrderStr) foreach { orderClause =>
+      builder.orderBy(orderClause)
+    }
+    builder.tailOrder("courseBlogMeta.id")
+    builder.limit(getPageLimit)
+  }
 
-	def editGroup(): View = {
-		put("metaIds", get("courseBlogMeta.id"))
-		val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
-		builder.orderBy("courseGroup.indexno")
-		put("courseGroups", entityDao.search(builder))
-		forward()
-	}
+  def editGroup(): View = {
+    put("metaIds", get("courseBlogMeta.id"))
+    val builder = OqlBuilder.from(classOf[CourseGroup], "courseGroup")
+    builder.orderBy("courseGroup.indexno")
+    put("courseGroups", entityDao.search(builder))
+    forward()
+  }
 
-	def saveGroup(): View = {
-		val metaIdsString = get("metaIds")
-		if (metaIdsString.isEmpty) {
-			redirect("search", "error.parameters.needed")
-		}
-		else {
-			val metaIds = Strings.splitToLong(metaIdsString.get)
-			val courseGroupMetas = entityDao.find(classOf[CourseBlogMeta], metaIds)
-			if (get("courseGroup.id").isEmpty || (!get("courseGroup.id").isEmpty && get("courseGroup.id").get == "")) {
-				courseGroupMetas.foreach(meta => {
-					meta.author = getUser
-					meta.updatedAt = Instant.now()
-					meta.courseGroup = None
-				})
-				entityDao.saveOrUpdate(courseGroupMetas)
-			} else {
-				getInt("courseGroup.id").foreach(courseGroupId => {
-					courseGroupMetas.foreach(meta => {
-						meta.author = getUser
-						meta.updatedAt = Instant.now()
-						meta.courseGroup = Option(entityDao.get(classOf[CourseGroup], courseGroupId))
-					})
-					entityDao.saveOrUpdate(courseGroupMetas)
-				})
-			}
-			courseGroupMetas.foreach(courseGroupMeta => {
-				val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseGroupMeta.course))
-				courseBlogs.foreach(courseBlog => {
-					courseBlog.meta = Option(courseGroupMeta)
-				})
-				entityDao.saveOrUpdate(courseBlogs)
-			})
-			redirect("search", "info.save.success")
-		}
-	}
-
+  def saveGroup(): View = {
+    val metaIdsString = get("metaIds")
+    if (metaIdsString.isEmpty) {
+      redirect("search", "error.parameters.needed")
+    }
+    else {
+      val metaIds = Strings.splitToLong(metaIdsString.get)
+      val courseGroupMetas = entityDao.find(classOf[CourseBlogMeta], metaIds)
+      if (get("courseGroup.id").isEmpty || (!get("courseGroup.id").isEmpty && get("courseGroup.id").get == "")) {
+        courseGroupMetas.foreach(meta => {
+          meta.author = getUser
+          meta.updatedAt = Instant.now()
+          meta.courseGroup = None
+        })
+        entityDao.saveOrUpdate(courseGroupMetas)
+      } else {
+        getInt("courseGroup.id").foreach(courseGroupId => {
+          courseGroupMetas.foreach(meta => {
+            meta.author = getUser
+            meta.updatedAt = Instant.now()
+            meta.courseGroup = Option(entityDao.get(classOf[CourseGroup], courseGroupId))
+          })
+          entityDao.saveOrUpdate(courseGroupMetas)
+        })
+      }
+      courseGroupMetas.foreach(courseGroupMeta => {
+        val courseBlogs = entityDao.findBy(classOf[CourseBlog], "course", List(courseGroupMeta.course))
+        courseBlogs.foreach(courseBlog => {
+          courseBlog.meta = Option(courseGroupMeta)
+        })
+        entityDao.saveOrUpdate(courseBlogs)
+      })
+      redirect("search", "info.save.success")
+    }
+  }
 
 }

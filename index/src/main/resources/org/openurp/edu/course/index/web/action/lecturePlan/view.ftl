@@ -12,7 +12,6 @@
   <script src="${b.static_url('pdfjs','build/pdf.js')}"></script>
 </head>
 
-
 <body>
 <div class="wrapper" id="pdf-container">
 </div>

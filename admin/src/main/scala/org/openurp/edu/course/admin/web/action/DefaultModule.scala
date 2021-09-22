@@ -21,16 +21,16 @@ package org.openurp.edu.course.admin.web.action
 import org.beangle.cdi.bind.BindModule
 
 class DefaultModule extends BindModule {
-	override protected def binding(): Unit = {
-		bind(classOf[SyllabusAction],classOf[LecturePlanAction],classOf[CourseBlogAction])
+  override protected def binding(): Unit = {
+    bind(classOf[SyllabusAction],classOf[LecturePlanAction],classOf[CourseBlogAction])
 
-		bind(classOf[ReviseTaskAction],classOf[ReviseSettingAction])
-		bind(classOf[CourseOrUserSearchAction])
-		bind(classOf[TeacherAction],classOf[TeacherBlogAction])
-		bind(classOf[CourseGroupAction],classOf[CourseBlogMetaAction])
+    bind(classOf[ReviseTaskAction],classOf[ReviseSettingAction])
+    bind(classOf[CourseOrUserSearchAction])
+    bind(classOf[TeacherAction],classOf[TeacherBlogAction])
+    bind(classOf[CourseGroupAction],classOf[CourseBlogMetaAction])
 
-		bind(classOf[AwardLabelTypeAction],classOf[AwardLabelAction])
+    bind(classOf[AwardLabelTypeAction],classOf[AwardLabelAction])
 
-		bind(classOf[ImportAction])
-	}
+    bind(classOf[ImportAction])
+  }
 }

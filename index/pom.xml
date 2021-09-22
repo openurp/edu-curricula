@@ -18,6 +18,17 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.beangle.sas</groupId>
+      <artifactId>beangle-sas-tomcat</artifactId>
+      <version>0.9.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.20</version>
+    </dependency>
+    <dependency>
       <groupId>org.openurp.edu.course</groupId>
       <artifactId>openurp-edu-course-core</artifactId>
       <version>${project.version}</version>

@@ -27,35 +27,35 @@ import org.openurp.edu.curricula.model.Syllabus
 
 class SyllabusAction extends RestfulAction[Syllabus] with ServletSupport {
 
-	def attachment(@param("id") id: Long): View = {
-		val syllabus = entityDao.get(classOf[Syllabus], id)
-		val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
-		response.sendRedirect(path.get)
-		null
-	}
+  def attachment(@param("id") id: Long): View = {
+    val syllabus = entityDao.get(classOf[Syllabus], id)
+    val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
+    response.sendRedirect(path.get)
+    null
+  }
 
-	def view(@param("id") id: Long): View = {
-		val syllabus = entityDao.get(classOf[Syllabus], id)
-		if (null != syllabus.attachment && null != syllabus.attachment.key) {
-			val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
-			put("syllabus", syllabus)
-			put("url", path.get)
-		}
-		forward()
-	}
+  def view(@param("id") id: Long): View = {
+    val syllabus = entityDao.get(classOf[Syllabus], id)
+    if (null != syllabus.attachment && null != syllabus.attachment.key) {
+      val path = EmsApp.getBlobRepository(true).path(syllabus.attachment.key.get)
+      put("syllabus", syllabus)
+      put("url", path.get)
+    }
+    forward()
+  }
 
-	@response
-	def removeAtta(@param("id") id: Long): Boolean = {
-		val blob = EmsApp.getBlobRepository(true)
-		val syllabus = entityDao.get(classOf[Syllabus], id)
-		try {
-			blob.remove(syllabus.attachment.key.get)
-			entityDao.remove(syllabus)
-			true
-		} catch {
-			case e: Exception =>
-				logger.info("removeAndRedirect failure", e)
-				false
-		}
-	}
+  @response
+  def removeAtta(@param("id") id: Long): Boolean = {
+    val blob = EmsApp.getBlobRepository(true)
+    val syllabus = entityDao.get(classOf[Syllabus], id)
+    try {
+      blob.remove(syllabus.attachment.key.get)
+      entityDao.remove(syllabus)
+      true
+    } catch {
+      case e: Exception =>
+        logger.info("removeAndRedirect failure", e)
+        false
+    }
+  }
 }

@@ -276,7 +276,6 @@ ${b.script("kindeditor","lang/zh-CN.js")}
     $('#materialA').attr("style", "display:none;");
   }
 
-
   //附件添加删除功能
   function removeSyllabusAtta(id){
     var url = "${b.url('syllabus!removeAtta?id=aaa')}";

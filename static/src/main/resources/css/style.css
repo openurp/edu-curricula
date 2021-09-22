@@ -2,7 +2,7 @@
 /* CSS Document */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; vertical-align: baseline;outline: none;  }
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
-body{ width: 100%; height: 100%; font-family: '微软雅黑', '黑体', Arial; 	font-size: 14px; color: #333; line-height: 1; background:url(../images/bg.jpg) #fff repeat-x;}
+body{ width: 100%; height: 100%; font-family: '微软雅黑', '黑体', Arial;   font-size: 14px; color: #333; line-height: 1; background:url(../images/bg.jpg) #fff repeat-x;}
 ol, ul { list-style: none; }
 a { color: #333; text-decoration: none; }
 a:hover { color: #94070a; }
@@ -172,11 +172,11 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */  font-size:14px; color
 .tk_table tr{ border-bottom:1px solid #e1e1e1;}
 .tk_table_title{ color:#333; font-weight:bold;}
 .tk_table tr td p {color: #826d4c;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: 4;
-	-webkit-box-orient: vertical;}
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;}
 .jrkc{ width:105px; height:35px; line-height:35px; color:#fff; padding-right:27px; display:block; margin: 30px auto 10px; font-weight:bold; background:url(../images/btn.png) no-repeat;}
 .xq_list{ padding:0 30px;}
 .xq_list table{ border:1px solid #e1e1e1; background:#fff; width:100%;}
@@ -191,10 +191,10 @@ input:-ms-input-placeholder { /* Internet Explorer 10+ */  font-size:14px; color
 .yulan .iconfont{ position:relative; top:1px;}
 
 @keyframes contentSlipToBottom {
-	0% {
-		transform:rotateX(90deg);
-	}
-	100% {
-		transform:rotateX(0deg);
-	}
+  0% {
+    transform:rotateX(90deg);
+  }
+  100% {
+    transform:rotateX(0deg);
+  }
 }

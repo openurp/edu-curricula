@@ -19,43 +19,48 @@
 package org.openurp.edu.curricula.model
 
 import org.beangle.data.orm.MappingModule
+import org.openurp.base.model.User
 import org.openurp.edu.course.model.Syllabus
 import org.openurp.edu.curricula.model
 
 class DefaultMapping extends MappingModule {
 
-	def binding(): Unit = {
-		defaultCache("openurp.edu.course", "read-write")
+  def binding(): Unit = {
+    defaultCache("openurp.edu.course", "read-write")
 
-		bind[CourseBlog] declare { e =>
-			e.description is length(40000)
-			e.enDescription is length(40000)
-			e.books is length(40000)
-			e.awards is depends("courseBlog")
-		}
+    bind[CourseBlog] declare { e =>
+      e.description is length(40000)
+      e.enDescription is length(40000)
+      e.books is length(40000)
+      e.teachers is cacheable
+      e.awards is (cacheable ,depends("courseBlog"))
+    }
 
-		bind[LecturePlan].generator("auto_increment")
+    bind[LecturePlan].generator("auto_increment")
 
-		bind[model.Syllabus].generator("auto_increment")
+    bind[model.Syllabus].generator("auto_increment")
 
-		bind[TeacherBlog] declare{e=>
-			e.intro is length(40000)
-			e.harvest is length(40000)
+    bind[TeacherBlog] declare{e=>
+      e.intro is length(40000)
+      e.harvest is length(40000)
 
-		}
+    }
 
-		bind[CourseGroup] declare{ e=>
-			e.children is(depends("parent"), orderby("indexno"))
-		}
+    bind[CourseGroup] declare{ e=>
+      e.children is(cacheable,depends("parent"), orderby("indexno"))
+    }
 
-		bind[CourseBlogMeta] declare { e =>
-			e.awards is depends("meta")
-		}
+    bind[CourseBlogMeta] declare { e =>
+      e.awards is (cacheable,depends("meta"))
+    }
 
-		bind[Award].generator("auto_increment")
+    bind[Award].generator("auto_increment")
 
-		bind[AwardLabel].generator("auto_increment")
+    bind[AwardLabel].generator("auto_increment")
 
-		bind[AwardLabelType].generator("auto_increment")
-	}
+    bind[AwardLabelType].generator("auto_increment")
+
+    all.cacheable()
+    cache().add(classOf[User])
+  }
 }

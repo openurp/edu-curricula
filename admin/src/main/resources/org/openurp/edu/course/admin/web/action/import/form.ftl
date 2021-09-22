@@ -4,7 +4,7 @@
 [@b.form action="!importFromClazz" theme="list" ]
     [@urp_base.semester name="reviseTask.semester.id" label="请选择学年学期"  value=currentSemester required="true"/]
     [@b.formfoot]
-		[@b.submit value="导入"/]
+    [@b.submit value="导入"/]
     [/@]
 [/@]
 [@b.foot/]

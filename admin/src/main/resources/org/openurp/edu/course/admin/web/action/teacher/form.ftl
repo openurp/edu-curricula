@@ -201,7 +201,6 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
     return true;
   }
 
-
   var formObj = $("form[name=blogForm]");
   formObj.find("input[name='awardLabelTypeId']").click(function () {
 
@@ -243,7 +242,6 @@ ${b.script("kindeditor","kindeditor-all-min.js")}
     $('#materialAttachment').val("");
     $('#materialA').attr("style", "display:none;");
   }
-
 
   //附件添加删除功能
   function removeSyllabusAtta(id){

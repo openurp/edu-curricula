@@ -1,8 +1,5 @@
 [#ftl]
-[@b.head/]
 [#include "head.ftl"/]
-
-<body>
 <div class="wrapper">
 
   [#include "nav.ftl"/]

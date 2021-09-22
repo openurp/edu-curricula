@@ -25,9 +25,9 @@ import org.openurp.starter.edu.helper.ProjectSupport
 
 class AwardLabelAction extends RestfulAction[AwardLabel] with ProjectSupport{
 
-	override def editSetting(entity:AwardLabel): Unit = {
-		put("labelTypes",getCodes(classOf[AwardLabelType]))
-		super.editSetting(entity)
-	}
+  override def editSetting(entity:AwardLabel): Unit = {
+    put("labelTypes",getCodes(classOf[AwardLabelType]))
+    super.editSetting(entity)
+  }
 
 }

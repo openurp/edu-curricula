@@ -51,7 +51,7 @@
               <a class="m_l_35 yulan" target="_blank" href="${b.url('lecture-plan!view?id='+lecturePlan.id)}"><span class="iconfont icon-yulan"></span>预览</a>
             </div>
           [/#if]
-			  [/#list]
+        [/#list]
       </td>
       <td style="background:#faf4eb; color:#333; font-weight:bold;width:165px;">教学资料：</td>
       <td style="width: 200px">

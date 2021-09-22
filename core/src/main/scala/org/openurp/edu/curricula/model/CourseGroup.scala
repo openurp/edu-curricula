@@ -23,6 +23,6 @@ import org.openurp.code.CodeBean
 
 class CourseGroup extends CodeBean with Hierarchical[CourseGroup] {
 
-	var color: Option[String] = None
+  var color: Option[String] = None
 
 }

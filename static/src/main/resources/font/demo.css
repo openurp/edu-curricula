@@ -48,7 +48,6 @@
   color: #666;
 }
 
-
 #tabs .active {
   border-bottom-color: #f00;
   color: #222;
@@ -322,7 +321,6 @@
 .markdown>p>br {
   clear: both;
 }
-
 
 .hljs {
   display: block;

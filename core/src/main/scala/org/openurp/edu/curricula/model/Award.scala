@@ -22,11 +22,11 @@ import org.beangle.data.model.LongId
 
 class Award extends LongId {
 
-	var awardLabel: AwardLabel = _
+  var awardLabel: AwardLabel = _
 
-	var year: String = _
+  var year: String = _
 
-	var courseBlog: CourseBlog = _
+  var courseBlog: CourseBlog = _
 
-	var meta: Option[CourseBlogMeta] = None
+  var meta: Option[CourseBlogMeta] = None
 }
