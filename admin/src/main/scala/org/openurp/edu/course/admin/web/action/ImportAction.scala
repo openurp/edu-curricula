@@ -37,9 +37,13 @@ class ImportAction extends AbstractAction[ReviseTask] {
 
   def importFromClazz(): View = {
     val semester = getSemester
+    val project = getProject
     val clazzBuilder = OqlBuilder.from(classOf[Clazz], "clazz")
-    clazzBuilder.where("clazz.semester=:semeter", semester)
+    clazzBuilder.where("clazz.semester=:semeter and clazz.project=:project", semester,project)
+
     val clazzes = entityDao.search(clazzBuilder)
+    println(s"find ${clazzes.size} tasks")
+
     var value = 0
     clazzes.foreach(clazz => {
       val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
@@ -62,7 +66,6 @@ class ImportAction extends AbstractAction[ReviseTask] {
         reviseTask.teachers = clazz.teachers.map(_.user)
         reviseTask.department = clazz.teachDepart
         entityDao.saveOrUpdate(reviseTask)
-
         value += 1
       } else {
         reviseTasks.foreach(rt => {

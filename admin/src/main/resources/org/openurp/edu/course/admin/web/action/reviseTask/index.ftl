@@ -4,7 +4,7 @@
 [@b.toolbar]
   bar.addItem("从教学任务导入课程", function() {
   var form = document.reviseTaskSearchForm;
-  bg.form.submit(form, "${b.url("import!editNew")}");
+  bg.form.submit(form, "${b.url("import!editNew")}","_blank");
   }, "action-new");
 [/@]
 <div class="search-container">
