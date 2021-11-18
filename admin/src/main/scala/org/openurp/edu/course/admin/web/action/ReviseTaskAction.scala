@@ -82,6 +82,30 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
     reviseTask.semester = semester
     reviseTask.course = course
     val courseBlogs = getCourseBlogs(semester, course)
+    get("reviseTask.author") match {
+      case Some(authorCode) => {
+        if (authorCode != "") {
+          val author = entityDao.findBy(classOf[User], "code", List(authorCode)).head
+          reviseTask.author = Option(author)
+          courseBlogs.foreach(courseBlog => {
+            courseBlog.author = Option(author)
+            entityDao.saveOrUpdate(courseBlog)
+          })
+        } else {
+          courseBlogs.foreach(courseBlog => {
+            courseBlog.author = null
+            entityDao.saveOrUpdate(courseBlog)
+          })
+        }
+      }
+      case None => {
+        courseBlogs.foreach(courseBlog => {
+          courseBlog.author = null
+          entityDao.saveOrUpdate(courseBlog)
+        })
+      }
+    }
+
     get("reviseTask.author").foreach(authorCode => {
       if (authorCode != "") {
         val author = entityDao.findBy(classOf[User], "code", List(authorCode)).head
