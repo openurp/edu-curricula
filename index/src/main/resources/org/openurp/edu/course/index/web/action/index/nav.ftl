@@ -22,7 +22,7 @@
               [#list departments as department]
                 <li>[@b.a href="!courseBlogForDepart?id="+department.id]${department.name}[/@]</li>
               [/#list]
-              <li>[@b.a href="!courseBlogForDepart?id=else"]其他[/@b.a]</li>
+              <li>[@b.a href="!courseBlogForDepart?id=0"]其他[/@b.a]</li>
             </ul>
           </li>
         </ul>

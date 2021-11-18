@@ -16,7 +16,7 @@
               </li>
             [/#list]
             <li [#if !choosedDepartment??]class="yx_navon bold"[/#if]>
-              [@b.a href="!courseBlogForDepart?id=else"]其他[/@b.a]
+              [@b.a href="!courseBlogForDepart?id=0"]其他[/@b.a]
             </li>
           </ul>
         </div>

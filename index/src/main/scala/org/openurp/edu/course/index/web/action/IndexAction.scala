@@ -109,7 +109,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     }
     get("courseBlog.department.id").foreach { depart =>
       depart match {
-        case "else" => metaBuilder.where("meta.course.department.teaching is false ")
+        case "0" => metaBuilder.where("meta.course.department.teaching is false ")
         case "" =>
         case _ =>
           val departId = if (Numbers.isDigits(depart)) depart.toInt else 0
@@ -178,7 +178,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     if (!Numbers.isDigits(id)) return Status.NotFound
     val departId = id.toInt
     nav()
-    if (id != "else") {
+    if (id != 0) {
       try {
         put("choosedDepartment", entityDao.get(classOf[Department], departId))
       } catch {
@@ -190,7 +190,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     metaBuilder.orderBy("meta.course.code")
     metaBuilder.cacheable()
     id match {
-      case "else" => metaBuilder.where("meta.course.department.teaching is false")
+      case "0" => metaBuilder.where("meta.course.department.teaching is false")
       case _ => {
         try {
           metaBuilder.where("meta.course.department.id=:id", departId)
@@ -200,6 +200,11 @@ class IndexAction extends ActionSupport with ServletSupport {
       }
     }
     val courseBlogMetas = entityDao.search(metaBuilder)
+    courseBlogMetas.foreach(meta => {
+      if (meta.courseGroup.isEmpty) {
+        println("-----------------------" + meta.course.name + meta.id + "-----------------------")
+      }
+    })
     val metaMap = courseBlogMetas.groupBy(_.courseGroup.get)
     put("metaMap", metaMap)
     put("blogMap", getBlogMap(courseBlogMetas))
