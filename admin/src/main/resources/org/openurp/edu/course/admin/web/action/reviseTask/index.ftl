@@ -16,8 +16,9 @@
       [@b.select name="reviseTask.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
       [@b.select name="teachers" label="是否多人授课"]
         <option value="">...</option>
-        <option value="1">是</option>
-        <option value="0">否</option>
+        <option value="2">多人授课</option>
+        <option value="1">单人授课</option>
+        <option value="0">缺少老师</option>
       [/@]
       [@b.textfield name="teacherName" label="授课教师"/]
       [@b.textfield name="reviseTask.author.name" label="负责人"/]

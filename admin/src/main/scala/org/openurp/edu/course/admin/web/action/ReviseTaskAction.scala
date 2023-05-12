@@ -41,8 +41,9 @@ class ReviseTaskAction extends AbstractAction[ReviseTask] {
     addDepart(builder, "reviseTask.department")
     get("teachers").foreach(e => {
       e match {
-        case "1" => builder.where("size(reviseTask.teachers) > 1")
-        case "0" => builder.where("size(reviseTask.teachers) = 1")
+        case "2" => builder.where("size(reviseTask.teachers) > 1")
+        case "1" => builder.where("size(reviseTask.teachers) = 1")
+        case "0" => builder.where("size(reviseTask.teachers) = 0")
         case _ =>
       }
     })
