@@ -20,7 +20,6 @@ package org.openurp.edu.curricula.model
 
 import org.beangle.data.orm.MappingModule
 import org.openurp.base.model.User
-import org.openurp.edu.course.model.Syllabus
 import org.openurp.edu.curricula.model
 
 class DefaultMapping extends MappingModule {
@@ -33,25 +32,26 @@ class DefaultMapping extends MappingModule {
       e.enDescription is length(40000)
       e.books is length(40000)
       e.teachers is cacheable
-      e.awards is (cacheable ,depends("courseBlog"))
+      e.awards is(cacheable, depends("courseBlog"))
     }
 
     bind[LecturePlan].generator("auto_increment")
 
     bind[model.Syllabus].generator("auto_increment")
 
-    bind[TeacherBlog] declare{e=>
+    bind[TeacherBlog] declare { e =>
       e.intro is length(40000)
       e.harvest is length(40000)
 
     }
 
-    bind[CourseGroup] declare{ e=>
-      e.children is(cacheable,depends("parent"), orderby("indexno"))
+    bind[CourseGroup] declare { e =>
+      e.children is(cacheable, depends("parent"), orderby("indexno"))
     }
 
     bind[CourseBlogMeta] declare { e =>
-      e.awards is (cacheable,depends("meta"))
+      e.awards is(cacheable, depends("meta"))
+      index("", true, e.course)
     }
 
     bind[Award].generator("auto_increment")

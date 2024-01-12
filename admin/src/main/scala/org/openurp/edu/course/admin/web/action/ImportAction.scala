@@ -47,8 +47,9 @@ class ImportAction extends AbstractAction[ReviseTask] {
     var value = 0
     clazzes.foreach(clazz => {
       val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
+      var meta:CourseBlogMeta=metas.headOption.orNull
       if (metas.isEmpty) {
-        val meta = new CourseBlogMeta
+        meta = new CourseBlogMeta
         meta.course = clazz.course
         meta.author = getUser
         meta.updatedAt = Instant.now()
@@ -100,10 +101,7 @@ class ImportAction extends AbstractAction[ReviseTask] {
         courseBlog.preCourse = "--"
         courseBlog.department = clazz.teachDepart
         courseBlog.updatedAt = Instant.now()
-        val newMetas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
-        if (!newMetas.isEmpty) {
-          courseBlog.meta = Option(newMetas.head)
-        }
+        courseBlog.meta = Some(meta)
         entityDao.saveOrUpdate(courseBlog)
       } else {
         courseBlogs.foreach(cb => {
@@ -119,9 +117,9 @@ class ImportAction extends AbstractAction[ReviseTask] {
         })
       }
       put("value", value)
-
     })
 
+    println("new revise task build complete.")
     //删除不存在任务的courseBlog,reviseTask
     entityDao.findBy(classOf[CourseBlog], "semester", List(getSemester)).foreach(blog => {
       val hasSyllabus = duplicate(classOf[model.Syllabus].getName, null, Map("semester" -> semester, "course" -> blog.course))
@@ -135,8 +133,6 @@ class ImportAction extends AbstractAction[ReviseTask] {
       }
     })
     forward()
-
-    //    redirect("search", "&reviseTask.semester.id=" + semester.id, null)
   }
 
   def getSemester(): Semester = {
