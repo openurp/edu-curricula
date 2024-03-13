@@ -1,55 +1,63 @@
 /*
- * OpenURP, Agile University Resource Planning Solution.
- *
- * Copyright © 2014, The OpenURP Software.
+ * Copyright (C) 2014, The OpenURP Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful.
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.admin.web.action
 
-import java.time.{Instant, LocalDate}
-import java.util.Locale
+package org.openurp.edu.course.admin.web.action
 
 import jakarta.servlet.http.Part
 import org.beangle.commons.bean.Properties
 import org.beangle.commons.collection.{Collections, Order}
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.webmvc.api.annotation.{param, response}
-import org.beangle.webmvc.api.view.View
-import org.openurp.base.edu.model.{Course, Semester}
+import org.beangle.web.action.annotation.{param, response}
+import org.beangle.web.action.view.View
+import org.openurp.base.edu.model.Course
+import org.openurp.base.model.{Project, Semester}
 import org.openurp.edu.curricula.model
-import org.openurp.edu.curricula.model._
+import org.openurp.edu.curricula.model.*
+
+import java.time.{Instant, LocalDate}
+import java.util.Locale
 
 class CourseBlogAction extends AbstractAction[CourseBlog] {
 
   override def indexSetting(): Unit = {
+    given project: Project = getProject
+
     put("currentSemester", getSemester)
     super.indexSetting()
   }
 
   override def getQueryBuilder: OqlBuilder[CourseBlog] = {
-    val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
+    given project: Project = getProject
+
+    val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityClass, simpleEntityName)
     builder.where("courseBlog.semester=:semester", getSemester)
     addDepart(builder, "courseBlog.department")
     populateConditions(builder)
     builder.orderBy(get(Order.OrderStr).orNull).limit(getPageLimit)
   }
 
-  def getSemester(): Semester = {
+  override def getSemester(using project: Project): Semester = {
     val semesterString = get("courseBlog.semester.id").orNull
-    if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+    if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt)
+    else
+      given project: Project = getProject
+
+      super.getSemester
   }
 
   override def info(id: String): View = {
@@ -66,6 +74,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
   }
 
   override def editSetting(courseBlog: CourseBlog): Unit = {
+    given project: Project = getProject
+
     if (courseBlog.description == "--") {
       courseBlog.description = ""
     }
@@ -118,7 +128,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
   override def saveAndRedirect(courseBlog: CourseBlog): View = {
     val user = getUser
     val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
-    val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
+    val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], getIntId("courseBlog.semester"))
     if (!courseBlog.persisted) {
       if (duplicate(classOf[CourseBlog].getName, null, Map("semester" -> courseBlog.semester, "author" -> user, "course" -> courseBlog.course))) {
         return redirect("search", "该课程资料存在,请修改课程资料")
@@ -136,6 +146,8 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
         courseBlog.website = Option(newWebsite)
       }
     })
+
+    given project: Project = getProject
 
     //    courseBlog.awards.clear()
     var labelIds = Collections.newBuffer[Int]
@@ -254,7 +266,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
   }
 
   def audit(): View = {
-    val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
+    val courseBlogs = entityDao.find(classOf[CourseBlog], getLongIds("courseBlog"))
     get("passed").orNull match {
       case "1" => {
         var i = 0
@@ -287,7 +299,7 @@ class CourseBlogAction extends AbstractAction[CourseBlog] {
   }
 
   def publish(): View = {
-    val courseBlogs = entityDao.find(classOf[CourseBlog], longIds("courseBlog"))
+    val courseBlogs = entityDao.find(classOf[CourseBlog], getLongIds("courseBlog"))
     var i = 0
     courseBlogs.foreach(courseBlog => {
       if (courseBlog.status == BlogStatus.Passed) {

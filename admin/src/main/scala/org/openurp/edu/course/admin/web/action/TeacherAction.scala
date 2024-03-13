@@ -1,52 +1,58 @@
 /*
- * OpenURP, Agile University Resource Planning Solution.
- *
- * Copyright © 2014, The OpenURP Software.
+ * Copyright (C) 2014, The OpenURP Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful.
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.openurp.edu.course.admin.web.action
 
-import java.time.{Instant, LocalDate}
-import java.util.Locale
+package org.openurp.edu.course.admin.web.action
 
 import jakarta.servlet.http.Part
 import org.beangle.commons.collection.Collections
 import org.beangle.data.dao.OqlBuilder
 import org.beangle.ems.app.EmsApp
-import org.beangle.webmvc.api.annotation.param
-import org.beangle.webmvc.api.view.View
-import org.openurp.base.edu.model.{Course, Semester}
+import org.beangle.web.action.annotation.param
+import org.beangle.web.action.view.View
+import org.openurp.base.edu.model.Course
+import org.openurp.base.model.{Project, Semester}
 import org.openurp.edu.curricula.app.model.{ReviseSetting, ReviseTask}
-import org.openurp.edu.curricula.model._
+import org.openurp.edu.curricula.model.*
+
+import java.time.{Instant, LocalDate}
+import java.util.Locale
 
 class TeacherAction extends AbstractAction[CourseBlog] {
 
   override def indexSetting(): Unit = {
+    given project: Project = getProject
+
     put("currentSemester", getSemester)
-    put("project", getMyProject)
+    put("project", project)
     forward()
   }
 
   override def getQueryBuilder: OqlBuilder[CourseBlog] = {
-    val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityName, simpleEntityName)
+    given project: Project = getProject
+
+    val builder: OqlBuilder[CourseBlog] = OqlBuilder.from(entityClass, simpleEntityName)
     populateConditions(builder)
     builder.where("courseBlog.author=:user", getUser)
     builder.where("courseBlog.semester=:semester", getSemester)
   }
 
   override def search(): View = {
+    given project: Project = getProject
+
     if (getUser != null) {
       val reviseSettingBuilder = OqlBuilder.from(classOf[ReviseSetting], "rs")
       reviseSettingBuilder.where("rs.semester=:semester", getSemester)
@@ -79,9 +85,13 @@ class TeacherAction extends AbstractAction[CourseBlog] {
     super.search()
   }
 
-  def getSemester: Semester = {
+  protected override def getSemester(using project: Project): Semester = {
     val semesterString = get("courseBlog.semester.id").orNull
-    if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+    if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt)
+    else
+      given project: Project = getProject
+
+      super.getSemester
   }
 
   override def info(id: String): View = {
@@ -98,6 +108,8 @@ class TeacherAction extends AbstractAction[CourseBlog] {
   }
 
   override def editSetting(courseBlog: CourseBlog): Unit = {
+    given project: Project = getProject
+
     if (courseBlog.description == "--") {
       courseBlog.description = ""
     }
@@ -148,8 +160,10 @@ class TeacherAction extends AbstractAction[CourseBlog] {
   }
 
   override def saveAndRedirect(courseBlog: CourseBlog): View = {
+    given project: Project = getProject
+
     val course = if (courseBlog.persisted) courseBlog.course else entityDao.findBy(classOf[Course], "code", List(get("courseBlog.course").get)).head
-    val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], intId("courseBlog.semester"))
+    val semester = if (courseBlog.persisted) courseBlog.semester else entityDao.get(classOf[Semester], getIntId("courseBlog.semester"))
     courseBlog.semester = semester
     //    courseBlog.course = course
     //    courseBlog.department = course.department
@@ -296,7 +310,7 @@ class TeacherAction extends AbstractAction[CourseBlog] {
   }
 
   override def remove(): View = {
-    val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+    val courseBlog = entityDao.get(classOf[CourseBlog], getLongId("courseBlog"))
     courseBlog.description = "--"
     courseBlog.enDescription = "--"
     courseBlog.books = "--"
@@ -346,14 +360,14 @@ class TeacherAction extends AbstractAction[CourseBlog] {
   }
 
   def submit(): View = {
-    val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+    val courseBlog = entityDao.get(classOf[CourseBlog], getLongId("courseBlog"))
     courseBlog.status = BlogStatus.Submited
     entityDao.saveOrUpdate(courseBlog)
     redirect("search", "&courseBlog.semester.id=" + courseBlog.semester.id, "info.save.success")
   }
 
   def copy(): View = {
-    val courseBlog = entityDao.get(classOf[CourseBlog], longId("courseBlog"))
+    val courseBlog = entityDao.get(classOf[CourseBlog], getLongId("courseBlog"))
     val builder = OqlBuilder.from(classOf[CourseBlog], "courseBlog")
     builder.where("courseBlog.course=:course", courseBlog.course)
     builder.where("courseBlog.author=:author", courseBlog.author)

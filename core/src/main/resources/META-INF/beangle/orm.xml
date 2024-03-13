@@ -3,7 +3,7 @@
   <mapping class="org.openurp.edu.curricula.model.DefaultMapping" />
   <mapping class="org.openurp.edu.curricula.app.model.DefaultMapping" />
   <naming>
-    <profile package = "org.openurp.edu.curricula.model" pluralize="true" schema="edu_course"/>
+    <profile package = "org.openurp.edu.curricula.model" pluralize="true" schema="course"/>
     <profile package = "org.openurp.edu.curricula.app.model" pluralize="true" schema="app"/>
   </naming>
 </orm>

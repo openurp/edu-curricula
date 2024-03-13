@@ -10,11 +10,11 @@
 <div class="search-container">
     <div class="search-panel" style="width: 200px">
     [@b.form name="reviseTaskSearchForm"  action="!search" target="reviseTasklist" title="ui.searchForm" theme="search"]
-      [@urp_base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
+      [@base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
       [@b.textfield name="reviseTask.course.code" label="课程代码"/]
       [@b.textfield name="reviseTask.course.name" label="课程名称"/]
       [@b.select name="reviseTask.department.id" label="开课院系" items=departments?sort_by("code") empty="..."/]
-      [@b.select name="teachers" label="是否多人授课"]
+      [@b.select name="teachers" label="多人授课"]
         <option value="">...</option>
         <option value="2">多人授课</option>
         <option value="1">单人授课</option>

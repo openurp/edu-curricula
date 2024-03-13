@@ -8,7 +8,7 @@
   [/@]
   [@b.row]
     [@b.boxcol /]
-    [@b.col width="30%" property="semester.code" title="学年学期"]${reviseSetting.semester.schoolYear}学年${reviseSetting.semester.name}学期[/@]
+    [@b.col property="semester.code" title="学年学期"]${reviseSetting.semester.schoolYear}学年${reviseSetting.semester.name}学期[/@]
     [@b.col width="30%" property="beginOn" title="生效时间"]${reviseSetting.beginAt!}[/@]
     [@b.col width="30%" property="endOn" title="失效时间"]${reviseSetting.endAt!}[/@]
   [/@]

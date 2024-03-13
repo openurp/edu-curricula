@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-<script language="JavaScript" type="text/JavaScript" src="${base}/static/js/ajax-chosen.js"></script>
+<script language="JavaScript" type="text/JavaScript" src="${b.base}/static/js/ajax-chosen.js"></script>
 [@b.toolbar title="教师资料维护"]bar.addBack();[/@]
   [#assign sa][#if teacherBlog.persisted]!update?id=${teacherBlog.id}[#else]!save[/#if][/#assign]
     [@b.form action=sa theme="list" enctype="multipart/form-data"]

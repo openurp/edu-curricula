@@ -1,45 +1,48 @@
 /*
- * OpenURP, Agile University Resource Planning Solution.
- *
- * Copyright © 2014, The OpenURP Software.
+ * Copyright (C) 2014, The OpenURP Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful.
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.openurp.edu.course.admin.web.action
 
-import java.time.Instant
-
 import org.beangle.data.dao.OqlBuilder
-import org.beangle.webmvc.api.view.View
-import org.openurp.base.edu.model.{Course, Semester}
+import org.beangle.web.action.view.View
+import org.openurp.base.edu.model.Course
+import org.openurp.base.model.{Project, Semester}
 import org.openurp.edu.clazz.model.Clazz
 import org.openurp.edu.curricula.app.model.ReviseTask
 import org.openurp.edu.curricula.model
 import org.openurp.edu.curricula.model.{CourseBlog, CourseBlogMeta}
 
+import java.time.Instant
+
 class ImportAction extends AbstractAction[ReviseTask] {
 
   override def editSetting(entity: ReviseTask): Unit = {
-    put("currentSemester", getCurrentSemester)
+    given project: Project = getProject
+
+    put("currentSemester", getSemester)
     super.editSetting(entity)
   }
 
   def importFromClazz(): View = {
+    given project: Project = getProject
+
     val semester = getSemester
-    val project = getProject
     val clazzBuilder = OqlBuilder.from(classOf[Clazz], "clazz")
-    clazzBuilder.where("clazz.semester=:semeter and clazz.project=:project", semester,project)
+    clazzBuilder.where("clazz.semester=:semeter and clazz.project=:project", semester, project)
 
     val clazzes = entityDao.search(clazzBuilder)
     println(s"find ${clazzes.size} tasks")
@@ -47,7 +50,7 @@ class ImportAction extends AbstractAction[ReviseTask] {
     var value = 0
     clazzes.foreach(clazz => {
       val metas = entityDao.findBy(classOf[CourseBlogMeta], "course", List(clazz.course))
-      var meta:CourseBlogMeta=metas.headOption.orNull
+      var meta: CourseBlogMeta = metas.headOption.orNull
       if (metas.isEmpty) {
         meta = new CourseBlogMeta
         meta.course = clazz.course
@@ -135,9 +138,13 @@ class ImportAction extends AbstractAction[ReviseTask] {
     forward()
   }
 
-  def getSemester(): Semester = {
+  protected override def getSemester(using project: Project): Semester = {
     val semesterString = get("reviseTask.semester.id").orNull
-    if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt) else getCurrentSemester
+    if (semesterString != null) entityDao.get(classOf[Semester], semesterString.toInt)
+    else
+      given project: Project = getProject
+
+      super.getSemester
   }
 
   def getCourseBlogs(semester: Semester, course: Course): Seq[CourseBlog] = {

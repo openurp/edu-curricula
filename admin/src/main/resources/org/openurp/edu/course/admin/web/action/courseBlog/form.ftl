@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-<script language="JavaScript" type="text/JavaScript" src="${base}/static/js/ajax-chosen.js"></script>
+<script language="JavaScript" type="text/JavaScript" src="${b.base}/static/js/ajax-chosen.js"></script>
 ${b.css("kindeditor","themes/default/default.css")}
 ${b.script("kindeditor","kindeditor-all-min.js")}
 ${b.script("kindeditor","lang/zh-CN.js")}
@@ -21,7 +21,7 @@ ${b.script("kindeditor","lang/zh-CN.js")}
           [/#list]
         [/@]
       [#else]
-        [@urp_base.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester required="true"/]
+        [@base.semester name="courseBlog.semester.id" label="学年学期"  value=currentSemester required="true"/]
         [@b.field label="选择课程" required='true']
           <select id="courses" name="courseBlog.course" style="width:200px;" >
             <option value="${(courseBlog.course.code)!}" selected>${(courseBlog.course.name)!}${(courseBlog.course.code)!}</option>

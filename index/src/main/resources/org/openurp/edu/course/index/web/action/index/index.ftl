@@ -157,7 +157,7 @@
 
   $.ajax({
     "type": "get",
-    "url": "${base}/api/platform/bulletin/notices/edu-course-indexapp/3.json",
+    "url": "${Ems.base}/api/platform/oa/notices/edu-course-indexapp/3.json",
     "dataType": "json",
     "async": false,
     "success": function (data) {
@@ -169,7 +169,7 @@
         var day = date.getDate()
         if (day < 10) day = "0" + day
         var dateString = date.getFullYear() + "-" + month + "-" + day;
-        var url = "${base}/index/notice?id=" + item.id;
+        var url = "${b.base}/index/notice?id=" + item.id;
         $("#tzgg").append("<li><span class=\"yuan\"></span><a href=\"" + url + "\">"+item.title+"</a><span class=\"gg_time\">"+dateString+"</span></li>");
       })
     }

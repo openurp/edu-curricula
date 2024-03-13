@@ -29,7 +29,7 @@
 
   $.ajax({
     "type": "get",
-    "url": "${base}/api/platform/bulletin/notices/${id}.json",
+    "url": "${Ems.base}/api/platform/oa/notices/${id}.json",
     "dataType": "json",
     "async": false,
     "success": function (data) {

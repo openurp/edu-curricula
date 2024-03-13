@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-<script language="JavaScript" type="text/JavaScript" src="${base}/static/js/ajax-chosen.js"></script>
+<script language="JavaScript" type="text/JavaScript" src="${b.base}/static/js/ajax-chosen.js"></script>
 [@b.toolbar title="修订任务"]bar.addBack();[/@]
   [#assign sa][#if reviseTask.persisted]!update?id=${reviseTask.id}[#else]!save[/#if][/#assign]
     [@b.form action=sa theme="list" style="height: 500px;"]
@@ -8,7 +8,7 @@
         [@b.field label="学年学期"]${reviseTask.semester.schoolYear}学年${reviseTask.semester.name}学期[/@]
         [@b.field label="课程"]${reviseTask.course.name}(${reviseTask.course.code})[/@]
       [#else ]
-        [@urp_base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
+        [@base.semester name="reviseTask.semester.id" label="学年学期"  value=currentSemester required="true"/]
         [@b.field label="选择课程" required='true']
           <select id="courses" name="reviseTask.course" style="width:200px;" >
             <option value="${(reviseTask.course.code)!}" selected>${(reviseTask.course.name)!}${(reviseTask.course.code)!}</option>

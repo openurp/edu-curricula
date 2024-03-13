@@ -1,6 +1,6 @@
 [#ftl]
 [@b.head/]
-<script language="JavaScript" type="text/JavaScript" src="${base}/static/js/ajax-chosen.js"></script>
+<script language="JavaScript" type="text/JavaScript" src="${b.base}/static/js/ajax-chosen.js"></script>
 ${b.css("kindeditor","themes/default/default.css")}
 ${b.script("kindeditor","kindeditor-all-min.js")}
 [#--${b.script("kindeditor","lang/zh-CN.js")}--]

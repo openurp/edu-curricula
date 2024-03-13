@@ -1,21 +1,20 @@
 /*
- * OpenURP, Agile University Resource Planning Solution.
- *
- * Copyright © 2014, The OpenURP Software.
+ * Copyright (C) 2014, The OpenURP Software.
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful.
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.openurp.edu.course.index.web.action
 
 import org.beangle.commons.collection.Collections
@@ -26,15 +25,14 @@ import org.beangle.data.model.Entity
 import org.beangle.data.model.util.Hierarchicals
 import org.beangle.ems.app.{Ems, EmsApp}
 import org.beangle.security.realm.cas.CasConfig
-import org.beangle.webmvc.api.action.{ActionSupport, ServletSupport}
-import org.beangle.webmvc.api.annotation.param
-import org.beangle.webmvc.api.view.{Status, View}
-import org.beangle.webmvc.entity.helper.QueryHelper
-import org.openurp.base.edu.model.Project
-import org.openurp.base.model.Department
+import org.beangle.web.action.annotation.param
+import org.beangle.web.action.support.{ActionSupport, ServletSupport}
+import org.beangle.web.action.view.{Status, View}
+import org.beangle.webmvc.support.helper.QueryHelper
+import org.openurp.base.model.{Department, Project}
 import org.openurp.code.Code
 import org.openurp.edu.curricula.model
-import org.openurp.edu.curricula.model._
+import org.openurp.edu.curricula.model.*
 
 import java.time.LocalDate
 
@@ -58,6 +56,7 @@ class IndexAction extends ActionSupport with ServletSupport {
   def index(): View = {
     nav()
     put("portal", Ems.portal)
+    put("Ems", Ems)
     put("casConfig", casConfig)
     // 没有父类的分组
     var courseGroups = Collections.newBuffer[CourseGroup]
@@ -178,7 +177,7 @@ class IndexAction extends ActionSupport with ServletSupport {
     if (!Numbers.isDigits(id)) return Status.NotFound
     val departId = id.toInt
     nav()
-    if (id != 0) {
+    if (departId != 0) {
       try {
         put("choosedDepartment", entityDao.get(classOf[Department], departId))
       } catch {
@@ -386,12 +385,14 @@ class IndexAction extends ActionSupport with ServletSupport {
 
   def notice(@param("id") id: String): View = {
     nav()
+    put("Ems", Ems)
     put("id", id)
     forward()
   }
 
   def notices(): View = {
     nav()
+    put("Ems", Ems)
     forward()
   }
 
